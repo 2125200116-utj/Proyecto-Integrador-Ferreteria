@@ -1,20 +1,28 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package gui;
 
-/**
- *
- * @author juan
- */
-public class aut extends javax.swing.JFrame {
+import javax.swing.JOptionPane;
+import dao.DAOAut;
+import dao.DAOEmpleado;
+import dto.Empleado;
+import java.util.ArrayList;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 
-    /**
-     * Creates new form aut
-     */
+public class aut extends javax.swing.JFrame {
+    
+    private DAOAut daoAut;
+    
+    private DAOEmpleado daoUsuario;
+    private ArrayList<Empleado> registrosEmpleado;
+    private Empleado empleado;
+
     public aut() {
         initComponents();
+        ImageIcon redivo = new ImageIcon("/home/juan/Documents/UTJ/Tercer Cuatrimestre/Programación orientada a objetos/Netbeans/Sigf/src/iconos/redivo1.png");
+        this.setIconImage(redivo.getImage());
+        this.setSize(310, 250);
+        daoAut = new DAOAut();   
+        setLocationRelativeTo(this);
     }
 
     /**
@@ -26,21 +34,152 @@ public class aut extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        btnIngresar = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        txtUsuario = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        lblMensaje = new javax.swing.JLabel();
+        lblUsuario = new javax.swing.JLabel();
+        lblContrasena = new javax.swing.JLabel();
+        jpfContrasena = new javax.swing.JPasswordField();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("AUTENTICACIÓN");
+        setResizable(false);
+        setSize(new java.awt.Dimension(135, 75));
+        getContentPane().setLayout(null);
+
+        btnIngresar.setText("Ingresar");
+        btnIngresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIngresarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnIngresar);
+        btnIngresar.setBounds(100, 170, 111, 33);
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setText("Contraseña");
+        getContentPane().add(jLabel2);
+        jLabel2.setBounds(0, 90, 101, 25);
+
+        txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtUsuarioKeyTyped(evt);
+            }
+        });
+        getContentPane().add(txtUsuario);
+        txtUsuario.setBounds(110, 40, 150, 33);
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setText("Usuario");
+        getContentPane().add(jLabel4);
+        jLabel4.setBounds(30, 40, 70, 25);
+
+        lblMensaje.setFont(new java.awt.Font("Cantarell", 3, 18)); // NOI18N
+        lblMensaje.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(lblMensaje);
+        lblMensaje.setBounds(110, 130, 200, 40);
+
+        lblUsuario.setFont(new java.awt.Font("Cantarell", 3, 20)); // NOI18N
+        lblUsuario.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(lblUsuario);
+        lblUsuario.setBounds(260, 40, 40, 40);
+
+        lblContrasena.setFont(new java.awt.Font("Cantarell", 3, 20)); // NOI18N
+        lblContrasena.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(lblContrasena);
+        lblContrasena.setBounds(260, 90, 40, 40);
+
+        jpfContrasena.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jpfContrasenaKeyTyped(evt);
+            }
+        });
+        getContentPane().add(jpfContrasena);
+        jpfContrasena.setBounds(110, 90, 150, 33);
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
+        
+        char[] contrasenaChar = jpfContrasena.getPassword();
+        String contrasenaString = new String (contrasenaChar);
+        
+        if (!(txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0)) {
+            if (daoAut.auth(txtUsuario.getText(), contrasenaString)) {
+                JFrame app = new mdi();
+                app.setVisible(true);
+                app.setTitle("FERRETERÍA - " + txtUsuario.getText());
+                this.setVisible(false);                
+            } else {
+                JOptionPane.showMessageDialog(this, "Datos incorrectos");
+            }
+        }
+        if (txtUsuario.getText().isBlank()) {
+            lblUsuario.setText("*");
+        } else {
+            lblUsuario.setText("");
+        }
+        
+        if (jpfContrasena.getPassword().length == 0) {
+            lblContrasena.setText("*");
+        } else {
+            lblContrasena.setText("");
+        }
+        
+        if (!(txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0)) {
+            lblMensaje.setText("");
+        }
+        if (txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0) {
+            lblMensaje.setText("* datos obligatorios");
+        }
+        
+    }//GEN-LAST:event_btnIngresarActionPerformed
+
+    private void txtUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyTyped
+        if (txtUsuario.getText().isBlank()) {
+            lblUsuario.setText("*");
+        } else {
+            lblUsuario.setText("");
+        }
+        
+        if (jpfContrasena.getPassword().length == 0) {
+            lblContrasena.setText("*");
+        } else {
+            lblContrasena.setText("");
+        }
+        
+        if (!(txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0)) {
+            lblMensaje.setText("");
+        }
+        if (txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0) {
+            lblMensaje.setText("* datos obligatorios");
+        }
+    }//GEN-LAST:event_txtUsuarioKeyTyped
+
+    private void jpfContrasenaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jpfContrasenaKeyTyped
+        if (txtUsuario.getText().isBlank()) {
+            lblUsuario.setText("*");
+        } else {
+            lblUsuario.setText("");
+        }
+        
+        if (jpfContrasena.getPassword().length == 0) {
+            lblContrasena.setText("*");
+        } else {
+            lblContrasena.setText("");
+        }
+        
+        if (!(txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0)) {
+            lblMensaje.setText("");
+        }
+        if (txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0) {
+            lblMensaje.setText("* datos obligatorios");
+        }
+    }//GEN-LAST:event_jpfContrasenaKeyTyped
 
     /**
      * @param args the command line arguments
@@ -68,6 +207,7 @@ public class aut extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(aut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -78,5 +218,13 @@ public class aut extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnIngresar;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPasswordField jpfContrasena;
+    private javax.swing.JLabel lblContrasena;
+    private javax.swing.JLabel lblMensaje;
+    private javax.swing.JLabel lblUsuario;
+    private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }

@@ -18,6 +18,8 @@ import dto.Empleado;
 import dto.Pedido;
 import dto.Venta;
 import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -171,6 +173,17 @@ public class mdi extends javax.swing.JFrame {
         btnLimpiarPedido = new javax.swing.JButton();
         jLabel37 = new javax.swing.JLabel();
         cbEstadoPedido = new javax.swing.JComboBox<>();
+        jLabel60 = new javax.swing.JLabel();
+        cbProdPedido = new javax.swing.JComboBox<>();
+        jLabel61 = new javax.swing.JLabel();
+        txtCantidadPedido = new javax.swing.JTextField();
+        btnAgregarProdPedido = new javax.swing.JButton();
+        txtBuscarProdPedido = new javax.swing.JTextField();
+        jLabel62 = new javax.swing.JLabel();
+        jTextField5 = new javax.swing.JTextField();
+        jTextField6 = new javax.swing.JTextField();
+        txtImpuestoPedido = new javax.swing.JTextField();
+        txtTotalPedido = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         btnConPedido = new javax.swing.JButton();
         jScrollPane11 = new javax.swing.JScrollPane();
@@ -187,6 +200,19 @@ public class mdi extends javax.swing.JFrame {
         jScrollPane19 = new javax.swing.JScrollPane();
         jtPedidoMod = new javax.swing.JTable();
         btnLimpiarPedidoMod = new javax.swing.JButton();
+        jLabel63 = new javax.swing.JLabel();
+        cbEstadoPedidoMod = new javax.swing.JComboBox<>();
+        jLabel75 = new javax.swing.JLabel();
+        cbProdPedidoMod = new javax.swing.JComboBox<>();
+        jLabel76 = new javax.swing.JLabel();
+        txtCantidadPedidoMod = new javax.swing.JTextField();
+        btnAgregarProdPedidoMod = new javax.swing.JButton();
+        txtBuscarProdPedidoMod = new javax.swing.JTextField();
+        jLabel77 = new javax.swing.JLabel();
+        jTextField7 = new javax.swing.JTextField();
+        jTextField8 = new javax.swing.JTextField();
+        txtImpuestoPedidoMod = new javax.swing.JTextField();
+        txtTotalPedidoMod = new javax.swing.JTextField();
         jPanel18 = new javax.swing.JPanel();
         btnBuscarPedidoBorrar = new javax.swing.JButton();
         txtIdPedidoBorrar = new javax.swing.JTextField();
@@ -329,9 +355,9 @@ public class mdi extends javax.swing.JFrame {
         btnImagenEmp = new javax.swing.JButton();
         btnLimpiarEmp = new javax.swing.JButton();
         jLabel54 = new javax.swing.JLabel();
-        txtContrasenaEmp = new javax.swing.JTextField();
+        txtUsuarioEmp = new javax.swing.JTextField();
         jLabel56 = new javax.swing.JLabel();
-        lblUsuarioEmp = new javax.swing.JLabel();
+        txtContrasenaEmp1 = new javax.swing.JTextField();
         jPanel12 = new javax.swing.JPanel();
         btnConEmp = new javax.swing.JButton();
         jScrollPane12 = new javax.swing.JScrollPane();
@@ -357,7 +383,7 @@ public class mdi extends javax.swing.JFrame {
         jLabel78 = new javax.swing.JLabel();
         txtContrasenaEmpMod = new javax.swing.JTextField();
         jLabel79 = new javax.swing.JLabel();
-        lblUsuarioEmpMod = new javax.swing.JLabel();
+        txtUsuarioEmp1 = new javax.swing.JTextField();
         jPanel21 = new javax.swing.JPanel();
         btnBuscarEmpBorrar = new javax.swing.JButton();
         txtEmpBorrar = new javax.swing.JTextField();
@@ -379,6 +405,16 @@ public class mdi extends javax.swing.JFrame {
         jLabel43 = new javax.swing.JLabel();
         jLabel46 = new javax.swing.JLabel();
         cbEstadoVenta1 = new javax.swing.JComboBox<>();
+        cbProdVenta = new javax.swing.JComboBox<>();
+        jLabel49 = new javax.swing.JLabel();
+        txtCantidadVenta = new javax.swing.JTextField();
+        btnAgregarProdVenta = new javax.swing.JButton();
+        txtBuscarProdVenta = new javax.swing.JTextField();
+        jLabel47 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
+        txtImpuestoVenta1 = new javax.swing.JTextField();
+        txtTotalVenta1 = new javax.swing.JTextField();
         jPanel16 = new javax.swing.JPanel();
         btnConVenta = new javax.swing.JButton();
         jScrollPane16 = new javax.swing.JScrollPane();
@@ -389,15 +425,27 @@ public class mdi extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         txtIdVentaMod = new javax.swing.JTextField();
         btnBuscarVentaMod = new javax.swing.JButton();
-        jLabel47 = new javax.swing.JLabel();
-        jLabel48 = new javax.swing.JLabel();
+        jLabel32 = new javax.swing.JLabel();
         btnVentaMod = new javax.swing.JButton();
+        jLabel48 = new javax.swing.JLabel();
         txtIdEmpleadoVentaMod = new javax.swing.JTextField();
         txtIdClienteVentaMod = new javax.swing.JTextField();
         jScrollPane17 = new javax.swing.JScrollPane();
         jtVentaMod = new javax.swing.JTable();
         btnLimpiarVentaMod = new javax.swing.JButton();
         jLabel53 = new javax.swing.JLabel();
+        jLabel64 = new javax.swing.JLabel();
+        cbEstadoVenta3 = new javax.swing.JComboBox<>();
+        cbProdVentaMod = new javax.swing.JComboBox<>();
+        jLabel66 = new javax.swing.JLabel();
+        txtCantidadVentaMod = new javax.swing.JTextField();
+        btnAgregarProdVentaMod = new javax.swing.JButton();
+        txtBuscarProdVentaMod = new javax.swing.JTextField();
+        jLabel74 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField3 = new javax.swing.JTextField();
+        txtImpuestoVenta = new javax.swing.JTextField();
+        txtTotalVenta = new javax.swing.JTextField();
         jPanel24 = new javax.swing.JPanel();
         btnVentaBuscarBorrar = new javax.swing.JButton();
         txtIdVentaBorrar = new javax.swing.JTextField();
@@ -527,8 +575,20 @@ public class mdi extends javax.swing.JFrame {
         jLabel6.setText("Estado");
         jPanel1.add(jLabel6);
         jLabel6.setBounds(40, 210, 70, 30);
+
+        txtPrecioProd.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrecioProdKeyTyped(evt);
+            }
+        });
         jPanel1.add(txtPrecioProd);
         txtPrecioProd.setBounds(120, 170, 240, 33);
+
+        txtExistenciaProd.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtExistenciaProdKeyTyped(evt);
+            }
+        });
         jPanel1.add(txtExistenciaProd);
         txtExistenciaProd.setBounds(120, 130, 240, 33);
 
@@ -547,6 +607,12 @@ public class mdi extends javax.swing.JFrame {
         jLabel72.setText("Nombre");
         jPanel1.add(jLabel72);
         jLabel72.setBounds(30, 10, 80, 30);
+
+        txtNombreProd.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreProdKeyTyped(evt);
+            }
+        });
         jPanel1.add(txtNombreProd);
         txtNombreProd.setBounds(120, 10, 240, 33);
 
@@ -890,13 +956,13 @@ public class mdi extends javax.swing.JFrame {
         jLabel28.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel28.setText("ID Proveedor");
         jPanel5.add(jLabel28);
-        jLabel28.setBounds(-10, 0, 130, 30);
+        jLabel28.setBounds(-20, 30, 130, 30);
 
         btnGuardarPedido.setText("Guardar");
         jPanel5.add(btnGuardarPedido);
-        btnGuardarPedido.setBounds(0, 300, 400, 33);
+        btnGuardarPedido.setBounds(40, 300, 320, 33);
         jPanel5.add(txtIdProvPedido);
-        txtIdProvPedido.setBounds(130, 0, 200, 33);
+        txtIdProvPedido.setBounds(120, 30, 150, 33);
 
         jtPedido.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -933,20 +999,66 @@ public class mdi extends javax.swing.JFrame {
         jScrollPane4.setViewportView(jtPedido);
 
         jPanel5.add(jScrollPane4);
-        jScrollPane4.setBounds(0, 30, 600, 270);
+        jScrollPane4.setBounds(280, 30, 320, 200);
 
         btnLimpiarPedido.setText("Limpiar Campos");
         jPanel5.add(btnLimpiarPedido);
-        btnLimpiarPedido.setBounds(400, 300, 190, 33);
+        btnLimpiarPedido.setBounds(390, 300, 190, 33);
 
         jLabel37.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel37.setText("Estado");
         jPanel5.add(jLabel37);
-        jLabel37.setBounds(360, 0, 70, 30);
+        jLabel37.setBounds(30, 260, 70, 30);
 
         cbEstadoPedido.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
         jPanel5.add(cbEstadoPedido);
-        cbEstadoPedido.setBounds(440, 0, 150, 33);
+        cbEstadoPedido.setBounds(120, 260, 150, 33);
+
+        jLabel60.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel60.setText("Cantidad");
+        jPanel5.add(jLabel60);
+        jLabel60.setBounds(10, 150, 100, 30);
+
+        jPanel5.add(cbProdPedido);
+        cbProdPedido.setBounds(120, 90, 150, 30);
+
+        jLabel61.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel61.setText("Producto");
+        jPanel5.add(jLabel61);
+        jLabel61.setBounds(30, 90, 80, 30);
+        jPanel5.add(txtCantidadPedido);
+        txtCantidadPedido.setBounds(120, 150, 150, 30);
+
+        btnAgregarProdPedido.setText("Agregar al listado");
+        jPanel5.add(btnAgregarProdPedido);
+        btnAgregarProdPedido.setBounds(30, 190, 240, 33);
+        jPanel5.add(txtBuscarProdPedido);
+        txtBuscarProdPedido.setBounds(120, 120, 150, 30);
+
+        jLabel62.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel62.setText("Buscar por ID");
+        jPanel5.add(jLabel62);
+        jLabel62.setBounds(-10, 120, 120, 30);
+
+        jTextField5.setEditable(false);
+        jTextField5.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField5.setText("Total");
+        jPanel5.add(jTextField5);
+        jTextField5.setBounds(280, 260, 100, 33);
+
+        jTextField6.setEditable(false);
+        jTextField6.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField6.setText("Impuesto");
+        jPanel5.add(jTextField6);
+        jTextField6.setBounds(280, 230, 100, 33);
+
+        txtImpuestoPedido.setEditable(false);
+        jPanel5.add(txtImpuestoPedido);
+        txtImpuestoPedido.setBounds(374, 230, 210, 33);
+
+        txtTotalPedido.setEditable(false);
+        jPanel5.add(txtTotalPedido);
+        txtTotalPedido.setBounds(374, 260, 210, 33);
 
         jTabbedPane2.addTab("Registrar", jPanel5);
 
@@ -978,9 +1090,9 @@ public class mdi extends javax.swing.JFrame {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("ID Pedido");
         jPanel14.add(jLabel2);
-        jLabel2.setBounds(30, 0, 90, 30);
+        jLabel2.setBounds(20, 0, 90, 30);
         jPanel14.add(txtIdPedido);
-        txtIdPedido.setBounds(130, 0, 360, 33);
+        txtIdPedido.setBounds(120, 0, 370, 33);
 
         btnBuscarPedido.setText("Buscar");
         jPanel14.add(btnBuscarPedido);
@@ -989,13 +1101,13 @@ public class mdi extends javax.swing.JFrame {
         jLabel29.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel29.setText("ID Proveedor");
         jPanel14.add(jLabel29);
-        jLabel29.setBounds(-10, 30, 130, 30);
+        jLabel29.setBounds(-20, 50, 130, 30);
 
         btnGuardarPedidoMod.setText("Guardar");
         jPanel14.add(btnGuardarPedidoMod);
-        btnGuardarPedidoMod.setBounds(0, 300, 400, 33);
+        btnGuardarPedidoMod.setBounds(40, 300, 320, 33);
         jPanel14.add(txtIdProvPedidoMod);
-        txtIdProvPedidoMod.setBounds(130, 30, 460, 33);
+        txtIdProvPedidoMod.setBounds(120, 50, 150, 33);
 
         jtPedidoMod.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1032,11 +1144,66 @@ public class mdi extends javax.swing.JFrame {
         jScrollPane19.setViewportView(jtPedidoMod);
 
         jPanel14.add(jScrollPane19);
-        jScrollPane19.setBounds(0, 60, 600, 240);
+        jScrollPane19.setBounds(280, 50, 320, 180);
 
         btnLimpiarPedidoMod.setText("Limpiar Campos");
         jPanel14.add(btnLimpiarPedidoMod);
-        btnLimpiarPedidoMod.setBounds(400, 300, 190, 33);
+        btnLimpiarPedidoMod.setBounds(390, 300, 190, 33);
+
+        jLabel63.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel63.setText("Estado");
+        jPanel14.add(jLabel63);
+        jLabel63.setBounds(30, 260, 70, 30);
+
+        cbEstadoPedidoMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
+        jPanel14.add(cbEstadoPedidoMod);
+        cbEstadoPedidoMod.setBounds(120, 260, 150, 33);
+
+        jLabel75.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel75.setText("Cantidad");
+        jPanel14.add(jLabel75);
+        jLabel75.setBounds(10, 150, 100, 30);
+
+        jPanel14.add(cbProdPedidoMod);
+        cbProdPedidoMod.setBounds(120, 90, 150, 30);
+
+        jLabel76.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel76.setText("Producto");
+        jPanel14.add(jLabel76);
+        jLabel76.setBounds(30, 90, 80, 30);
+        jPanel14.add(txtCantidadPedidoMod);
+        txtCantidadPedidoMod.setBounds(120, 150, 150, 30);
+
+        btnAgregarProdPedidoMod.setText("Agregar al listado");
+        jPanel14.add(btnAgregarProdPedidoMod);
+        btnAgregarProdPedidoMod.setBounds(30, 190, 240, 33);
+        jPanel14.add(txtBuscarProdPedidoMod);
+        txtBuscarProdPedidoMod.setBounds(120, 120, 150, 30);
+
+        jLabel77.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel77.setText("Buscar por ID");
+        jPanel14.add(jLabel77);
+        jLabel77.setBounds(-10, 120, 120, 30);
+
+        jTextField7.setEditable(false);
+        jTextField7.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField7.setText("Total");
+        jPanel14.add(jTextField7);
+        jTextField7.setBounds(280, 260, 100, 33);
+
+        jTextField8.setEditable(false);
+        jTextField8.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField8.setText("Impuesto");
+        jPanel14.add(jTextField8);
+        jTextField8.setBounds(280, 230, 100, 33);
+
+        txtImpuestoPedidoMod.setEditable(false);
+        jPanel14.add(txtImpuestoPedidoMod);
+        txtImpuestoPedidoMod.setBounds(374, 230, 210, 33);
+
+        txtTotalPedidoMod.setEditable(false);
+        jPanel14.add(txtTotalPedidoMod);
+        txtTotalPedidoMod.setBounds(374, 260, 210, 33);
 
         jTabbedPane2.addTab("Modificar", jPanel14);
 
@@ -1756,7 +1923,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel11.add(jComboBox7);
         jComboBox7.setBounds(120, 260, 150, 33);
 
-        cbRolEmp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Empleado", "Administrador", "Super Administrador" }));
+        cbRolEmp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Empleado", "Admin", " " }));
         jPanel11.add(cbRolEmp);
         cbRolEmp.setBounds(120, 220, 240, 33);
 
@@ -1785,17 +1952,18 @@ public class mdi extends javax.swing.JFrame {
         jLabel54.setText("Usuario:");
         jPanel11.add(jLabel54);
         jLabel54.setBounds(20, 150, 90, 30);
-        jPanel11.add(txtContrasenaEmp);
-        txtContrasenaEmp.setBounds(120, 120, 240, 33);
+
+        txtUsuarioEmp.setEditable(false);
+        txtUsuarioEmp.setText("< usuario generado >");
+        jPanel11.add(txtUsuarioEmp);
+        txtUsuarioEmp.setBounds(120, 150, 240, 33);
 
         jLabel56.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel56.setText("Contraseña");
         jPanel11.add(jLabel56);
         jLabel56.setBounds(0, 120, 110, 30);
-
-        lblUsuarioEmp.setText("< usuario generado >");
-        jPanel11.add(lblUsuarioEmp);
-        lblUsuarioEmp.setBounds(120, 150, 240, 30);
+        jPanel11.add(txtContrasenaEmp1);
+        txtContrasenaEmp1.setBounds(120, 120, 240, 33);
 
         jTabbedPaneUsuario.addTab("Registrar", jPanel11);
 
@@ -1913,7 +2081,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel13.add(jLabel65);
         jLabel65.setBounds(20, 100, 90, 30);
 
-        cbRolEmpMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Empleado", "Administrador", "Super Administrador" }));
+        cbRolEmpMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Empleado", "Admin" }));
         cbRolEmpMod.setEnabled(false);
         jPanel13.add(cbRolEmpMod);
         cbRolEmpMod.setBounds(120, 210, 240, 33);
@@ -1932,10 +2100,11 @@ public class mdi extends javax.swing.JFrame {
         jPanel13.add(jLabel79);
         jLabel79.setBounds(0, 140, 110, 30);
 
-        lblUsuarioEmpMod.setText("< usuario generado >");
-        lblUsuarioEmpMod.setEnabled(false);
-        jPanel13.add(lblUsuarioEmpMod);
-        lblUsuarioEmpMod.setBounds(120, 170, 240, 30);
+        txtUsuarioEmp1.setEditable(false);
+        txtUsuarioEmp1.setText("< usuario generado >");
+        txtUsuarioEmp1.setEnabled(false);
+        jPanel13.add(txtUsuarioEmp1);
+        txtUsuarioEmp1.setBounds(120, 170, 240, 33);
 
         jTabbedPaneUsuario.addTab("Modificar", jPanel13);
 
@@ -2009,15 +2178,20 @@ public class mdi extends javax.swing.JFrame {
         jLabel30.setBounds(20, 30, 90, 30);
 
         btnGuardarVenta.setText("Guardar");
+        btnGuardarVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarVentaActionPerformed(evt);
+            }
+        });
         jPanel15.add(btnGuardarVenta);
         btnGuardarVenta.setBounds(10, 300, 260, 33);
 
-        jLabel44.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel44.setText("Productos");
+        jLabel44.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel44.setText("Cantidad");
         jPanel15.add(jLabel44);
-        jLabel44.setBounds(340, 0, 170, 30);
+        jLabel44.setBounds(10, 170, 100, 30);
         jPanel15.add(txtIdEmpleadoVenta);
-        txtIdEmpleadoVenta.setBounds(120, 80, 150, 33);
+        txtIdEmpleadoVenta.setBounds(120, 60, 150, 33);
         jPanel15.add(txtIdClienteVenta);
         txtIdClienteVenta.setBounds(120, 30, 150, 33);
 
@@ -2052,29 +2226,86 @@ public class mdi extends javax.swing.JFrame {
             new String [] {
                 "ID Producto", "Cantidad", "Precio", "Total"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane15.setViewportView(jtVenta);
+        if (jtVenta.getColumnModel().getColumnCount() > 0) {
+            jtVenta.getColumnModel().getColumn(0).setPreferredWidth(80);
+        }
 
         jPanel15.add(jScrollPane15);
-        jScrollPane15.setBounds(280, 30, 310, 310);
+        jScrollPane15.setBounds(280, 30, 310, 200);
 
         btnLimpiarVenta.setText("Limpiar Campos");
         jPanel15.add(btnLimpiarVenta);
-        btnLimpiarVenta.setBounds(50, 230, 190, 33);
+        btnLimpiarVenta.setBounds(280, 300, 310, 33);
 
         jLabel43.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel43.setText("ID Empleado");
         jPanel15.add(jLabel43);
-        jLabel43.setBounds(-10, 80, 120, 30);
+        jLabel43.setBounds(-10, 60, 120, 30);
 
         jLabel46.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel46.setText("Estado");
         jPanel15.add(jLabel46);
-        jLabel46.setBounds(-10, 130, 120, 30);
+        jLabel46.setBounds(-10, 260, 120, 30);
 
         cbEstadoVenta1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
+        cbEstadoVenta1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbEstadoVenta1ActionPerformed(evt);
+            }
+        });
         jPanel15.add(cbEstadoVenta1);
-        cbEstadoVenta1.setBounds(120, 130, 150, 33);
+        cbEstadoVenta1.setBounds(120, 260, 150, 33);
+
+        jPanel15.add(cbProdVenta);
+        cbProdVenta.setBounds(120, 110, 150, 30);
+
+        jLabel49.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel49.setText("Producto");
+        jPanel15.add(jLabel49);
+        jLabel49.setBounds(30, 110, 80, 30);
+        jPanel15.add(txtCantidadVenta);
+        txtCantidadVenta.setBounds(120, 170, 150, 30);
+
+        btnAgregarProdVenta.setText("Agregar al listado");
+        jPanel15.add(btnAgregarProdVenta);
+        btnAgregarProdVenta.setBounds(30, 200, 240, 33);
+        jPanel15.add(txtBuscarProdVenta);
+        txtBuscarProdVenta.setBounds(120, 140, 150, 30);
+
+        jLabel47.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel47.setText("Buscar por ID");
+        jPanel15.add(jLabel47);
+        jLabel47.setBounds(-10, 140, 120, 30);
+
+        jTextField2.setEditable(false);
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField2.setText("Total");
+        jPanel15.add(jTextField2);
+        jTextField2.setBounds(280, 260, 100, 33);
+
+        jTextField4.setEditable(false);
+        jTextField4.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField4.setText("Impuesto");
+        jPanel15.add(jTextField4);
+        jTextField4.setBounds(280, 230, 100, 33);
+
+        txtImpuestoVenta1.setEditable(false);
+        jPanel15.add(txtImpuestoVenta1);
+        txtImpuestoVenta1.setBounds(374, 230, 210, 33);
+
+        txtTotalVenta1.setEditable(false);
+        jPanel15.add(txtTotalVenta1);
+        txtTotalVenta1.setBounds(374, 260, 210, 33);
 
         jTabbedPane5.addTab("Registrar", jPanel15);
 
@@ -2112,30 +2343,28 @@ public class mdi extends javax.swing.JFrame {
         jPanel23.add(btnBuscarVentaMod);
         btnBuscarVentaMod.setBounds(480, 0, 110, 33);
 
-        jLabel47.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel47.setText("ID Cliente");
-        jPanel23.add(jLabel47);
-        jLabel47.setBounds(20, 40, 90, 30);
-
-        jLabel48.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel48.setText("ID Empleado");
-        jPanel23.add(jLabel48);
-        jLabel48.setBounds(-10, 90, 120, 30);
+        jLabel32.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel32.setText("ID Cliente");
+        jPanel23.add(jLabel32);
+        jLabel32.setBounds(20, 50, 90, 30);
 
         btnVentaMod.setText("Modificar");
-        btnVentaMod.setEnabled(false);
+        btnVentaMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVentaModActionPerformed(evt);
+            }
+        });
         jPanel23.add(btnVentaMod);
         btnVentaMod.setBounds(10, 300, 260, 33);
 
-        txtIdEmpleadoVentaMod.setEnabled(false);
+        jLabel48.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel48.setText("Cantidad");
+        jPanel23.add(jLabel48);
+        jLabel48.setBounds(10, 170, 100, 30);
         jPanel23.add(txtIdEmpleadoVentaMod);
-        txtIdEmpleadoVentaMod.setBounds(120, 90, 150, 33);
-
-        txtIdClienteVentaMod.setEnabled(false);
+        txtIdEmpleadoVentaMod.setBounds(120, 80, 150, 33);
         jPanel23.add(txtIdClienteVentaMod);
-        txtIdClienteVentaMod.setBounds(120, 40, 150, 33);
-
-        jScrollPane17.setEnabled(false);
+        txtIdClienteVentaMod.setBounds(120, 50, 150, 33);
 
         jtVentaMod.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -2168,22 +2397,86 @@ public class mdi extends javax.swing.JFrame {
             new String [] {
                 "ID Producto", "Cantidad", "Precio", "Total"
             }
-        ));
-        jtVentaMod.setEnabled(false);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane17.setViewportView(jtVentaMod);
+        if (jtVentaMod.getColumnModel().getColumnCount() > 0) {
+            jtVentaMod.getColumnModel().getColumn(0).setPreferredWidth(80);
+        }
 
         jPanel23.add(jScrollPane17);
-        jScrollPane17.setBounds(280, 70, 310, 260);
+        jScrollPane17.setBounds(280, 50, 310, 180);
 
         btnLimpiarVentaMod.setText("Limpiar Campos");
-        btnLimpiarVentaMod.setEnabled(false);
         jPanel23.add(btnLimpiarVentaMod);
-        btnLimpiarVentaMod.setBounds(50, 230, 190, 33);
+        btnLimpiarVentaMod.setBounds(280, 300, 310, 33);
 
-        jLabel53.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel53.setText("Productos");
+        jLabel53.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel53.setText("ID Empleado");
         jPanel23.add(jLabel53);
-        jLabel53.setBounds(340, 40, 170, 30);
+        jLabel53.setBounds(-10, 80, 120, 30);
+
+        jLabel64.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel64.setText("Estado");
+        jPanel23.add(jLabel64);
+        jLabel64.setBounds(-10, 260, 120, 30);
+
+        cbEstadoVenta3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
+        cbEstadoVenta3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbEstadoVenta3ActionPerformed(evt);
+            }
+        });
+        jPanel23.add(cbEstadoVenta3);
+        cbEstadoVenta3.setBounds(120, 260, 150, 33);
+
+        jPanel23.add(cbProdVentaMod);
+        cbProdVentaMod.setBounds(120, 110, 150, 30);
+
+        jLabel66.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel66.setText("Producto");
+        jPanel23.add(jLabel66);
+        jLabel66.setBounds(30, 110, 80, 30);
+        jPanel23.add(txtCantidadVentaMod);
+        txtCantidadVentaMod.setBounds(120, 170, 150, 30);
+
+        btnAgregarProdVentaMod.setText("Agregar al listado");
+        jPanel23.add(btnAgregarProdVentaMod);
+        btnAgregarProdVentaMod.setBounds(30, 200, 240, 33);
+        jPanel23.add(txtBuscarProdVentaMod);
+        txtBuscarProdVentaMod.setBounds(120, 140, 150, 30);
+
+        jLabel74.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel74.setText("Buscar por ID");
+        jPanel23.add(jLabel74);
+        jLabel74.setBounds(-7, 140, 117, 30);
+
+        jTextField1.setEditable(false);
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField1.setText("Total");
+        jPanel23.add(jTextField1);
+        jTextField1.setBounds(280, 260, 100, 33);
+
+        jTextField3.setEditable(false);
+        jTextField3.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField3.setText("Impuesto");
+        jPanel23.add(jTextField3);
+        jTextField3.setBounds(280, 230, 100, 33);
+
+        txtImpuestoVenta.setEditable(false);
+        jPanel23.add(txtImpuestoVenta);
+        txtImpuestoVenta.setBounds(374, 230, 210, 33);
+
+        txtTotalVenta.setEditable(false);
+        jPanel23.add(txtTotalVenta);
+        txtTotalVenta.setBounds(374, 260, 210, 33);
 
         jTabbedPane5.addTab("Modificar", jPanel23);
 
@@ -3315,6 +3608,70 @@ public class mdi extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnEmpBorrarActionPerformed
 
+    private void txtNombreProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreProdKeyTyped
+        if(txtNombreProd.getText().length() > 50){
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+        
+        if (!(Character.isLetter(key) || 
+                key == KeyEvent.VK_BACK_SPACE ||
+                key == KeyEvent.VK_SPACE)){
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtNombreProdKeyTyped
+
+    private void txtPrecioProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioProdKeyTyped
+        if(txtPrecioProd.getText().length() > 9){
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        
+        char key = evt.getKeyChar();
+        
+        if ((!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE ||
+                key == '.'))){
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite numeros y un punto");
+        }
+        if ((key == '.') && txtPrecioProd.getText().contains(".")){
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "Ingresa solo un punto");
+        }
+    }//GEN-LAST:event_txtPrecioProdKeyTyped
+
+    private void txtExistenciaProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtExistenciaProdKeyTyped
+        if(txtExistenciaProd.getText().length() > 10){
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        
+        char key = evt.getKeyChar();
+        
+        if (!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE)){
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite enteros");
+        }
+    }//GEN-LAST:event_txtExistenciaProdKeyTyped
+
+    private void btnGuardarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarVentaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnGuardarVentaActionPerformed
+
+    private void cbEstadoVenta1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEstadoVenta1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbEstadoVenta1ActionPerformed
+
+    private void btnVentaModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentaModActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnVentaModActionPerformed
+
+    private void cbEstadoVenta3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEstadoVenta3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbEstadoVenta3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -3352,6 +3709,10 @@ public class mdi extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregarProdPedido;
+    private javax.swing.JButton btnAgregarProdPedidoMod;
+    private javax.swing.JButton btnAgregarProdVenta;
+    private javax.swing.JButton btnAgregarProdVentaMod;
     private javax.swing.JButton btnBuscarClienteBorrar;
     private javax.swing.JButton btnBuscarClienteMod;
     private javax.swing.JButton btnBuscarEmpBorrar;
@@ -3425,9 +3786,15 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbEstadoCliente;
     private javax.swing.JComboBox<String> cbEstadoEmp;
     private javax.swing.JComboBox<String> cbEstadoPedido;
+    private javax.swing.JComboBox<String> cbEstadoPedidoMod;
     private javax.swing.JComboBox<String> cbEstadoProd;
     private javax.swing.JComboBox<String> cbEstadoProv;
     private javax.swing.JComboBox<String> cbEstadoVenta1;
+    private javax.swing.JComboBox<String> cbEstadoVenta3;
+    private javax.swing.JComboBox<String> cbProdPedido;
+    private javax.swing.JComboBox<String> cbProdPedidoMod;
+    private javax.swing.JComboBox<String> cbProdVenta;
+    private javax.swing.JComboBox<String> cbProdVentaMod;
     private javax.swing.JComboBox<String> cbRolEmp;
     private javax.swing.JComboBox<String> cbRolEmpMod;
     private javax.swing.JInternalFrame ifrCliente;
@@ -3458,6 +3825,7 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
@@ -3474,6 +3842,7 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel47;
     private javax.swing.JLabel jLabel48;
+    private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel50;
     private javax.swing.JLabel jLabel51;
@@ -3486,7 +3855,13 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel58;
     private javax.swing.JLabel jLabel59;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel60;
+    private javax.swing.JLabel jLabel61;
+    private javax.swing.JLabel jLabel62;
+    private javax.swing.JLabel jLabel63;
+    private javax.swing.JLabel jLabel64;
     private javax.swing.JLabel jLabel65;
+    private javax.swing.JLabel jLabel66;
     private javax.swing.JLabel jLabel67;
     private javax.swing.JLabel jLabel68;
     private javax.swing.JLabel jLabel69;
@@ -3495,6 +3870,10 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel71;
     private javax.swing.JLabel jLabel72;
     private javax.swing.JLabel jLabel73;
+    private javax.swing.JLabel jLabel74;
+    private javax.swing.JLabel jLabel75;
+    private javax.swing.JLabel jLabel76;
+    private javax.swing.JLabel jLabel77;
     private javax.swing.JLabel jLabel78;
     private javax.swing.JLabel jLabel79;
     private javax.swing.JLabel jLabel8;
@@ -3563,6 +3942,14 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane4;
     private javax.swing.JTabbedPane jTabbedPane5;
     private javax.swing.JTabbedPane jTabbedPaneUsuario;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField jTextField8;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTable jtPedido;
     private javax.swing.JTable jtPedidoMod;
@@ -3584,8 +3971,6 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JLabel lblImagenProvMod;
     private javax.swing.JLabel lblNombreModProd;
     private javax.swing.JLabel lblPrecioModProd;
-    private javax.swing.JLabel lblUsuarioEmp;
-    private javax.swing.JLabel lblUsuarioEmpMod;
     private javax.swing.JMenu menu;
     private javax.swing.JMenuItem mniCliente;
     private javax.swing.JMenuItem mniEmp;
@@ -3613,15 +3998,23 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JTextField txtApellidoEmpMod;
     private javax.swing.JTextField txtApellidoProv;
     private javax.swing.JTextField txtApellidoProvMod;
+    private javax.swing.JTextField txtBuscarProdPedido;
+    private javax.swing.JTextField txtBuscarProdPedidoMod;
+    private javax.swing.JTextField txtBuscarProdVenta;
+    private javax.swing.JTextField txtBuscarProdVentaMod;
     private javax.swing.JTextField txtCalleProv;
     private javax.swing.JTextField txtCalleProvMod;
+    private javax.swing.JTextField txtCantidadPedido;
+    private javax.swing.JTextField txtCantidadPedidoMod;
+    private javax.swing.JTextField txtCantidadVenta;
+    private javax.swing.JTextField txtCantidadVentaMod;
     private javax.swing.JTextField txtCiudadProv;
     private javax.swing.JTextField txtCiudadProvMod;
     private javax.swing.JTextField txtClienteBorrar;
     private javax.swing.JTextField txtClienteMod;
     private javax.swing.JTextField txtColoniaProv;
     private javax.swing.JTextField txtColoniaProvMod;
-    private javax.swing.JTextField txtContrasenaEmp;
+    private javax.swing.JTextField txtContrasenaEmp1;
     private javax.swing.JTextField txtContrasenaEmpMod;
     private javax.swing.JTextField txtCorreoCliente;
     private javax.swing.JTextField txtCorreoClienteMod;
@@ -3651,6 +4044,10 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JTextField txtIdProvPedidoMod;
     private javax.swing.JTextField txtIdVentaBorrar;
     private javax.swing.JTextField txtIdVentaMod;
+    private javax.swing.JTextField txtImpuestoPedido;
+    private javax.swing.JTextField txtImpuestoPedidoMod;
+    private javax.swing.JTextField txtImpuestoVenta;
+    private javax.swing.JTextField txtImpuestoVenta1;
     private javax.swing.JTextField txtNombreCliente;
     private javax.swing.JTextField txtNombreClienteMod;
     private javax.swing.JTextField txtNombreEmp;
@@ -3673,5 +4070,11 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JTextField txtTelefonoEmpMod;
     private javax.swing.JTextField txtTelefonoProv;
     private javax.swing.JTextField txtTelefonoProvMod;
+    private javax.swing.JTextField txtTotalPedido;
+    private javax.swing.JTextField txtTotalPedidoMod;
+    private javax.swing.JTextField txtTotalVenta;
+    private javax.swing.JTextField txtTotalVenta1;
+    private javax.swing.JTextField txtUsuarioEmp;
+    private javax.swing.JTextField txtUsuarioEmp1;
     // End of variables declaration//GEN-END:variables
 }

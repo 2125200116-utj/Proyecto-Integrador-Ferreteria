@@ -69,7 +69,7 @@ public class mdi extends javax.swing.JFrame {
     private ImageIcon imagen;
     private Icon icono;
 
-    private File imgBytes;
+    private File imgProducto1, imgProducto2, imgProducto3, imgCliente, imgProveedor, imgEmpleado;
 
     public mdi() {
         initComponents();
@@ -714,6 +714,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel2.add(btnConProd);
         btnConProd.setBounds(0, 30, 594, 33);
 
+        txaConProd.setEditable(false);
         txaConProd.setColumns(20);
         txaConProd.setRows(5);
         jScrollPane13.setViewportView(txaConProd);
@@ -915,6 +916,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel4.add(btnBuscarProdBorrar);
         btnBuscarProdBorrar.setBounds(480, 0, 100, 33);
 
+        txaProdBorrar.setEditable(false);
         txaProdBorrar.setColumns(20);
         txaProdBorrar.setRows(5);
         jScrollPane1.setViewportView(txaProdBorrar);
@@ -995,7 +997,15 @@ public class mdi extends javax.swing.JFrame {
             new String [] {
                 "ID Producto", "Cantidad", "Precio", "Total"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane4.setViewportView(jtPedido);
 
         jPanel5.add(jScrollPane4);
@@ -1068,6 +1078,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel6.add(btnConPedido);
         btnConPedido.setBounds(0, 30, 594, 33);
 
+        txaConPedido.setEditable(false);
         txaConPedido.setColumns(20);
         txaConPedido.setRows(5);
         jScrollPane11.setViewportView(txaConPedido);
@@ -1140,7 +1151,15 @@ public class mdi extends javax.swing.JFrame {
             new String [] {
                 "ID Producto", "Cantidad", "Precio", "Total"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane19.setViewportView(jtPedidoMod);
 
         jPanel14.add(jScrollPane19);
@@ -1225,6 +1244,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel18.add(btnPedidoBorrar);
         btnPedidoBorrar.setBounds(120, 290, 460, 38);
 
+        txaPedidoBorrar.setEditable(false);
         txaPedidoBorrar.setColumns(20);
         txaPedidoBorrar.setRows(5);
         jScrollPane3.setViewportView(txaPedidoBorrar);
@@ -1289,10 +1309,28 @@ public class mdi extends javax.swing.JFrame {
         jLabel35.setText("Estado");
         jPanel7.add(jLabel35);
         jLabel35.setBounds(40, 190, 70, 30);
+
+        txtCorreoCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCorreoClienteKeyTyped(evt);
+            }
+        });
         jPanel7.add(txtCorreoCliente);
         txtCorreoCliente.setBounds(120, 140, 240, 33);
+
+        txtNombreCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreClienteKeyTyped(evt);
+            }
+        });
         jPanel7.add(txtNombreCliente);
         txtNombreCliente.setBounds(120, 20, 240, 33);
+
+        txtApellidoCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtApellidoClienteKeyTyped(evt);
+            }
+        });
         jPanel7.add(txtApellidoCliente);
         txtApellidoCliente.setBounds(120, 60, 240, 33);
 
@@ -1303,6 +1341,12 @@ public class mdi extends javax.swing.JFrame {
         cbEstadoCliente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
         jPanel7.add(cbEstadoCliente);
         cbEstadoCliente.setBounds(120, 190, 150, 33);
+
+        txtTelefonoCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoClienteKeyTyped(evt);
+            }
+        });
         jPanel7.add(txtTelefonoCliente);
         txtTelefonoCliente.setBounds(120, 100, 240, 33);
 
@@ -1345,12 +1389,19 @@ public class mdi extends javax.swing.JFrame {
         jPanel8.add(btnConClientes);
         btnConClientes.setBounds(0, 30, 594, 33);
 
+        txaConCliente.setEditable(false);
         txaConCliente.setColumns(20);
         txaConCliente.setRows(5);
         jScrollPane10.setViewportView(txaConCliente);
 
         jPanel8.add(jScrollPane10);
         jScrollPane10.setBounds(0, 65, 594, 270);
+
+        txtFiltroCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFiltroClienteKeyTyped(evt);
+            }
+        });
         jPanel8.add(txtFiltroCliente);
         txtFiltroCliente.setBounds(170, 0, 420, 33);
 
@@ -1366,6 +1417,12 @@ public class mdi extends javax.swing.JFrame {
         jLabel11.setText("ID Cliente");
         jPanel19.add(jLabel11);
         jLabel11.setBounds(10, 0, 100, 30);
+
+        txtClienteMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtClienteModKeyTyped(evt);
+            }
+        });
         jPanel19.add(txtClienteMod);
         txtClienteMod.setBounds(120, 0, 360, 33);
 
@@ -1404,18 +1461,38 @@ public class mdi extends javax.swing.JFrame {
         btnClienteMod.setBounds(40, 300, 320, 33);
 
         txtCorreoClienteMod.setEnabled(false);
+        txtCorreoClienteMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCorreoClienteModKeyTyped(evt);
+            }
+        });
         jPanel19.add(txtCorreoClienteMod);
         txtCorreoClienteMod.setBounds(120, 180, 240, 33);
 
         txtNombreClienteMod.setEnabled(false);
+        txtNombreClienteMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreClienteModKeyTyped(evt);
+            }
+        });
         jPanel19.add(txtNombreClienteMod);
         txtNombreClienteMod.setBounds(120, 60, 240, 33);
 
         txtApellidoClienteMod.setEnabled(false);
+        txtApellidoClienteMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtApellidoClienteModKeyTyped(evt);
+            }
+        });
         jPanel19.add(txtApellidoClienteMod);
         txtApellidoClienteMod.setBounds(120, 100, 240, 33);
 
         txtTelefonoClienteMod.setEnabled(false);
+        txtTelefonoClienteMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoClienteModKeyTyped(evt);
+            }
+        });
         jPanel19.add(txtTelefonoClienteMod);
         txtTelefonoClienteMod.setBounds(120, 140, 240, 33);
 
@@ -1464,6 +1541,12 @@ public class mdi extends javax.swing.JFrame {
         });
         jPanel20.add(btnBuscarClienteBorrar);
         btnBuscarClienteBorrar.setBounds(480, 0, 100, 33);
+
+        txtClienteBorrar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtClienteBorrarKeyTyped(evt);
+            }
+        });
         jPanel20.add(txtClienteBorrar);
         txtClienteBorrar.setBounds(120, 0, 360, 33);
 
@@ -1482,6 +1565,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel20.add(btnClienteBorrar);
         btnClienteBorrar.setBounds(120, 290, 460, 38);
 
+        txaClienteBorrar.setEditable(false);
         txaClienteBorrar.setColumns(20);
         txaClienteBorrar.setRows(5);
         jScrollPane5.setViewportView(txaClienteBorrar);
@@ -1644,6 +1728,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel10.add(btnConProv);
         btnConProv.setBounds(0, 30, 594, 33);
 
+        txaConProv.setEditable(false);
         txaConProv.setColumns(20);
         txaConProv.setRows(5);
         jScrollPane14.setViewportView(txaConProv);
@@ -1835,6 +1920,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel22.add(btnProvBorrar);
         btnProvBorrar.setBounds(120, 290, 460, 38);
 
+        txaProvBorrar.setEditable(false);
         txaProvBorrar.setColumns(20);
         txaProvBorrar.setRows(5);
         jScrollPane7.setViewportView(txaProvBorrar);
@@ -1978,6 +2064,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel12.add(btnConEmp);
         btnConEmp.setBounds(0, 30, 594, 33);
 
+        txaConEmp.setEditable(false);
         txaConEmp.setColumns(20);
         txaConEmp.setRows(5);
         jScrollPane12.setViewportView(txaConEmp);
@@ -2136,6 +2223,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel21.add(btnEmpBorrar);
         btnEmpBorrar.setBounds(120, 290, 460, 38);
 
+        txaEmpBorrar.setEditable(false);
         txaEmpBorrar.setColumns(20);
         txaEmpBorrar.setRows(5);
         jScrollPane6.setViewportView(txaEmpBorrar);
@@ -2315,6 +2403,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel16.add(btnConVenta);
         btnConVenta.setBounds(0, 30, 594, 33);
 
+        txaConVenta.setEditable(false);
         txaConVenta.setColumns(20);
         txaConVenta.setRows(5);
         jScrollPane16.setViewportView(txaConVenta);
@@ -2498,6 +2587,7 @@ public class mdi extends javax.swing.JFrame {
         jPanel24.add(btnVentaBorrar);
         btnVentaBorrar.setBounds(120, 290, 460, 38);
 
+        txaVentaBorrar.setEditable(false);
         txaVentaBorrar.setColumns(20);
         txaVentaBorrar.setRows(5);
         jScrollPane18.setViewportView(txaVentaBorrar);
@@ -2647,8 +2737,8 @@ public class mdi extends javax.swing.JFrame {
 
             if (lblImagen1Prod.getIcon() != null) {
                 try {
-                    FileInputStream entrada = new FileInputStream(imgBytes);
-                    byte[] Bytes = new byte[(int) imgBytes.length()];
+                    FileInputStream entrada = new FileInputStream(imgProducto1);
+                    byte[] Bytes = new byte[(int) imgProducto1.length()];
                     entrada.read(Bytes);
                     entrada.close();
                     prod.setImagen1(Bytes);
@@ -2661,8 +2751,8 @@ public class mdi extends javax.swing.JFrame {
 
             if (lblImagen2Prod.getIcon() != null) {
                 try {
-                    FileInputStream entrada = new FileInputStream(imgBytes);
-                    byte[] Bytes = new byte[(int) imgBytes.length()];
+                    FileInputStream entrada = new FileInputStream(imgProducto2);
+                    byte[] Bytes = new byte[(int) imgProducto2.length()];
                     entrada.read(Bytes);
                     entrada.close();
                     prod.setImagen2(Bytes);
@@ -2677,8 +2767,8 @@ public class mdi extends javax.swing.JFrame {
 
             if (lblImagen3Prod.getIcon() != null) {
                 try {
-                    FileInputStream entrada = new FileInputStream(imgBytes);
-                    byte[] Bytes = new byte[(int) imgBytes.length()];
+                    FileInputStream entrada = new FileInputStream(imgProducto3);
+                    byte[] Bytes = new byte[(int) imgProducto3.length()];
                     entrada.read(Bytes);
                     entrada.close();
                     prod.setImagen3(Bytes);
@@ -2718,13 +2808,18 @@ public class mdi extends javax.swing.JFrame {
         selector.setFileFilter(filtro);
         int resSelector = selector.showOpenDialog(this);
         if (resSelector == JFileChooser.APPROVE_OPTION) {
-            imgBytes = selector.getSelectedFile();
-            System.out.println("la imagen 2 de producto es: " + imgBytes.getName());
+            imgProducto3 = selector.getSelectedFile();
+            System.out.println("la imagen 2 de producto es: " + imgProducto3.getName());
             lblImagen3Prod.setIcon(null);
-            imagen = new ImageIcon(imgBytes.getAbsolutePath());
+            imagen = new ImageIcon(imgProducto3.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagen3Prod.getWidth(), lblImagen3Prod.getHeight(), Image.SCALE_DEFAULT));
             lblImagen3Prod.setIcon(icono);
             lblImagen3Prod.setIcon(icono);
+        }
+        if (imgProducto3.length() > 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagen3Prod.setIcon(null);
+
         }
     }//GEN-LAST:event_btnImagen3ProdActionPerformed
 
@@ -2732,12 +2827,17 @@ public class mdi extends javax.swing.JFrame {
         selector.setFileFilter(filtro);
         int resSelector = selector.showOpenDialog(this);
         if (resSelector == JFileChooser.APPROVE_OPTION) {
-            imgBytes = selector.getSelectedFile();
-            System.out.println("la imagen 2 de producto es: " + imgBytes.getName());
+            imgProducto2 = selector.getSelectedFile();
+            System.out.println("la imagen 2 de producto es: " + imgProducto2.getName());
             lblImagen2Prod.setIcon(null);
-            imagen = new ImageIcon(imgBytes.getAbsolutePath());
+            imagen = new ImageIcon(imgProducto2.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagen2Prod.getWidth(), lblImagen2Prod.getHeight(), Image.SCALE_DEFAULT));
             lblImagen2Prod.setIcon(icono);
+        }
+        if (imgProducto2.length() > 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagen2Prod.setIcon(null);
+
         }
     }//GEN-LAST:event_btnImagen2ProdActionPerformed
 
@@ -2753,10 +2853,10 @@ public class mdi extends javax.swing.JFrame {
         selector.setFileFilter(filtro);
         int resSelector = selector.showOpenDialog(this);
         if (resSelector == JFileChooser.APPROVE_OPTION) {
-            imgBytes = selector.getSelectedFile();
-            System.out.println("la imagen 1 de producto es: " + imgBytes.getName());
+            imgProducto1 = selector.getSelectedFile();
+            System.out.println("la imagen 1 de producto es: " + imgProducto1.getName());
             lblImagen1Prod.setIcon(null);
-            imagen = new ImageIcon(imgBytes.getAbsolutePath());
+            imagen = new ImageIcon(imgProducto1.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagen1Prod.getWidth(), lblImagen1Prod.getHeight(), Image.SCALE_DEFAULT));
             lblImagen1Prod.setIcon(icono);
 
@@ -2766,6 +2866,11 @@ public class mdi extends javax.swing.JFrame {
             lblImagen3Prod.setEnabled(true);
             btnImagen3Prod.setEnabled(true);
             btnImagen3ProdQuitar.setEnabled(true);
+        }
+        if (imgProducto1.length() > 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagen1Prod.setIcon(null);
+
         }
     }//GEN-LAST:event_btnImagen1ProdActionPerformed
 
@@ -2962,8 +3067,8 @@ public class mdi extends javax.swing.JFrame {
 
             if (lblImagen1ProdMod.getIcon() != null) {
                 try {
-                    FileInputStream entrada = new FileInputStream(imgBytes);
-                    byte[] Bytes = new byte[(int) imgBytes.length()];
+                    FileInputStream entrada = new FileInputStream(imgProducto1);
+                    byte[] Bytes = new byte[(int) imgProducto1.length()];
                     entrada.read(Bytes);
                     entrada.close();
                     prod.setImagen1(Bytes);
@@ -2978,8 +3083,8 @@ public class mdi extends javax.swing.JFrame {
 
             if (lblImagen2ProdMod.getIcon() != null) {
                 try {
-                    FileInputStream entrada = new FileInputStream(imgBytes);
-                    byte[] Bytes = new byte[(int) imgBytes.length()];
+                    FileInputStream entrada = new FileInputStream(imgProducto2);
+                    byte[] Bytes = new byte[(int) imgProducto2.length()];
                     entrada.read(Bytes);
                     entrada.close();
                     prod.setImagen2(Bytes);
@@ -2996,8 +3101,8 @@ public class mdi extends javax.swing.JFrame {
 
             if (lblImagen3ProdMod.getIcon() != null) {
                 try {
-                    FileInputStream entrada = new FileInputStream(imgBytes);
-                    byte[] Bytes = new byte[(int) imgBytes.length()];
+                    FileInputStream entrada = new FileInputStream(imgProducto3);
+                    byte[] Bytes = new byte[(int) imgProducto3.length()];
                     entrada.read(Bytes);
                     entrada.close();
                     prod.setImagen3(Bytes);
@@ -3049,13 +3154,18 @@ public class mdi extends javax.swing.JFrame {
         selector.setFileFilter(filtro);
         int resSelector = selector.showOpenDialog(this);
         if (resSelector == JFileChooser.APPROVE_OPTION) {
-            imgBytes = selector.getSelectedFile();
-            System.out.println("la imagen 3 de producto es: " + imgBytes.getName());
+            imgProducto3 = selector.getSelectedFile();
+            System.out.println("la imagen 3 de producto es: " + imgProducto3.getName());
             lblImagen3ProdMod.setIcon(null);
-            imagen = new ImageIcon(imgBytes.getAbsolutePath());
+            imagen = new ImageIcon(imgProducto3.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagen3ProdMod.getWidth(), lblImagen3ProdMod.getHeight(), Image.SCALE_DEFAULT));
             lblImagen3ProdMod.setIcon(icono);
             lblImagen3ProdMod.setIcon(icono);
+        }
+        if (imgProducto3.length() > 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagen3Prod.setIcon(null);
+
         }
     }//GEN-LAST:event_btnImagen3ProdModActionPerformed
 
@@ -3063,13 +3173,18 @@ public class mdi extends javax.swing.JFrame {
         selector.setFileFilter(filtro);
         int resSelector = selector.showOpenDialog(this);
         if (resSelector == JFileChooser.APPROVE_OPTION) {
-            imgBytes = selector.getSelectedFile();
-            System.out.println("la imagen 2 de producto es: " + imgBytes.getName());
+            imgProducto2 = selector.getSelectedFile();
+            System.out.println("la imagen 2 de producto es: " + imgProducto2.getName());
             lblImagen2ProdMod.setIcon(null);
-            imagen = new ImageIcon(imgBytes.getAbsolutePath());
+            imagen = new ImageIcon(imgProducto2.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagen2ProdMod.getWidth(), lblImagen2ProdMod.getHeight(), Image.SCALE_DEFAULT));
             lblImagen2ProdMod.setIcon(icono);
             lblImagen2ProdMod.setIcon(icono);
+        }
+        if (imgProducto2.length() > 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagen2Prod.setIcon(null);
+
         }
     }//GEN-LAST:event_btnImagen2ProdModActionPerformed
 
@@ -3085,10 +3200,10 @@ public class mdi extends javax.swing.JFrame {
         selector.setFileFilter(filtro);
         int resSelector = selector.showOpenDialog(this);
         if (resSelector == JFileChooser.APPROVE_OPTION) {
-            imgBytes = selector.getSelectedFile();
-            System.out.println("la imagen 1 de producto es: " + imgBytes.getName());
+            imgProducto1 = selector.getSelectedFile();
+            System.out.println("la imagen 1 de producto es: " + imgProducto1.getName());
             lblImagen1ProdMod.setIcon(null);
-            imagen = new ImageIcon(imgBytes.getAbsolutePath());
+            imagen = new ImageIcon(imgProducto1.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagen1ProdMod.getWidth(), lblImagen1ProdMod.getHeight(), Image.SCALE_DEFAULT));
             lblImagen1ProdMod.setIcon(icono);
             lblImagen1ProdMod.setIcon(icono);
@@ -3098,6 +3213,11 @@ public class mdi extends javax.swing.JFrame {
             lblImagen3ProdMod.setEnabled(true);
             btnImagen3ProdMod.setEnabled(true);
             btnImagen3ProdQuitarMod.setEnabled(true);
+        }
+        if (imgProducto1.length() > 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagen1ProdMod.setIcon(null);
+
         }
     }//GEN-LAST:event_btnImagen1ProdModActionPerformed
 
@@ -3155,43 +3275,276 @@ public class mdi extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarProdBorrarActionPerformed
 
     private void btnGuardarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarClienteActionPerformed
+//GUARDAR CLIENTES EN LA BASE DE DATOS
+        if (txtNombreCliente.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "EL campo nombre no puede estar vacio");
+        } else if (txtApellidoCliente.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo ciudad no puede estar vacío");
+        } else if (txtApellidoCliente.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo ciudad no puede estar vacío");
+        } else if (txtTelefonoCliente.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo colonia no puede estar vacío");
+        } else if (lblImagenCliente.getIcon() == null) {
+            JOptionPane.showMessageDialog(this, "Debes agregar una imagen");
+        } else {
+            cliente = new Cliente();
+            cliente.setNombre(txtNombreCliente.getText());
+            cliente.setApellido(txtApellidoCliente.getText());
+            cliente.setCorreo(txtCorreoCliente.getText());
+            cliente.setTelefono(txtTelefonoCliente.getText());
+            String estadoSeleccionado = cbEstadoCliente.getSelectedItem().toString();
+            cliente.setEstado(estadoSeleccionado);
 
+            try {
+                FileInputStream entradaCliente = new FileInputStream(imgCliente);
+                byte[] imagenbytes = new byte[(int) imgCliente.length()];
+                entradaCliente.read(imagenbytes);
+                entradaCliente.close();
+                cliente.setImagen(imagenbytes);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(mdi.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(mdi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (daoCliente.insertar(cliente)) {
+                JOptionPane.showMessageDialog(this, "Guardado");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+            }
+
+        }
     }//GEN-LAST:event_btnGuardarClienteActionPerformed
 
     private void btnImagenClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagenClienteActionPerformed
 
+        selector = new JFileChooser();
+        selector.setFileFilter(filtro);
+
+        int resultado = selector.showOpenDialog(this);
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            imgCliente = selector.getSelectedFile();
+            System.out.println("EL archivo es " + imgCliente.getName());
+
+            lblImagenCliente.setIcon(null);
+            imagen = new ImageIcon(imgCliente.getAbsolutePath());
+            icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagenCliente.getWidth(), lblImagenCliente.getHeight(), Image.SCALE_DEFAULT));
+            lblImagenCliente.setIcon(icono);
+            System.out.println("total " + imgCliente.getTotalSpace());
+            System.out.println("length " + imgCliente.length());
+        }
+        if (imgCliente.length() > 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagenCliente.setIcon(null);
+
+        }
     }//GEN-LAST:event_btnImagenClienteActionPerformed
 
     private void btnLimpiarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarClienteActionPerformed
-
+        txtNombreCliente.setText(null);
+        txtApellidoCliente.setText(null);
+        txtTelefonoCliente.setText(null);
+        txtCorreoCliente.setText(null);
+        lblImagenCliente.setIcon(null);
+        cbEstadoCliente.setSelectedItem("ACTIVO");
     }//GEN-LAST:event_btnLimpiarClienteActionPerformed
 
     private void btnConClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConClientesActionPerformed
-
+        if (txtFiltroCliente.getText().isBlank()) {
+            registrosCliente = daoCliente.seleccionarTodos();
+            String datosCliente = "";
+            for (Cliente registroCliente : registrosCliente) {
+                datosCliente += registroCliente;
+            }
+            txaConCliente.setText(datosCliente);
+        } else {
+            String actualizarCliente = txtFiltroCliente.getText();
+            txaConCliente.setText(daoCliente.seleccionarAlgunos(actualizarCliente).toString());
+        }
     }//GEN-LAST:event_btnConClientesActionPerformed
 
     private void btnBuscarClienteModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarClienteModActionPerformed
+        if (txtClienteMod.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Ingresa el id del proveedor");
+        } else {
 
+            int idCliente = Integer.parseInt(txtClienteMod.getText());
+            cliente = daoCliente.seleccionarId(idCliente);
+            if (cliente == null) {
+                //deshabilitar cuadros de texto
+
+                //vaciar cuadros de texto
+                txtNombreClienteMod.setText(null);
+                txtApellidoClienteMod.setText(null);
+                txtTelefonoClienteMod.setText(null);
+                txtCorreoClienteMod.setText(null);
+                lblImagenClienteMod.setIcon(null);
+                JOptionPane.showMessageDialog(this, "No se encontró el Cliente con id: " + idCliente);
+
+            } else {
+                //habilitar modulo de modificación
+                txtNombreClienteMod.setEnabled(true);
+                txtApellidoClienteMod.setEnabled(true);
+                txtTelefonoClienteMod.setEnabled(true);
+                txtCorreoClienteMod.setEnabled(true);
+                lblImagenClienteMod.setEnabled(true);
+                btnClienteMod.setEnabled(true);
+                btnImagenClienteMod.setEnabled(true);
+                btnLimpiarClienteMod.setEnabled(true);
+
+                txtNombreClienteMod.setText(cliente.getNombre());
+                txtApellidoClienteMod.setText(cliente.getApellido());
+                txtTelefonoClienteMod.setText(cliente.getTelefono());
+                txtCorreoClienteMod.setText(cliente.getCorreo());
+
+                if (cliente.getImagen() != null) {
+                    try {
+                        File archivoImagen = new File("imgClienteMod.jpg");
+                        FileOutputStream fos;
+                        fos = new FileOutputStream(archivoImagen);
+                        fos.write(cliente.getImagen());
+                        fos.close();
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(mdi.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(mdi.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    imagen = new ImageIcon(cliente.getImagen());
+                    icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagenClienteMod.getWidth(),
+                            lblImagenClienteMod.getHeight(), Image.SCALE_DEFAULT));
+                    lblImagenClienteMod.setIcon(icono);
+
+                }
+            }
+        }
     }//GEN-LAST:event_btnBuscarClienteModActionPerformed
 
     private void btnClienteModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClienteModActionPerformed
+        if (txtNombreClienteMod.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo nombre no puede estar vacío");
+        } else if (txtApellidoClienteMod.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo apellido no puede estar vacío");
+        } else if (txtTelefonoClienteMod.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo telefono no puede estar vacío");
+        } else if (txtCorreoClienteMod.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo correo no puede estar vacío");
+        } else if (lblImagenClienteMod.getIcon() == null) {
+            JOptionPane.showMessageDialog(this, "Debes agregar una imagen");
+        } else {
+            cliente.setNombre(txtNombreClienteMod.getText());
+            cliente.setApellido(txtApellidoClienteMod.getText());
+            cliente.setTelefono(txtTelefonoClienteMod.getText());
+            cliente.setCorreo(txtCorreoClienteMod.getText());
 
+            if (imgCliente != null) {
+                try {
+                    FileInputStream entradaCliente = new FileInputStream(imgCliente);
+                    byte[] Bytes = new byte[(int) imgCliente.length()];
+                    entradaCliente.read(Bytes);
+                    entradaCliente.close();
+                    cliente.setImagen(Bytes);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(mdi.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(mdi.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (daoCliente.actualizar(cliente.getId(), cliente)) {
+                JOptionPane.showMessageDialog(this, "Cliente Actualizado");
+
+//deshabilitar cuadros de texto
+                txtNombreClienteMod.setEnabled(false);
+                txtApellidoClienteMod.setEnabled(false);
+                txtTelefonoClienteMod.setEnabled(false);
+                txtCorreoClienteMod.setEnabled(false);
+                lblImagenClienteMod.setEnabled(false);
+
+                //vaciar cuadros de texto
+                txtNombreClienteMod.setText(null);
+                txtApellidoClienteMod.setText(null);
+                txtTelefonoClienteMod.setText(null);
+                txtCorreoClienteMod.setText(null);
+                lblImagenClienteMod.setIcon(null);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+            }
+        }
     }//GEN-LAST:event_btnClienteModActionPerformed
 
     private void btnImagenClienteModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagenClienteModActionPerformed
+        selector = new JFileChooser();
+        selector.setFileFilter(filtro);
 
+        int resultado = selector.showOpenDialog(this);
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            imgCliente = selector.getSelectedFile();
+            System.out.println("EL archivo es " + imgCliente.getName());
+
+            lblImagenClienteMod.setIcon(null);
+            imagen = new ImageIcon(imgCliente.getAbsolutePath());
+            icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagenClienteMod.getWidth(), lblImagenClienteMod.getHeight(), Image.SCALE_DEFAULT));
+            lblImagenClienteMod.setIcon(icono);
+
+        }
+        if (imgCliente.length()> 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagenCliente.setIcon(null);
+
+        }
     }//GEN-LAST:event_btnImagenClienteModActionPerformed
 
     private void btnLimpiarClienteModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarClienteModActionPerformed
-
+        txtNombreClienteMod.setText(null);
+        txtApellidoClienteMod.setText(null);
+        txtTelefonoClienteMod.setText(null);
+        txtCorreoClienteMod.setText(null);
+        lblImagenClienteMod.setIcon(null);
+        txtNombreClienteMod.setEnabled(false);
+        txtApellidoClienteMod.setEnabled(false);
+        txtTelefonoClienteMod.setEnabled(false);
+        txtCorreoClienteMod.setEnabled(false);
+        btnClienteMod.setEnabled(false);
+        lblImagenClienteMod.setEnabled(false);
+        btnImagenClienteMod.setEnabled(false);
+        btnLimpiarClienteMod.setEnabled(false);
     }//GEN-LAST:event_btnLimpiarClienteModActionPerformed
 
     private void btnBuscarClienteBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarClienteBorrarActionPerformed
-
+        if (txtClienteBorrar.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Ingresa el id del Cliente");
+        } else {
+            int id = Integer.parseInt(txtClienteBorrar.getText());
+            cliente = daoCliente.seleccionarId(id);
+            if (cliente == null) {
+                JOptionPane.showMessageDialog(this, "No se encontró el Cliente con id: " + id);
+            } else {
+                //mostrar en txa
+                txaClienteBorrar.setText(cliente.toString());
+            }
+        }
     }//GEN-LAST:event_btnBuscarClienteBorrarActionPerformed
 
     private void btnClienteBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClienteBorrarActionPerformed
+        if (cliente != null) {
+            if (txtClienteBorrar.getText().isBlank()) {
+                JOptionPane.showMessageDialog(this, "Ingresa el id del cliente");
+            } else {
+                daoCliente.borrar(cliente.getId());
 
+                if (daoCliente.borrar(cliente.getId())) {
+                    txtClienteBorrar.setText(null);
+                    txaClienteBorrar.setText(null);
+                    JOptionPane.showMessageDialog(this, "Cliente Borrado");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+                }
+
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se encontró el cliente");
+        }
     }//GEN-LAST:event_btnClienteBorrarActionPerformed
 
     private void btnGuardarProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProvActionPerformed
@@ -3233,8 +3586,8 @@ public class mdi extends javax.swing.JFrame {
 
             if (lblImagenProv.getIcon() != null) {
                 try {
-                    FileInputStream entrada = new FileInputStream(imgBytes);
-                    byte[] Bytes = new byte[(int) imgBytes.length()];
+                    FileInputStream entrada = new FileInputStream(imgProveedor);
+                    byte[] Bytes = new byte[(int) imgProveedor.length()];
                     entrada.read(Bytes);
                     entrada.close();
                     prov.setImagen(Bytes);
@@ -3269,12 +3622,17 @@ public class mdi extends javax.swing.JFrame {
         selector.setFileFilter(filtro);
         int resSelector = selector.showOpenDialog(this);
         if (resSelector == JFileChooser.APPROVE_OPTION) {
-            imgBytes = selector.getSelectedFile();
-            System.out.println("la imagen 1 de proveedor es: " + imgBytes.getName());
+            imgProveedor = selector.getSelectedFile();
+            System.out.println("la imagen 1 de proveedor es: " + imgProveedor.getName());
             lblImagenProv.setIcon(null);
-            imagen = new ImageIcon(imgBytes.getAbsolutePath());
+            imagen = new ImageIcon(imgProveedor.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagenProv.getWidth(), lblImagenProv.getHeight(), Image.SCALE_DEFAULT));
             lblImagenProv.setIcon(icono);
+        }
+        if (imgProveedor.length() > 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagenProv.setIcon(null);
+
         }
     }//GEN-LAST:event_btnImagenProvActionPerformed
 
@@ -3439,8 +3797,8 @@ public class mdi extends javax.swing.JFrame {
 
             if (lblImagenProvMod.getIcon() != null) {
                 try {
-                    FileInputStream entrada = new FileInputStream(imgBytes);
-                    byte[] Bytes = new byte[(int) imgBytes.length()];
+                    FileInputStream entrada = new FileInputStream(imgProveedor);
+                    byte[] Bytes = new byte[(int) imgProveedor.length()];
                     entrada.read(Bytes);
                     entrada.close();
                     prov.setImagen(Bytes);
@@ -3493,14 +3851,19 @@ public class mdi extends javax.swing.JFrame {
         selector.setFileFilter(filtro);
         int resSelector = selector.showOpenDialog(this);
         if (resSelector == JFileChooser.APPROVE_OPTION) {
-            imgBytes = selector.getSelectedFile();
-            System.out.println("la imagen 1 de producto es: " + imgBytes.getName());
+            imgProveedor = selector.getSelectedFile();
+            System.out.println("la imagen 1 de producto es: " + imgProveedor.getName());
             lblImagenProvMod.setIcon(null);
-            imagen = new ImageIcon(imgBytes.getAbsolutePath());
+            imagen = new ImageIcon(imgProveedor.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagenProvMod.getWidth(),
                     lblImagenProvMod.getHeight(), Image.SCALE_DEFAULT));
             lblImagenProvMod.setIcon(icono);
             lblImagenProvMod.setIcon(icono);
+        }
+        if (imgProveedor.length() > 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagenProvMod.setIcon(null);
+
         }
     }//GEN-LAST:event_btnImagenProvModActionPerformed
 
@@ -3609,33 +3972,33 @@ public class mdi extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEmpBorrarActionPerformed
 
     private void txtNombreProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreProdKeyTyped
-        if(txtNombreProd.getText().length() > 50){
+        if (txtNombreProd.getText().length() > 50) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
         }
         char key = evt.getKeyChar();
-        
-        if (!(Character.isLetter(key) || 
-                key == KeyEvent.VK_BACK_SPACE ||
-                key == KeyEvent.VK_SPACE)){
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
             evt.consume();
             JOptionPane.showMessageDialog(null, "El campo solo admite letras");
         }
     }//GEN-LAST:event_txtNombreProdKeyTyped
 
     private void txtPrecioProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioProdKeyTyped
-        if(txtPrecioProd.getText().length() > 9){
+        if (txtPrecioProd.getText().length() > 9) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
         }
-        
+
         char key = evt.getKeyChar();
-        
-        if ((!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE ||
-                key == '.'))){
+
+        if ((!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE
+                || key == '.'))) {
             Toolkit.getDefaultToolkit().beep();
             evt.consume();
             JOptionPane.showMessageDialog(null, "El campo solo admite numeros y un punto");
         }
-        if ((key == '.') && txtPrecioProd.getText().contains(".")){
+        if ((key == '.') && txtPrecioProd.getText().contains(".")) {
             Toolkit.getDefaultToolkit().beep();
             evt.consume();
             JOptionPane.showMessageDialog(null, "Ingresa solo un punto");
@@ -3643,13 +4006,13 @@ public class mdi extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPrecioProdKeyTyped
 
     private void txtExistenciaProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtExistenciaProdKeyTyped
-        if(txtExistenciaProd.getText().length() > 10){
+        if (txtExistenciaProd.getText().length() > 10) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
         }
-        
+
         char key = evt.getKeyChar();
-        
-        if (!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE)){
+
+        if (!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
             Toolkit.getDefaultToolkit().beep();
             evt.consume();
             JOptionPane.showMessageDialog(null, "El campo solo admite enteros");
@@ -3671,6 +4034,132 @@ public class mdi extends javax.swing.JFrame {
     private void cbEstadoVenta3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEstadoVenta3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbEstadoVenta3ActionPerformed
+
+    private void txtNombreClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreClienteKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isLetter(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE
+                || tecla == KeyEvent.VK_SPACE)) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(this, "El campo solo acepta letras");
+        }
+        if (txtNombreCliente.getText().length() > 50) {
+            JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtNombreClienteKeyTyped
+
+    private void txtApellidoClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoClienteKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isLetter(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE
+                || tecla == KeyEvent.VK_SPACE)) {
+            JOptionPane.showMessageDialog(this, "El campo solo acepta letras");
+            evt.consume();
+        }
+        if (txtApellidoCliente.getText().length() > 50) {
+            JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtApellidoClienteKeyTyped
+
+    private void txtTelefonoClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoClienteKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isDigit(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE
+                || tecla == KeyEvent.VK_SPACE)) {
+            JOptionPane.showMessageDialog(this, "El campo solo acepta números");
+            evt.consume();
+        }
+        if (txtTelefonoCliente.getText().length() > 10) {
+            JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtTelefonoClienteKeyTyped
+
+    private void txtCorreoClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCorreoClienteKeyTyped
+        if (txtCorreoCliente.getText().length() > 50) {
+            JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtCorreoClienteKeyTyped
+
+    private void txtFiltroClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroClienteKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isLetter(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE
+                || tecla == KeyEvent.VK_SPACE)) {
+            JOptionPane.showMessageDialog(this, "El campo solo acepta letras");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtFiltroClienteKeyTyped
+
+    private void txtClienteModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteModKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isDigit(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE)) {
+            JOptionPane.showMessageDialog(this, "El campo solo acepta números");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtClienteModKeyTyped
+
+    private void txtNombreClienteModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreClienteModKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isLetter(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE
+                || tecla == KeyEvent.VK_SPACE)) {
+            JOptionPane.showMessageDialog(this, "El campo solo acepta letras");
+            evt.consume();
+        }
+        if (txtNombreClienteMod.getText().length() > 50) {
+            JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtNombreClienteModKeyTyped
+
+    private void txtApellidoClienteModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoClienteModKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isLetter(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE
+                || tecla == KeyEvent.VK_SPACE)) {
+            JOptionPane.showMessageDialog(this, "El campo solo acepta letras");
+            evt.consume();
+        }
+        if (txtApellidoClienteMod.getText().length() > 50) {
+            JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtApellidoClienteModKeyTyped
+
+    private void txtTelefonoClienteModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoClienteModKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isDigit(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE)) {
+            JOptionPane.showMessageDialog(this, "El campo solo acepta números");
+            evt.consume();
+        }
+        if (txtTelefonoClienteMod.getText().length() > 10) {
+            JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtTelefonoClienteModKeyTyped
+
+    private void txtCorreoClienteModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCorreoClienteModKeyTyped
+        if (txtCorreoClienteMod.getText().length() > 50) {
+            JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtCorreoClienteModKeyTyped
+
+    private void txtClienteBorrarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteBorrarKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isDigit(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE)) {
+            JOptionPane.showMessageDialog(this, "El campo solo acepta números");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtClienteBorrarKeyTyped
 
     /**
      * @param args the command line arguments

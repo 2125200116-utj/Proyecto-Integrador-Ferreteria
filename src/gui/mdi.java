@@ -4,13 +4,12 @@
  */
 package gui;
 
-import dao.DAOAut;
-import dao.DAOCliente;
-import dao.DAOProducto;
-import dao.DAOProveedor;
-import dao.DAOEmpleado;
-import dao.DAOPedido;
-import dao.DAOVenta;
+import adminDao.adminDAOCliente;
+import adminDao.adminDAOProducto;
+import adminDao.adminDAOProveedor;
+import adminDao.adminDAOEmpleado;
+import adminDao.adminDAOPedido;
+import adminDao.adminDAOVenta;
 import dto.Cliente;
 import dto.Producto;
 import dto.Proveedor;
@@ -40,30 +39,31 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class mdi extends javax.swing.JFrame {
 
-    private DAOProducto daoProd;
+    private adminDAOProducto adminDaoProd;
     private ArrayList<Producto> registrosProd;
     private Producto prod;
 
-    private DAOProveedor daoProv;
+    private adminDAOProveedor adminDaoProv;
     private ArrayList<Proveedor> registrosProv;
     private Proveedor prov;
 
-    private DAOCliente daoCliente;
+    private adminDAOCliente adminDaoCliente;
     private ArrayList<Cliente> registrosCliente;
     private Cliente cliente;
 
 //    private DAOAut daoAut;
-    private DAOEmpleado daoEmpleado;
-    private ArrayList<Empleado> registrosEmpelado;
-    private Empleado empelado;
+    private adminDAOEmpleado adminDaoEmpleado;
+    private ArrayList<Empleado> registrosEmpleado;
+    private Empleado empleado;
 
-//    private DAOPedido daoPedido;
-//    private ArrayList<Pedido> registrosPedido;
-//    private Pedido pedido;
-//    
-//    private DAOVenta daoVenta;
-//    private ArrayList<Venta> registrosVenta;
-//    private Venta venta;
+    private adminDAOPedido adminDaoPedido;
+    private ArrayList<Pedido> registrosPedido;
+    private Pedido pedido;
+
+    private adminDAOVenta adminDaoVenta;
+    private ArrayList<Venta> registrosVenta;
+    private Venta venta;
+
     private JFileChooser selector = new JFileChooser();
     private FileNameExtensionFilter filtro = new FileNameExtensionFilter("Formato de imagen", "jpg", "png", "jpeg");
     private ImageIcon imagen;
@@ -76,13 +76,12 @@ public class mdi extends javax.swing.JFrame {
         ImageIcon redivo = new ImageIcon("/home/juan/Documents/UTJ/Tercer Cuatrimestre/Programación orientada a objetos/Netbeans/Sigf/src/iconos/redivo1.png");
         this.setIconImage(redivo.getImage());
         this.setExtendedState(MAXIMIZED_BOTH);
-        daoProd = new DAOProducto();
-        daoProv = new DAOProveedor();
-        daoCliente = new DAOCliente();
-        daoEmpleado = new DAOEmpleado();
-//        daoVenta = new DAOVenta();
-//        daoPedido = new DAOPedido();
-//        daoAut= new DAOAut();
+        adminDaoProd = new adminDAOProducto();
+        adminDaoProv = new adminDAOProveedor();
+        adminDaoCliente = new adminDAOCliente();
+        adminDaoEmpleado = new adminDAOEmpleado();
+        adminDaoVenta = new adminDAOVenta();
+        adminDaoPedido = new adminDAOPedido();
     }
 
     /**
@@ -155,6 +154,8 @@ public class mdi extends javax.swing.JFrame {
         jScrollPane9 = new javax.swing.JScrollPane();
         txaDescripcionProdMod = new javax.swing.JTextArea();
         btnLimpiarProdMod = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        cbEstadoProdMod = new javax.swing.JComboBox<>();
         jPanel4 = new javax.swing.JPanel();
         jLabel67 = new javax.swing.JLabel();
         txtProdBorrar = new javax.swing.JTextField();
@@ -259,6 +260,8 @@ public class mdi extends javax.swing.JFrame {
         btnImagenClienteMod = new javax.swing.JButton();
         btnLimpiarClienteMod = new javax.swing.JButton();
         lblImagenClienteMod = new javax.swing.JLabel();
+        jLabel36 = new javax.swing.JLabel();
+        cbEstadoClienteMod = new javax.swing.JComboBox<>();
         jPanel20 = new javax.swing.JPanel();
         btnBuscarClienteBorrar = new javax.swing.JButton();
         txtClienteBorrar = new javax.swing.JTextField();
@@ -329,6 +332,8 @@ public class mdi extends javax.swing.JFrame {
         jLabel93 = new javax.swing.JLabel();
         txtNumeroProvMod = new javax.swing.JTextField();
         lblImagenProvMod = new javax.swing.JLabel();
+        jLabel98 = new javax.swing.JLabel();
+        cbEstadoProvMod = new javax.swing.JComboBox<>();
         jPanel22 = new javax.swing.JPanel();
         btnBuscarProvBorrar = new javax.swing.JButton();
         txtProvBorrar = new javax.swing.JTextField();
@@ -352,12 +357,13 @@ public class mdi extends javax.swing.JFrame {
         jLabel45 = new javax.swing.JLabel();
         jComboBox7 = new javax.swing.JComboBox<>();
         cbRolEmp = new javax.swing.JComboBox<>();
-        btnImagenEmp = new javax.swing.JButton();
+        btnUsuarioEmp = new javax.swing.JButton();
         btnLimpiarEmp = new javax.swing.JButton();
         jLabel54 = new javax.swing.JLabel();
         txtUsuarioEmp = new javax.swing.JTextField();
         jLabel56 = new javax.swing.JLabel();
-        txtContrasenaEmp1 = new javax.swing.JTextField();
+        txtContrasenaEmp = new javax.swing.JTextField();
+        btnImagenEmp = new javax.swing.JButton();
         jPanel12 = new javax.swing.JPanel();
         btnConEmp = new javax.swing.JButton();
         jScrollPane12 = new javax.swing.JScrollPane();
@@ -384,6 +390,10 @@ public class mdi extends javax.swing.JFrame {
         txtContrasenaEmpMod = new javax.swing.JTextField();
         jLabel79 = new javax.swing.JLabel();
         txtUsuarioEmp1 = new javax.swing.JTextField();
+        jLabel80 = new javax.swing.JLabel();
+        cbEstadoEmpMod = new javax.swing.JComboBox<>();
+        jComboBox8 = new javax.swing.JComboBox<>();
+        btnUsuarioEmpMod = new javax.swing.JButton();
         jPanel21 = new javax.swing.JPanel();
         btnBuscarEmpBorrar = new javax.swing.JButton();
         txtEmpBorrar = new javax.swing.JTextField();
@@ -404,7 +414,7 @@ public class mdi extends javax.swing.JFrame {
         btnLimpiarVenta = new javax.swing.JButton();
         jLabel43 = new javax.swing.JLabel();
         jLabel46 = new javax.swing.JLabel();
-        cbEstadoVenta1 = new javax.swing.JComboBox<>();
+        cbEstadoVenta = new javax.swing.JComboBox<>();
         cbProdVenta = new javax.swing.JComboBox<>();
         jLabel49 = new javax.swing.JLabel();
         txtCantidadVenta = new javax.swing.JTextField();
@@ -413,8 +423,8 @@ public class mdi extends javax.swing.JFrame {
         jLabel47 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
-        txtImpuestoVenta1 = new javax.swing.JTextField();
-        txtTotalVenta1 = new javax.swing.JTextField();
+        txtImpuestoVenta = new javax.swing.JTextField();
+        txtTotalVenta = new javax.swing.JTextField();
         jPanel16 = new javax.swing.JPanel();
         btnConVenta = new javax.swing.JButton();
         jScrollPane16 = new javax.swing.JScrollPane();
@@ -435,7 +445,7 @@ public class mdi extends javax.swing.JFrame {
         btnLimpiarVentaMod = new javax.swing.JButton();
         jLabel53 = new javax.swing.JLabel();
         jLabel64 = new javax.swing.JLabel();
-        cbEstadoVenta3 = new javax.swing.JComboBox<>();
+        cbEstadoVentaMod = new javax.swing.JComboBox<>();
         cbProdVentaMod = new javax.swing.JComboBox<>();
         jLabel66 = new javax.swing.JLabel();
         txtCantidadVentaMod = new javax.swing.JTextField();
@@ -444,8 +454,8 @@ public class mdi extends javax.swing.JFrame {
         jLabel74 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
-        txtImpuestoVenta = new javax.swing.JTextField();
-        txtTotalVenta = new javax.swing.JTextField();
+        txtImpuestoVentaMod = new javax.swing.JTextField();
+        txtTotalVentaMod = new javax.swing.JTextField();
         jPanel24 = new javax.swing.JPanel();
         btnVentaBuscarBorrar = new javax.swing.JButton();
         txtIdVentaBorrar = new javax.swing.JTextField();
@@ -886,6 +896,16 @@ public class mdi extends javax.swing.JFrame {
         jPanel3.add(btnLimpiarProdMod);
         btnLimpiarProdMod.setBounds(390, 300, 190, 33);
 
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel17.setText("Estado");
+        jPanel3.add(jLabel17);
+        jLabel17.setBounds(40, 240, 70, 30);
+
+        cbEstadoProdMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
+        cbEstadoProdMod.setEnabled(false);
+        jPanel3.add(cbEstadoProdMod);
+        cbEstadoProdMod.setBounds(120, 240, 150, 33);
+
         jTabbedPane1.addTab("Modificar", jPanel3);
 
         jPanel4.setLayout(null);
@@ -1053,20 +1073,24 @@ public class mdi extends javax.swing.JFrame {
         jTextField5.setEditable(false);
         jTextField5.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jTextField5.setText("Total");
+        jTextField5.setFocusable(false);
         jPanel5.add(jTextField5);
         jTextField5.setBounds(280, 260, 100, 33);
 
         jTextField6.setEditable(false);
         jTextField6.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jTextField6.setText("Impuesto");
+        jTextField6.setFocusable(false);
         jPanel5.add(jTextField6);
         jTextField6.setBounds(280, 230, 100, 33);
 
         txtImpuestoPedido.setEditable(false);
+        txtImpuestoPedido.setFocusable(false);
         jPanel5.add(txtImpuestoPedido);
         txtImpuestoPedido.setBounds(374, 230, 210, 33);
 
         txtTotalPedido.setEditable(false);
+        txtTotalPedido.setFocusable(false);
         jPanel5.add(txtTotalPedido);
         txtTotalPedido.setBounds(374, 260, 210, 33);
 
@@ -1207,20 +1231,24 @@ public class mdi extends javax.swing.JFrame {
         jTextField7.setEditable(false);
         jTextField7.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jTextField7.setText("Total");
+        jTextField7.setFocusable(false);
         jPanel14.add(jTextField7);
         jTextField7.setBounds(280, 260, 100, 33);
 
         jTextField8.setEditable(false);
         jTextField8.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jTextField8.setText("Impuesto");
+        jTextField8.setFocusable(false);
         jPanel14.add(jTextField8);
         jTextField8.setBounds(280, 230, 100, 33);
 
         txtImpuestoPedidoMod.setEditable(false);
+        txtImpuestoPedidoMod.setFocusable(false);
         jPanel14.add(txtImpuestoPedidoMod);
         txtImpuestoPedidoMod.setBounds(374, 230, 210, 33);
 
         txtTotalPedidoMod.setEditable(false);
+        txtTotalPedidoMod.setFocusable(false);
         jPanel14.add(txtTotalPedidoMod);
         txtTotalPedidoMod.setBounds(374, 260, 210, 33);
 
@@ -1529,6 +1557,16 @@ public class mdi extends javax.swing.JFrame {
         jPanel19.add(lblImagenClienteMod);
         lblImagenClienteMod.setBounds(410, 60, 120, 160);
 
+        jLabel36.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel36.setText("Estado");
+        jPanel19.add(jLabel36);
+        jLabel36.setBounds(40, 220, 70, 30);
+
+        cbEstadoClienteMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
+        cbEstadoClienteMod.setEnabled(false);
+        jPanel19.add(cbEstadoClienteMod);
+        cbEstadoClienteMod.setBounds(120, 220, 150, 33);
+
         jTabbedPane3.addTab("Modificar", jPanel19);
 
         jPanel20.setLayout(null);
@@ -1630,16 +1668,40 @@ public class mdi extends javax.swing.JFrame {
         jLabel97.setText("Estado");
         jPanel9.add(jLabel97);
         jLabel97.setBounds(40, 240, 70, 30);
+
+        txtCiudadProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCiudadProvKeyTyped(evt);
+            }
+        });
         jPanel9.add(txtCiudadProv);
         txtCiudadProv.setBounds(120, 70, 160, 33);
+
+        txtEmpresaProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtEmpresaProvKeyTyped(evt);
+            }
+        });
         jPanel9.add(txtEmpresaProv);
         txtEmpresaProv.setBounds(120, 30, 160, 33);
+
+        txtApellidoProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtApellidoProvKeyTyped(evt);
+            }
+        });
         jPanel9.add(txtApellidoProv);
         txtApellidoProv.setBounds(420, 60, 160, 33);
 
         lblImagenProv.setText("<imagen>");
         jPanel9.add(lblImagenProv);
         lblImagenProv.setBounds(420, 170, 100, 120);
+
+        txtTelefonoProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoProvKeyTyped(evt);
+            }
+        });
         jPanel9.add(txtTelefonoProv);
         txtTelefonoProv.setBounds(420, 90, 160, 33);
 
@@ -1647,6 +1709,12 @@ public class mdi extends javax.swing.JFrame {
         jLabel99.setText("Telefono");
         jPanel9.add(jLabel99);
         jLabel99.setBounds(320, 90, 90, 30);
+
+        txtNombreProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreProvKeyTyped(evt);
+            }
+        });
         jPanel9.add(txtNombreProv);
         txtNombreProv.setBounds(420, 30, 160, 33);
 
@@ -1654,6 +1722,12 @@ public class mdi extends javax.swing.JFrame {
         jLabel100.setText("Nombre");
         jPanel9.add(jLabel100);
         jLabel100.setBounds(330, 30, 80, 30);
+
+        txtCorreoProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCorreoProvKeyTyped(evt);
+            }
+        });
         jPanel9.add(txtCorreoProv);
         txtCorreoProv.setBounds(420, 120, 160, 33);
 
@@ -1687,6 +1761,12 @@ public class mdi extends javax.swing.JFrame {
         jLabel102.setText("Colonia");
         jPanel9.add(jLabel102);
         jLabel102.setBounds(40, 100, 70, 30);
+
+        txtColoniaProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtColoniaProvKeyTyped(evt);
+            }
+        });
         jPanel9.add(txtColoniaProv);
         txtColoniaProv.setBounds(120, 100, 160, 33);
 
@@ -1694,6 +1774,12 @@ public class mdi extends javax.swing.JFrame {
         jLabel103.setText("C.P.");
         jPanel9.add(jLabel103);
         jLabel103.setBounds(60, 130, 50, 30);
+
+        txtCpProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCpProvKeyTyped(evt);
+            }
+        });
         jPanel9.add(txtCpProv);
         txtCpProv.setBounds(120, 130, 160, 33);
 
@@ -1701,6 +1787,12 @@ public class mdi extends javax.swing.JFrame {
         jLabel104.setText("Calle");
         jPanel9.add(jLabel104);
         jLabel104.setBounds(50, 160, 60, 30);
+
+        txtCalleProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCalleProvKeyTyped(evt);
+            }
+        });
         jPanel9.add(txtCalleProv);
         txtCalleProv.setBounds(120, 160, 160, 33);
 
@@ -1708,6 +1800,12 @@ public class mdi extends javax.swing.JFrame {
         jLabel105.setText("Número");
         jPanel9.add(jLabel105);
         jLabel105.setBounds(30, 190, 80, 30);
+
+        txtNumeroProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumeroProvKeyTyped(evt);
+            }
+        });
         jPanel9.add(txtNumeroProv);
         txtNumeroProv.setBounds(120, 190, 160, 33);
 
@@ -1735,6 +1833,12 @@ public class mdi extends javax.swing.JFrame {
 
         jPanel10.add(jScrollPane14);
         jScrollPane14.setBounds(0, 65, 594, 270);
+
+        txtFiltroProv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFiltroProvKeyTyped(evt);
+            }
+        });
         jPanel10.add(txtFiltroProv);
         txtFiltroProv.setBounds(180, 0, 410, 33);
 
@@ -1750,6 +1854,12 @@ public class mdi extends javax.swing.JFrame {
         jLabel8.setText("ID Proveedor");
         jPanel17.add(jLabel8);
         jLabel8.setBounds(0, 0, 120, 30);
+
+        txtProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtProvMod);
         txtProvMod.setBounds(120, 0, 360, 33);
 
@@ -1788,18 +1898,38 @@ public class mdi extends javax.swing.JFrame {
         btnProvMod.setBounds(40, 300, 320, 33);
 
         txtCiudadProvMod.setEnabled(false);
+        txtCiudadProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCiudadProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtCiudadProvMod);
         txtCiudadProvMod.setBounds(120, 90, 160, 33);
 
         txtEmpresaProvMod.setEnabled(false);
+        txtEmpresaProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtEmpresaProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtEmpresaProvMod);
         txtEmpresaProvMod.setBounds(120, 50, 160, 33);
 
         txtApellidoProvMod.setEnabled(false);
+        txtApellidoProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtApellidoProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtApellidoProvMod);
         txtApellidoProvMod.setBounds(420, 80, 160, 33);
 
         txtTelefonoProvMod.setEnabled(false);
+        txtTelefonoProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtTelefonoProvMod);
         txtTelefonoProvMod.setBounds(420, 110, 160, 33);
 
@@ -1809,6 +1939,11 @@ public class mdi extends javax.swing.JFrame {
         jLabel87.setBounds(320, 110, 90, 30);
 
         txtNombreProvMod.setEnabled(false);
+        txtNombreProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtNombreProvMod);
         txtNombreProvMod.setBounds(420, 50, 160, 33);
 
@@ -1818,6 +1953,11 @@ public class mdi extends javax.swing.JFrame {
         jLabel88.setBounds(330, 50, 80, 30);
 
         txtCorreoProvMod.setEnabled(false);
+        txtCorreoProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCorreoProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtCorreoProvMod);
         txtCorreoProvMod.setBounds(420, 140, 160, 33);
 
@@ -1855,6 +1995,11 @@ public class mdi extends javax.swing.JFrame {
         jLabel90.setBounds(40, 120, 70, 30);
 
         txtColoniaProvMod.setEnabled(false);
+        txtColoniaProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtColoniaProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtColoniaProvMod);
         txtColoniaProvMod.setBounds(120, 120, 160, 33);
 
@@ -1864,6 +2009,11 @@ public class mdi extends javax.swing.JFrame {
         jLabel91.setBounds(70, 150, 40, 30);
 
         txtCpProvMod.setEnabled(false);
+        txtCpProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCpProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtCpProvMod);
         txtCpProvMod.setBounds(120, 150, 160, 33);
 
@@ -1873,6 +2023,11 @@ public class mdi extends javax.swing.JFrame {
         jLabel92.setBounds(50, 180, 60, 30);
 
         txtCalleProvMod.setEnabled(false);
+        txtCalleProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCalleProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtCalleProvMod);
         txtCalleProvMod.setBounds(120, 180, 160, 33);
 
@@ -1882,6 +2037,11 @@ public class mdi extends javax.swing.JFrame {
         jLabel93.setBounds(30, 210, 80, 30);
 
         txtNumeroProvMod.setEnabled(false);
+        txtNumeroProvMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumeroProvModKeyTyped(evt);
+            }
+        });
         jPanel17.add(txtNumeroProvMod);
         txtNumeroProvMod.setBounds(120, 210, 160, 33);
 
@@ -1889,6 +2049,16 @@ public class mdi extends javax.swing.JFrame {
         lblImagenProvMod.setEnabled(false);
         jPanel17.add(lblImagenProvMod);
         lblImagenProvMod.setBounds(420, 180, 100, 120);
+
+        jLabel98.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel98.setText("Estado");
+        jPanel17.add(jLabel98);
+        jLabel98.setBounds(40, 250, 70, 30);
+
+        cbEstadoProvMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
+        cbEstadoProvMod.setEnabled(false);
+        jPanel17.add(cbEstadoProvMod);
+        cbEstadoProvMod.setBounds(120, 250, 150, 33);
 
         jTabbedPane4.addTab("Modificar", jPanel17);
 
@@ -1902,6 +2072,12 @@ public class mdi extends javax.swing.JFrame {
         });
         jPanel22.add(btnBuscarProvBorrar);
         btnBuscarProvBorrar.setBounds(480, 0, 100, 33);
+
+        txtProvBorrar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtProvBorrarKeyTyped(evt);
+            }
+        });
         jPanel22.add(txtProvBorrar);
         txtProvBorrar.setBounds(120, 0, 360, 33);
 
@@ -1985,8 +2161,20 @@ public class mdi extends javax.swing.JFrame {
         jLabel42.setText("Estado");
         jPanel11.add(jLabel42);
         jLabel42.setBounds(40, 260, 70, 30);
+
+        txtNombreEmp.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreEmpKeyTyped(evt);
+            }
+        });
         jPanel11.add(txtNombreEmp);
         txtNombreEmp.setBounds(120, 20, 240, 33);
+
+        txtApellidoEmp.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtApellidoEmpKeyTyped(evt);
+            }
+        });
         jPanel11.add(txtApellidoEmp);
         txtApellidoEmp.setBounds(120, 50, 240, 33);
 
@@ -1997,6 +2185,12 @@ public class mdi extends javax.swing.JFrame {
         cbEstadoEmp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
         jPanel11.add(cbEstadoEmp);
         cbEstadoEmp.setBounds(120, 260, 150, 33);
+
+        txtTelefonoEmp.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoEmpKeyTyped(evt);
+            }
+        });
         jPanel11.add(txtTelefonoEmp);
         txtTelefonoEmp.setBounds(120, 80, 240, 33);
 
@@ -2013,17 +2207,17 @@ public class mdi extends javax.swing.JFrame {
         jPanel11.add(cbRolEmp);
         cbRolEmp.setBounds(120, 220, 240, 33);
 
-        btnImagenEmp.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
-        btnImagenEmp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/subirImagen.png"))); // NOI18N
-        btnImagenEmp.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnImagenEmp.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnImagenEmp.addActionListener(new java.awt.event.ActionListener() {
+        btnUsuarioEmp.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
+        btnUsuarioEmp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/generar.png"))); // NOI18N
+        btnUsuarioEmp.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnUsuarioEmp.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnUsuarioEmp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImagenEmpActionPerformed(evt);
+                btnUsuarioEmpActionPerformed(evt);
             }
         });
-        jPanel11.add(btnImagenEmp);
-        btnImagenEmp.setBounds(550, 90, 35, 35);
+        jPanel11.add(btnUsuarioEmp);
+        btnUsuarioEmp.setBounds(360, 150, 35, 35);
 
         btnLimpiarEmp.setText("Limpiar Campos");
         btnLimpiarEmp.addActionListener(new java.awt.event.ActionListener() {
@@ -2041,6 +2235,7 @@ public class mdi extends javax.swing.JFrame {
 
         txtUsuarioEmp.setEditable(false);
         txtUsuarioEmp.setText("< usuario generado >");
+        txtUsuarioEmp.setFocusable(false);
         jPanel11.add(txtUsuarioEmp);
         txtUsuarioEmp.setBounds(120, 150, 240, 33);
 
@@ -2048,8 +2243,26 @@ public class mdi extends javax.swing.JFrame {
         jLabel56.setText("Contraseña");
         jPanel11.add(jLabel56);
         jLabel56.setBounds(0, 120, 110, 30);
-        jPanel11.add(txtContrasenaEmp1);
-        txtContrasenaEmp1.setBounds(120, 120, 240, 33);
+
+        txtContrasenaEmp.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtContrasenaEmpKeyTyped(evt);
+            }
+        });
+        jPanel11.add(txtContrasenaEmp);
+        txtContrasenaEmp.setBounds(120, 120, 240, 33);
+
+        btnImagenEmp.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
+        btnImagenEmp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/subirImagen.png"))); // NOI18N
+        btnImagenEmp.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnImagenEmp.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnImagenEmp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImagenEmpActionPerformed(evt);
+            }
+        });
+        jPanel11.add(btnImagenEmp);
+        btnImagenEmp.setBounds(550, 90, 35, 35);
 
         jTabbedPaneUsuario.addTab("Registrar", jPanel11);
 
@@ -2190,8 +2403,36 @@ public class mdi extends javax.swing.JFrame {
         txtUsuarioEmp1.setEditable(false);
         txtUsuarioEmp1.setText("< usuario generado >");
         txtUsuarioEmp1.setEnabled(false);
+        txtUsuarioEmp1.setFocusable(false);
         jPanel13.add(txtUsuarioEmp1);
         txtUsuarioEmp1.setBounds(120, 170, 240, 33);
+
+        jLabel80.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel80.setText("Estado");
+        jPanel13.add(jLabel80);
+        jLabel80.setBounds(40, 250, 70, 30);
+
+        cbEstadoEmpMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
+        cbEstadoEmpMod.setEnabled(false);
+        jPanel13.add(cbEstadoEmpMod);
+        cbEstadoEmpMod.setBounds(120, 250, 150, 33);
+
+        jComboBox8.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
+        jPanel13.add(jComboBox8);
+        jComboBox8.setBounds(120, 250, 150, 33);
+
+        btnUsuarioEmpMod.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
+        btnUsuarioEmpMod.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/generar.png"))); // NOI18N
+        btnUsuarioEmpMod.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnUsuarioEmpMod.setEnabled(false);
+        btnUsuarioEmpMod.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnUsuarioEmpMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuarioEmpModActionPerformed(evt);
+            }
+        });
+        jPanel13.add(btnUsuarioEmpMod);
+        btnUsuarioEmpMod.setBounds(360, 170, 35, 35);
 
         jTabbedPaneUsuario.addTab("Modificar", jPanel13);
 
@@ -2345,15 +2586,16 @@ public class mdi extends javax.swing.JFrame {
         jPanel15.add(jLabel46);
         jLabel46.setBounds(-10, 260, 120, 30);
 
-        cbEstadoVenta1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
-        cbEstadoVenta1.addActionListener(new java.awt.event.ActionListener() {
+        cbEstadoVenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
+        cbEstadoVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbEstadoVenta1ActionPerformed(evt);
+                cbEstadoVentaActionPerformed(evt);
             }
         });
-        jPanel15.add(cbEstadoVenta1);
-        cbEstadoVenta1.setBounds(120, 260, 150, 33);
+        jPanel15.add(cbEstadoVenta);
+        cbEstadoVenta.setBounds(120, 260, 150, 33);
 
+        cbProdVenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
         jPanel15.add(cbProdVenta);
         cbProdVenta.setBounds(120, 110, 150, 30);
 
@@ -2378,22 +2620,26 @@ public class mdi extends javax.swing.JFrame {
         jTextField2.setEditable(false);
         jTextField2.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jTextField2.setText("Total");
+        jTextField2.setFocusable(false);
         jPanel15.add(jTextField2);
         jTextField2.setBounds(280, 260, 100, 33);
 
         jTextField4.setEditable(false);
         jTextField4.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jTextField4.setText("Impuesto");
+        jTextField4.setFocusable(false);
         jPanel15.add(jTextField4);
         jTextField4.setBounds(280, 230, 100, 33);
 
-        txtImpuestoVenta1.setEditable(false);
-        jPanel15.add(txtImpuestoVenta1);
-        txtImpuestoVenta1.setBounds(374, 230, 210, 33);
+        txtImpuestoVenta.setEditable(false);
+        txtImpuestoVenta.setFocusable(false);
+        jPanel15.add(txtImpuestoVenta);
+        txtImpuestoVenta.setBounds(374, 230, 210, 33);
 
-        txtTotalVenta1.setEditable(false);
-        jPanel15.add(txtTotalVenta1);
-        txtTotalVenta1.setBounds(374, 260, 210, 33);
+        txtTotalVenta.setEditable(false);
+        txtTotalVenta.setFocusable(false);
+        jPanel15.add(txtTotalVenta);
+        txtTotalVenta.setBounds(374, 260, 210, 33);
 
         jTabbedPane5.addTab("Registrar", jPanel15);
 
@@ -2517,15 +2763,16 @@ public class mdi extends javax.swing.JFrame {
         jPanel23.add(jLabel64);
         jLabel64.setBounds(-10, 260, 120, 30);
 
-        cbEstadoVenta3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
-        cbEstadoVenta3.addActionListener(new java.awt.event.ActionListener() {
+        cbEstadoVentaMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
+        cbEstadoVentaMod.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbEstadoVenta3ActionPerformed(evt);
+                cbEstadoVentaModActionPerformed(evt);
             }
         });
-        jPanel23.add(cbEstadoVenta3);
-        cbEstadoVenta3.setBounds(120, 260, 150, 33);
+        jPanel23.add(cbEstadoVentaMod);
+        cbEstadoVentaMod.setBounds(120, 260, 150, 33);
 
+        cbProdVentaMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
         jPanel23.add(cbProdVentaMod);
         cbProdVentaMod.setBounds(120, 110, 150, 30);
 
@@ -2550,22 +2797,26 @@ public class mdi extends javax.swing.JFrame {
         jTextField1.setEditable(false);
         jTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jTextField1.setText("Total");
+        jTextField1.setFocusable(false);
         jPanel23.add(jTextField1);
         jTextField1.setBounds(280, 260, 100, 33);
 
         jTextField3.setEditable(false);
         jTextField3.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jTextField3.setText("Impuesto");
+        jTextField3.setFocusable(false);
         jPanel23.add(jTextField3);
         jTextField3.setBounds(280, 230, 100, 33);
 
-        txtImpuestoVenta.setEditable(false);
-        jPanel23.add(txtImpuestoVenta);
-        txtImpuestoVenta.setBounds(374, 230, 210, 33);
+        txtImpuestoVentaMod.setEditable(false);
+        txtImpuestoVentaMod.setFocusable(false);
+        jPanel23.add(txtImpuestoVentaMod);
+        txtImpuestoVentaMod.setBounds(374, 230, 210, 33);
 
-        txtTotalVenta.setEditable(false);
-        jPanel23.add(txtTotalVenta);
-        txtTotalVenta.setBounds(374, 260, 210, 33);
+        txtTotalVentaMod.setEditable(false);
+        txtTotalVentaMod.setFocusable(false);
+        jPanel23.add(txtTotalVentaMod);
+        txtTotalVentaMod.setBounds(374, 260, 210, 33);
 
         jTabbedPane5.addTab("Modificar", jPanel23);
 
@@ -2781,7 +3032,7 @@ public class mdi extends javax.swing.JFrame {
                 prod.setImagen3(null);
             }
 
-            if (daoProd.insertar(prod)) {
+            if (adminDaoProd.insertar(prod)) {
                 JOptionPane.showMessageDialog(this, "Guardado");
                 txtNombreProd.setText(null);
                 txaDescripcionProd.setText(null);
@@ -2893,7 +3144,7 @@ public class mdi extends javax.swing.JFrame {
 
     private void btnConProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConProdActionPerformed
         if (txtFiltroProd.getText().isBlank()) {
-            registrosProd = daoProd.seleccionarTodos();
+            registrosProd = adminDaoProd.seleccionarTodos();
             String datosProd = "";
             for (Producto registroProd : registrosProd) {
                 datosProd += registroProd;
@@ -2901,7 +3152,7 @@ public class mdi extends javax.swing.JFrame {
             txaConProd.setText(datosProd);
         } else {
             String nombreProd = txtFiltroProd.getText();
-            txaConProd.setText(daoProd.seleccionarAlgunos(nombreProd).toString());
+            txaConProd.setText(adminDaoProd.seleccionarAlgunos(nombreProd).toString());
         }
     }//GEN-LAST:event_btnConProdActionPerformed
 
@@ -2911,7 +3162,7 @@ public class mdi extends javax.swing.JFrame {
         } else {
 
             int idProd = Integer.parseInt(txtProdMod.getText());
-            prod = daoProd.seleccionarId(idProd);
+            prod = adminDaoProd.seleccionarId(idProd);
             if (prod == null) {
                 //deshabilitar modulo de modificación
                 txtNombreProdMod.setEnabled(false);
@@ -2928,6 +3179,7 @@ public class mdi extends javax.swing.JFrame {
                 btnImagen3ProdMod.setEnabled(false);
                 btnImagen3ProdQuitarMod.setEnabled(false);
                 btnLimpiarProdMod.setEnabled(false);
+                cbEstadoProdMod.setEnabled(false);
 
                 //vaciar cuadros de texto y label de imagen
                 txtNombreProdMod.setText(null);
@@ -2937,6 +3189,7 @@ public class mdi extends javax.swing.JFrame {
                 lblImagen1ProdMod.setIcon(null);
                 lblImagen2ProdMod.setIcon(null);
                 lblImagen3ProdMod.setIcon(null);
+                cbEstadoProdMod.setSelectedItem("ACTIVO");
                 JOptionPane.showMessageDialog(this, "No se encontró el producto con id: " + idProd);
 
             } else {
@@ -2949,10 +3202,12 @@ public class mdi extends javax.swing.JFrame {
                 lblImagen1ProdMod.setEnabled(true);
                 btnImagen1ProdMod.setEnabled(true);
                 btnLimpiarProdMod.setEnabled(true);
+                cbEstadoProdMod.setEnabled(true);
                 txtNombreProdMod.setText(prod.getNombre());
                 txaDescripcionProdMod.setText(prod.getDescripcion());
                 txtExistenciaProdMod.setText(Integer.toString(prod.getExistencia()));
                 txtPrecioProdMod.setText(Double.toString(prod.getPrecio()));
+                cbEstadoProdMod.setSelectedItem("ACTIVO");
                 lblImagen1ProdMod.setIcon(null);
                 lblImagen2ProdMod.setIcon(null);
                 lblImagen3ProdMod.setIcon(null);
@@ -3064,6 +3319,7 @@ public class mdi extends javax.swing.JFrame {
             prod.setDescripcion(txaDescripcionProdMod.getText());
             prod.setExistencia(Integer.parseInt(txtExistenciaProdMod.getText()));
             prod.setPrecio(Double.parseDouble(txtPrecioProdMod.getText()));
+            prod.setEstado(cbEstadoProdMod.getSelectedItem().toString());
 
             if (lblImagen1ProdMod.getIcon() != null) {
                 try {
@@ -3117,7 +3373,7 @@ public class mdi extends javax.swing.JFrame {
 
             System.out.println("tercera imagen verificada");
 
-            if (daoProd.actualizar(prod.getId(), prod)) {
+            if (adminDaoProd.actualizar(prod.getIdProducto(), prod)) {
                 JOptionPane.showMessageDialog(this, "Producto Actualizado");
 
                 //deshabilitar cuadros de texto
@@ -3135,6 +3391,7 @@ public class mdi extends javax.swing.JFrame {
                 btnImagen3ProdMod.setEnabled(false);
                 btnImagen3ProdQuitarMod.setEnabled(false);
                 btnLimpiarProdMod.setEnabled(false);
+                cbEstadoProdMod.setEnabled(false);
 
                 //vaciar cuadros de texto
                 txtNombreProdMod.setText(null);
@@ -3144,6 +3401,7 @@ public class mdi extends javax.swing.JFrame {
                 lblImagen1ProdMod.setIcon(null);
                 lblImagen2ProdMod.setIcon(null);
                 lblImagen3ProdMod.setIcon(null);
+                cbEstadoProdMod.setSelectedItem("ACTIVO");
             } else {
                 JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
             }
@@ -3229,12 +3487,14 @@ public class mdi extends javax.swing.JFrame {
         lblImagen1ProdMod.setIcon(null);
         lblImagen2ProdMod.setIcon(null);
         lblImagen3ProdMod.setIcon(null);
+        cbEstadoProdMod.setSelectedItem("ACTIVO");
         lblImagen2ProdMod.setEnabled(false);
         btnImagen2ProdMod.setEnabled(false);
         btnImagen2ProdQuitarMod.setEnabled(false);
         lblImagen3ProdMod.setEnabled(false);
         btnImagen3ProdMod.setEnabled(false);
         btnImagen3ProdQuitarMod.setEnabled(false);
+        cbEstadoProdMod.setEnabled(false);
     }//GEN-LAST:event_btnLimpiarProdModActionPerformed
 
     private void btnProdBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdBorrarActionPerformed
@@ -3242,9 +3502,9 @@ public class mdi extends javax.swing.JFrame {
             if (txtProdBorrar.getText().isBlank()) {
                 JOptionPane.showMessageDialog(this, "Ingresa el id del producto");
             } else {
-                daoProd.borrar(prod.getId());
+                adminDaoProd.borrar(prod.getIdProducto());
 
-                if (daoProd.borrar(prod.getId())) {
+                if (adminDaoProd.borrar(prod.getIdProducto())) {
                     txtProdBorrar.setText(null);
                     txaProdBorrar.setText(null);
                     JOptionPane.showMessageDialog(this, "Producto Borrado");
@@ -3263,7 +3523,7 @@ public class mdi extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ingresa el id del producto");
         } else {
             int id = Integer.parseInt(txtProdBorrar.getText());
-            prod = daoProd.seleccionarId(id);
+            prod = adminDaoProd.seleccionarId(id);
             if (prod == null) {
                 JOptionPane.showMessageDialog(this, "No se encontró el producto con id: " + id);
             } else {
@@ -3307,8 +3567,14 @@ public class mdi extends javax.swing.JFrame {
                 Logger.getLogger(mdi.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            if (daoCliente.insertar(cliente)) {
+            if (adminDaoCliente.insertar(cliente)) {
                 JOptionPane.showMessageDialog(this, "Guardado");
+                txtNombreCliente.setText(null);
+                txtApellidoCliente.setText(null);
+                txtTelefonoCliente.setText(null);
+                txtCorreoCliente.setText(null);
+                lblImagenCliente.setIcon(null);
+                cbEstadoCliente.setSelectedItem("ACTIVO");
             } else {
                 JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
             }
@@ -3351,7 +3617,7 @@ public class mdi extends javax.swing.JFrame {
 
     private void btnConClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConClientesActionPerformed
         if (txtFiltroCliente.getText().isBlank()) {
-            registrosCliente = daoCliente.seleccionarTodos();
+            registrosCliente = adminDaoCliente.seleccionarTodos();
             String datosCliente = "";
             for (Cliente registroCliente : registrosCliente) {
                 datosCliente += registroCliente;
@@ -3359,7 +3625,7 @@ public class mdi extends javax.swing.JFrame {
             txaConCliente.setText(datosCliente);
         } else {
             String actualizarCliente = txtFiltroCliente.getText();
-            txaConCliente.setText(daoCliente.seleccionarAlgunos(actualizarCliente).toString());
+            txaConCliente.setText(adminDaoCliente.seleccionarAlgunos(actualizarCliente).toString());
         }
     }//GEN-LAST:event_btnConClientesActionPerformed
 
@@ -3369,7 +3635,7 @@ public class mdi extends javax.swing.JFrame {
         } else {
 
             int idCliente = Integer.parseInt(txtClienteMod.getText());
-            cliente = daoCliente.seleccionarId(idCliente);
+            cliente = adminDaoCliente.seleccionarId(idCliente);
             if (cliente == null) {
                 //deshabilitar cuadros de texto
 
@@ -3379,6 +3645,7 @@ public class mdi extends javax.swing.JFrame {
                 txtTelefonoClienteMod.setText(null);
                 txtCorreoClienteMod.setText(null);
                 lblImagenClienteMod.setIcon(null);
+                cbEstadoClienteMod.setSelectedItem("ACTIVO");
                 JOptionPane.showMessageDialog(this, "No se encontró el Cliente con id: " + idCliente);
 
             } else {
@@ -3391,11 +3658,13 @@ public class mdi extends javax.swing.JFrame {
                 btnClienteMod.setEnabled(true);
                 btnImagenClienteMod.setEnabled(true);
                 btnLimpiarClienteMod.setEnabled(true);
+                cbEstadoClienteMod.setEnabled(true);
 
                 txtNombreClienteMod.setText(cliente.getNombre());
                 txtApellidoClienteMod.setText(cliente.getApellido());
                 txtTelefonoClienteMod.setText(cliente.getTelefono());
                 txtCorreoClienteMod.setText(cliente.getCorreo());
+                cbEstadoClienteMod.setSelectedItem(cliente.getEstado());
 
                 if (cliente.getImagen() != null) {
                     try {
@@ -3436,6 +3705,7 @@ public class mdi extends javax.swing.JFrame {
             cliente.setApellido(txtApellidoClienteMod.getText());
             cliente.setTelefono(txtTelefonoClienteMod.getText());
             cliente.setCorreo(txtCorreoClienteMod.getText());
+            cliente.setEstado(cbEstadoClienteMod.getSelectedItem().toString());
 
             if (imgCliente != null) {
                 try {
@@ -3451,15 +3721,16 @@ public class mdi extends javax.swing.JFrame {
                 }
             }
 
-            if (daoCliente.actualizar(cliente.getId(), cliente)) {
+            if (adminDaoCliente.actualizar(cliente.getIdCliente(), cliente)) {
                 JOptionPane.showMessageDialog(this, "Cliente Actualizado");
 
-//deshabilitar cuadros de texto
+                //deshabilitar cuadros de texto
                 txtNombreClienteMod.setEnabled(false);
                 txtApellidoClienteMod.setEnabled(false);
                 txtTelefonoClienteMod.setEnabled(false);
                 txtCorreoClienteMod.setEnabled(false);
                 lblImagenClienteMod.setEnabled(false);
+                cbEstadoClienteMod.setEnabled(false);
 
                 //vaciar cuadros de texto
                 txtNombreClienteMod.setText(null);
@@ -3467,6 +3738,7 @@ public class mdi extends javax.swing.JFrame {
                 txtTelefonoClienteMod.setText(null);
                 txtCorreoClienteMod.setText(null);
                 lblImagenClienteMod.setIcon(null);
+                cbEstadoClienteMod.setSelectedItem("ACTIVO");
             } else {
                 JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
             }
@@ -3488,7 +3760,7 @@ public class mdi extends javax.swing.JFrame {
             lblImagenClienteMod.setIcon(icono);
 
         }
-        if (imgCliente.length()> 16777215) {
+        if (imgCliente.length() > 16777215) {
             JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
             lblImagenCliente.setIcon(null);
 
@@ -3501,6 +3773,7 @@ public class mdi extends javax.swing.JFrame {
         txtTelefonoClienteMod.setText(null);
         txtCorreoClienteMod.setText(null);
         lblImagenClienteMod.setIcon(null);
+        cbEstadoClienteMod.setSelectedItem("ACTIVO");
         txtNombreClienteMod.setEnabled(false);
         txtApellidoClienteMod.setEnabled(false);
         txtTelefonoClienteMod.setEnabled(false);
@@ -3509,6 +3782,7 @@ public class mdi extends javax.swing.JFrame {
         lblImagenClienteMod.setEnabled(false);
         btnImagenClienteMod.setEnabled(false);
         btnLimpiarClienteMod.setEnabled(false);
+        cbEstadoClienteMod.setEnabled(false);
     }//GEN-LAST:event_btnLimpiarClienteModActionPerformed
 
     private void btnBuscarClienteBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarClienteBorrarActionPerformed
@@ -3516,7 +3790,7 @@ public class mdi extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ingresa el id del Cliente");
         } else {
             int id = Integer.parseInt(txtClienteBorrar.getText());
-            cliente = daoCliente.seleccionarId(id);
+            cliente = adminDaoCliente.seleccionarId(id);
             if (cliente == null) {
                 JOptionPane.showMessageDialog(this, "No se encontró el Cliente con id: " + id);
             } else {
@@ -3531,9 +3805,9 @@ public class mdi extends javax.swing.JFrame {
             if (txtClienteBorrar.getText().isBlank()) {
                 JOptionPane.showMessageDialog(this, "Ingresa el id del cliente");
             } else {
-                daoCliente.borrar(cliente.getId());
+                adminDaoCliente.borrar(cliente.getIdCliente());
 
-                if (daoCliente.borrar(cliente.getId())) {
+                if (adminDaoCliente.borrar(cliente.getIdCliente())) {
                     txtClienteBorrar.setText(null);
                     txaClienteBorrar.setText(null);
                     JOptionPane.showMessageDialog(this, "Cliente Borrado");
@@ -3597,7 +3871,7 @@ public class mdi extends javax.swing.JFrame {
                     Logger.getLogger(mdi.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                if (daoProv.insertar(prov)) {
+                if (adminDaoProv.insertar(prov)) {
                     JOptionPane.showMessageDialog(this, "Guardado");
                     txtEmpresaProv.setText(null);
                     txtCiudadProv.setText(null);
@@ -3653,7 +3927,7 @@ public class mdi extends javax.swing.JFrame {
 
     private void btnConProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConProvActionPerformed
         if (txtFiltroProv.getText().isBlank()) {
-            registrosProv = daoProv.seleccionarTodos();
+            registrosProv = adminDaoProv.seleccionarTodos();
             String datosProv = "";
             for (Proveedor registroProv : registrosProv) {
                 datosProv += registroProv;
@@ -3661,7 +3935,7 @@ public class mdi extends javax.swing.JFrame {
             txaConProv.setText(datosProv);
         } else {
             String empresaProv = txtFiltroProv.getText();
-            txaConProv.setText(daoProv.seleccionarAlgunos(empresaProv).toString());
+            txaConProv.setText(adminDaoProv.seleccionarAlgunos(empresaProv).toString());
         }
     }//GEN-LAST:event_btnConProvActionPerformed
 
@@ -3671,7 +3945,7 @@ public class mdi extends javax.swing.JFrame {
         } else {
 
             int idProv = Integer.parseInt(txtProvMod.getText());
-            prov = daoProv.seleccionarId(idProv);
+            prov = adminDaoProv.seleccionarId(idProv);
             if (prov == null) {
                 //deshabilitar cuadros de texto
                 txtEmpresaProvMod.setEnabled(false);
@@ -3688,6 +3962,7 @@ public class mdi extends javax.swing.JFrame {
                 lblImagenProvMod.setEnabled(false);
                 btnImagenProvMod.setEnabled(false);
                 btnLimpiarProvMod.setEnabled(false);
+                cbEstadoProvMod.setEnabled(false);
 
                 //vaciar cuadros de texto
                 txtEmpresaProvMod.setText(null);
@@ -3701,6 +3976,7 @@ public class mdi extends javax.swing.JFrame {
                 txtTelefonoProvMod.setText(null);
                 txtCorreoProvMod.setText(null);
                 lblImagenProvMod.setIcon(null);
+                cbEstadoProvMod.setSelectedItem("ACTIVO");
                 JOptionPane.showMessageDialog(this, "No se encontró el proveedor con id: " + idProv);
 
             } else {
@@ -3720,6 +3996,7 @@ public class mdi extends javax.swing.JFrame {
                 lblImagenProvMod.setIcon(null);
                 btnImagenProvMod.setEnabled(true);
                 btnLimpiarProvMod.setEnabled(true);
+                cbEstadoProvMod.setEnabled(true);
 
                 txtEmpresaProvMod.setText(prov.getEmpresa());
                 txtCiudadProvMod.setText(prov.getCiudad());
@@ -3731,6 +4008,7 @@ public class mdi extends javax.swing.JFrame {
                 txtApellidoProvMod.setText(prov.getApellido());
                 txtTelefonoProvMod.setText(prov.getTelefono());
                 txtCorreoProvMod.setText(prov.getCorreo());
+                cbEstadoProvMod.setSelectedItem("ACTIVO");
 
                 if (prov.getImagen() != null) {
                     try {
@@ -3794,6 +4072,7 @@ public class mdi extends javax.swing.JFrame {
             prov.setApellido(txtApellidoProvMod.getText());
             prov.setTelefono(txtTelefonoProvMod.getText());
             prov.setCorreo(txtCorreoProvMod.getText());
+            prov.setEstado(cbEstadoProvMod.getSelectedItem().toString());
 
             if (lblImagenProvMod.getIcon() != null) {
                 try {
@@ -3809,7 +4088,7 @@ public class mdi extends javax.swing.JFrame {
                 }
             }
 
-            if (daoProv.actualizar(prov.getId(), prov)) {
+            if (adminDaoProv.actualizar(prov.getIdProveedor(), prov)) {
                 JOptionPane.showMessageDialog(this, "Proveedor Actualizado");
 
                 //deshabilitar cuadros de texto
@@ -3827,6 +4106,7 @@ public class mdi extends javax.swing.JFrame {
                 lblImagenProvMod.setEnabled(false);
                 btnImagenProvMod.setEnabled(false);
                 btnLimpiarProvMod.setEnabled(false);
+                cbEstadoProvMod.setEnabled(false);
 
                 //vaciar cuadros de texto
                 txtEmpresaProvMod.setText(null);
@@ -3841,6 +4121,7 @@ public class mdi extends javax.swing.JFrame {
                 txtCorreoProvMod.setText(null);
                 txtProvMod.setText(null);
                 lblImagenProvMod.setIcon(null);
+                cbEstadoProvMod.setSelectedItem("ACTIVO");
             } else {
                 JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
             }
@@ -3879,6 +4160,7 @@ public class mdi extends javax.swing.JFrame {
         txtTelefonoProvMod.setText(null);
         txtCorreoProvMod.setText(null);
         lblImagenProvMod.setIcon(null);
+        cbEstadoProvMod.setSelectedItem("ACTIVO");
         txtEmpresaProvMod.setEnabled(false);
         txtCiudadProvMod.setEnabled(false);
         txtColoniaProvMod.setEnabled(false);
@@ -3893,6 +4175,7 @@ public class mdi extends javax.swing.JFrame {
         lblImagenProvMod.setEnabled(false);
         btnImagenProvMod.setEnabled(false);
         btnLimpiarProvMod.setEnabled(false);
+        cbEstadoProvMod.setEnabled(false);
     }//GEN-LAST:event_btnLimpiarProvModActionPerformed
 
     private void btnBuscarProvBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarProvBorrarActionPerformed
@@ -3900,7 +4183,7 @@ public class mdi extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ingresa el id del proveedor");
         } else {
             int id = Integer.parseInt(txtProvBorrar.getText());
-            prov = daoProv.seleccionarId(id);
+            prov = adminDaoProv.seleccionarId(id);
             if (prov == null) {
                 JOptionPane.showMessageDialog(this, "No se encontró el proveedor con id: " + id);
             } else {
@@ -3915,9 +4198,9 @@ public class mdi extends javax.swing.JFrame {
             if (txtProvBorrar.getText().isBlank()) {
                 JOptionPane.showMessageDialog(this, "Ingresa el id del proveedor");
             } else {
-                daoProv.borrar(prov.getId());
+                adminDaoProv.borrar(prov.getIdProveedor());
 
-                if (daoProv.borrar(prov.getId())) {
+                if (adminDaoProv.borrar(prov.getIdProveedor())) {
                     txtProvBorrar.setText(null);
                     txaProvBorrar.setText(null);
                     JOptionPane.showMessageDialog(this, "Proveedor Borrado");
@@ -3932,19 +4215,95 @@ public class mdi extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProvBorrarActionPerformed
 
     private void btnConEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConEmpActionPerformed
-
+        if (txtFiltroEmp.getText().isBlank()) {
+            registrosEmpleado = adminDaoEmpleado.seleccionarTodos();
+            String datosEmpleado = "";
+            for (Empleado registroEmpleado : registrosEmpleado) {
+                datosEmpleado += registroEmpleado;
+            }
+            txaConEmp.setText(datosEmpleado);
+        } else {
+            String nombreEmpleado = txtFiltroEmp.getText();
+            txaConEmp.setText(adminDaoEmpleado.seleccionarAlgunos(nombreEmpleado).toString());
+        }
     }//GEN-LAST:event_btnConEmpActionPerformed
 
     private void btnGuardarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarEmpActionPerformed
+        if (txtNombreEmp.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo nombre no puede estar vacío");
+        } else if (txtApellidoEmp.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo apellido no puede estar vacío");
+        } else if (txtTelefonoEmp.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo telefono no puede estar vacío");
+        } else if (txtUsuarioEmp.getText().equals("< usuario generado >")) {
+            JOptionPane.showMessageDialog(this, "Debes generar un usuario");
+        } else if (txtContrasenaEmp.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo contraseña no puede estar vacío");
+        } else if (lblImagenEmp.getIcon() == null) {
+            JOptionPane.showMessageDialog(this, "Debes agregar una imagen");
+        } else if (txtContrasenaEmp.getText().length() < 8) {
+            JOptionPane.showMessageDialog(this, "La contraseña debe de tener una longitud de al menos 8 caracteres");
+        } else {
+            empleado = new Empleado();
+        }
+        empleado.setNombre(txtNombreEmp.getText());
+        empleado.setApellido(txtApellidoEmp.getText());
+        empleado.setTelefono(txtTelefonoEmp.getText());
+        empleado.setRol(cbRolEmp.getSelectedItem().toString());
+        empleado.setUsuario(txtUsuarioEmp.getText());
+        empleado.setContrasena(txtContrasenaEmp.getText());
+        empleado.setEstado(cbEstadoEmp.getSelectedItem().toString());
 
+        if (lblImagenEmp.getIcon() != null) {
+            try {
+                FileInputStream entrada = new FileInputStream(imgEmpleado);
+                byte[] Bytes = new byte[(int) imgEmpleado.length()];
+                entrada.read(Bytes);
+                entrada.close();
+                empleado.setImagen(Bytes);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(mdi.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(mdi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (adminDaoEmpleado.insertar(empleado)) {
+                JOptionPane.showMessageDialog(this, "Guardado");
+                txtNombreEmp.setText(null);
+                txtApellidoEmp.setText(null);
+                txtTelefonoEmp.setText(null);
+                cbRolEmp.setSelectedItem("Empleado");
+                txtUsuarioEmp.setText("< usuario generado >");
+                txtContrasenaEmp.setText(null);
+                lblImagenEmp.setIcon(null);
+                cbEstadoEmp.setSelectedItem("ACTIVO");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+            }
+        }
     }//GEN-LAST:event_btnGuardarEmpActionPerformed
 
-    private void btnImagenEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagenEmpActionPerformed
+    private void btnUsuarioEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioEmpActionPerformed
+        if (txtNombreEmp.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Debes ingresar un nombre para generar el usuario");
+        }
 
-    }//GEN-LAST:event_btnImagenEmpActionPerformed
+        String a = txtNombreEmp.getText().toLowerCase();
+        String arr[] = a.split(" ");
+        String b = Integer.toString(adminDaoEmpleado.seleccionarUltimoId() + 1);
+        String ab = arr[0] + b;
+        txtUsuarioEmp.setText(ab);
+    }//GEN-LAST:event_btnUsuarioEmpActionPerformed
 
     private void btnLimpiarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarEmpActionPerformed
-
+        txtNombreEmp.setText(null);
+        txtApellidoEmp.setText(null);
+        txtTelefonoEmp.setText(null);
+        cbRolEmp.setSelectedItem("Empleado");
+        txtUsuarioEmp.setText("< usuario generado >");
+        txtContrasenaEmp.setText(null);
+        lblImagenEmp.setIcon(null);
+        cbEstadoEmp.setSelectedItem("ACTIVO");
     }//GEN-LAST:event_btnLimpiarEmpActionPerformed
 
     private void btnBuscarEmpModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarEmpModActionPerformed
@@ -4023,17 +4382,17 @@ public class mdi extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnGuardarVentaActionPerformed
 
-    private void cbEstadoVenta1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEstadoVenta1ActionPerformed
+    private void cbEstadoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEstadoVentaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cbEstadoVenta1ActionPerformed
+    }//GEN-LAST:event_cbEstadoVentaActionPerformed
 
     private void btnVentaModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentaModActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnVentaModActionPerformed
 
-    private void cbEstadoVenta3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEstadoVenta3ActionPerformed
+    private void cbEstadoVentaModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEstadoVentaModActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cbEstadoVenta3ActionPerformed
+    }//GEN-LAST:event_cbEstadoVentaModActionPerformed
 
     private void txtNombreClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreClienteKeyTyped
         char tecla = evt.getKeyChar();
@@ -4042,7 +4401,7 @@ public class mdi extends javax.swing.JFrame {
                 || tecla == KeyEvent.VK_SPACE)) {
             Toolkit.getDefaultToolkit().beep();
             evt.consume();
-            JOptionPane.showMessageDialog(this, "El campo solo acepta letras");
+            JOptionPane.showMessageDialog(this, "El campo solo admite letras");
         }
         if (txtNombreCliente.getText().length() > 50) {
             JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
@@ -4055,7 +4414,7 @@ public class mdi extends javax.swing.JFrame {
         if (!(Character.isLetter(tecla)
                 || tecla == KeyEvent.VK_BACK_SPACE
                 || tecla == KeyEvent.VK_SPACE)) {
-            JOptionPane.showMessageDialog(this, "El campo solo acepta letras");
+            JOptionPane.showMessageDialog(this, "El campo solo admite letras");
             evt.consume();
         }
         if (txtApellidoCliente.getText().length() > 50) {
@@ -4069,7 +4428,7 @@ public class mdi extends javax.swing.JFrame {
         if (!(Character.isDigit(tecla)
                 || tecla == KeyEvent.VK_BACK_SPACE
                 || tecla == KeyEvent.VK_SPACE)) {
-            JOptionPane.showMessageDialog(this, "El campo solo acepta números");
+            JOptionPane.showMessageDialog(this, "El campo solo admite números");
             evt.consume();
         }
         if (txtTelefonoCliente.getText().length() > 10) {
@@ -4079,7 +4438,7 @@ public class mdi extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTelefonoClienteKeyTyped
 
     private void txtCorreoClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCorreoClienteKeyTyped
-        if (txtCorreoCliente.getText().length() > 50) {
+        if (txtCorreoCliente.getText().length() > 150) {
             JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
             evt.consume();
         }
@@ -4090,7 +4449,7 @@ public class mdi extends javax.swing.JFrame {
         if (!(Character.isLetter(tecla)
                 || tecla == KeyEvent.VK_BACK_SPACE
                 || tecla == KeyEvent.VK_SPACE)) {
-            JOptionPane.showMessageDialog(this, "El campo solo acepta letras");
+            JOptionPane.showMessageDialog(this, "El campo solo admite letras");
             evt.consume();
         }
     }//GEN-LAST:event_txtFiltroClienteKeyTyped
@@ -4099,7 +4458,7 @@ public class mdi extends javax.swing.JFrame {
         char tecla = evt.getKeyChar();
         if (!(Character.isDigit(tecla)
                 || tecla == KeyEvent.VK_BACK_SPACE)) {
-            JOptionPane.showMessageDialog(this, "El campo solo acepta números");
+            JOptionPane.showMessageDialog(this, "El campo solo admite números");
             evt.consume();
         }
     }//GEN-LAST:event_txtClienteModKeyTyped
@@ -4109,7 +4468,7 @@ public class mdi extends javax.swing.JFrame {
         if (!(Character.isLetter(tecla)
                 || tecla == KeyEvent.VK_BACK_SPACE
                 || tecla == KeyEvent.VK_SPACE)) {
-            JOptionPane.showMessageDialog(this, "El campo solo acepta letras");
+            JOptionPane.showMessageDialog(this, "El campo solo admite letras");
             evt.consume();
         }
         if (txtNombreClienteMod.getText().length() > 50) {
@@ -4123,7 +4482,7 @@ public class mdi extends javax.swing.JFrame {
         if (!(Character.isLetter(tecla)
                 || tecla == KeyEvent.VK_BACK_SPACE
                 || tecla == KeyEvent.VK_SPACE)) {
-            JOptionPane.showMessageDialog(this, "El campo solo acepta letras");
+            JOptionPane.showMessageDialog(this, "El campo solo admite letras");
             evt.consume();
         }
         if (txtApellidoClienteMod.getText().length() > 50) {
@@ -4136,7 +4495,7 @@ public class mdi extends javax.swing.JFrame {
         char tecla = evt.getKeyChar();
         if (!(Character.isDigit(tecla)
                 || tecla == KeyEvent.VK_BACK_SPACE)) {
-            JOptionPane.showMessageDialog(this, "El campo solo acepta números");
+            JOptionPane.showMessageDialog(this, "El campo solo admite números");
             evt.consume();
         }
         if (txtTelefonoClienteMod.getText().length() > 10) {
@@ -4146,7 +4505,7 @@ public class mdi extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTelefonoClienteModKeyTyped
 
     private void txtCorreoClienteModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCorreoClienteModKeyTyped
-        if (txtCorreoClienteMod.getText().length() > 50) {
+        if (txtCorreoClienteMod.getText().length() > 150) {
             JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
             evt.consume();
         }
@@ -4156,10 +4515,372 @@ public class mdi extends javax.swing.JFrame {
         char tecla = evt.getKeyChar();
         if (!(Character.isDigit(tecla)
                 || tecla == KeyEvent.VK_BACK_SPACE)) {
-            JOptionPane.showMessageDialog(this, "El campo solo acepta números");
+            JOptionPane.showMessageDialog(this, "El campo solo admite números");
             evt.consume();
         }
     }//GEN-LAST:event_txtClienteBorrarKeyTyped
+
+    private void btnImagenEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagenEmpActionPerformed
+        selector.setFileFilter(filtro);
+        int resSelector = selector.showOpenDialog(this);
+        if (resSelector == JFileChooser.APPROVE_OPTION) {
+            imgProveedor = selector.getSelectedFile();
+            System.out.println("la imagen 1 de proveedor es: " + imgEmpleado.getName());
+            lblImagenEmp.setIcon(null);
+            imagen = new ImageIcon(imgEmpleado.getAbsolutePath());
+            icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagenEmp.getWidth(), lblImagenEmp.getHeight(), Image.SCALE_DEFAULT));
+            lblImagenEmp.setIcon(icono);
+        }
+        if (imgEmpleado.length() > 16777215) {
+            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+            lblImagenEmp.setIcon(null);
+
+        }
+    }//GEN-LAST:event_btnImagenEmpActionPerformed
+
+    private void btnUsuarioEmpModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioEmpModActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnUsuarioEmpModActionPerformed
+
+    private void txtNombreEmpKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreEmpKeyTyped
+        if (txtNombreEmp.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtNombreEmpKeyTyped
+
+    private void txtApellidoEmpKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoEmpKeyTyped
+        if (txtApellidoEmp.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtApellidoEmpKeyTyped
+
+    private void txtTelefonoEmpKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoEmpKeyTyped
+        if (txtTelefonoEmp.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtTelefonoEmpKeyTyped
+
+    private void txtContrasenaEmpKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContrasenaEmpKeyTyped
+        if (txtContrasenaEmp.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+    }//GEN-LAST:event_txtContrasenaEmpKeyTyped
+
+    private void txtEmpresaProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmpresaProvKeyTyped
+        if (txtEmpresaProv.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetterOrDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras y números");
+        }
+    }//GEN-LAST:event_txtEmpresaProvKeyTyped
+
+    private void txtCiudadProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCiudadProvKeyTyped
+        if (txtCiudadProv.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtCiudadProvKeyTyped
+
+    private void txtColoniaProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtColoniaProvKeyTyped
+        if (txtColoniaProv.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtColoniaProvKeyTyped
+
+    private void txtCpProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCpProvKeyTyped
+        if (txtCpProv.getText().length() > 10) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite números");
+        }
+    }//GEN-LAST:event_txtCpProvKeyTyped
+
+    private void txtCalleProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCalleProvKeyTyped
+        if (txtCalleProv.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtCalleProvKeyTyped
+
+    private void txtNumeroProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroProvKeyTyped
+        if (txtNumeroProv.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetterOrDigit(key) || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_MINUS)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras, números y guion");
+        }
+    }//GEN-LAST:event_txtNumeroProvKeyTyped
+
+    private void txtNombreProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreProvKeyTyped
+        if (txtNombreProv.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtNombreProvKeyTyped
+
+    private void txtApellidoProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoProvKeyTyped
+        if (txtApellidoProv.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtApellidoProvKeyTyped
+
+    private void txtTelefonoProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoProvKeyTyped
+        if (txtTelefonoProv.getText().length() > 10) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite números");
+        }
+    }//GEN-LAST:event_txtTelefonoProvKeyTyped
+
+    private void txtCorreoProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCorreoProvKeyTyped
+        if (txtCorreoProv.getText().length() > 150) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+    }//GEN-LAST:event_txtCorreoProvKeyTyped
+
+    private void txtFiltroProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroProvKeyTyped
+        if (txtFiltroProv.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetterOrDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras y números");
+        }
+    }//GEN-LAST:event_txtFiltroProvKeyTyped
+
+    private void txtProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProvModKeyTyped
+        if (txtProvMod.getText().length() > 10) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite números");
+        }
+    }//GEN-LAST:event_txtProvModKeyTyped
+
+    private void txtEmpresaProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmpresaProvModKeyTyped
+        if (txtEmpresaProvMod.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetterOrDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras y números");
+        }
+    }//GEN-LAST:event_txtEmpresaProvModKeyTyped
+
+    private void txtCiudadProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCiudadProvModKeyTyped
+        if (txtCiudadProvMod.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtCiudadProvModKeyTyped
+
+    private void txtColoniaProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtColoniaProvModKeyTyped
+        if (txtColoniaProvMod.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtColoniaProvModKeyTyped
+
+    private void txtCpProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCpProvModKeyTyped
+        if (txtCpProvMod.getText().length() > 10) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite números");
+        }
+    }//GEN-LAST:event_txtCpProvModKeyTyped
+
+    private void txtCalleProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCalleProvModKeyTyped
+        if (txtCalleProvMod.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtCalleProvModKeyTyped
+
+    private void txtNumeroProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroProvModKeyTyped
+        if (txtNumeroProvMod.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetterOrDigit(key) || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_MINUS)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras, números y guion");
+        }
+    }//GEN-LAST:event_txtNumeroProvModKeyTyped
+
+    private void txtNombreProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreProvModKeyTyped
+        if (txtNombreProvMod.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtNombreProvModKeyTyped
+
+    private void txtApellidoProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoProvModKeyTyped
+        if (txtApellidoProvMod.getText().length() > 50) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtApellidoProvModKeyTyped
+
+    private void txtTelefonoProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoProvModKeyTyped
+        if (txtTelefonoProvMod.getText().length() > 10) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite números");
+        }
+    }//GEN-LAST:event_txtTelefonoProvModKeyTyped
+
+    private void txtCorreoProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCorreoProvModKeyTyped
+        if (txtCorreoProv.getText().length() > 150) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+    }//GEN-LAST:event_txtCorreoProvModKeyTyped
+
+    private void txtProvBorrarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProvBorrarKeyTyped
+        if (txtProvBorrar.getText().length() > 10) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite números");
+        }
+    }//GEN-LAST:event_txtProvBorrarKeyTyped
 
     /**
      * @param args the command line arguments
@@ -4196,6 +4917,7 @@ public class mdi extends javax.swing.JFrame {
             }
         });
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarProdPedido;
@@ -4268,18 +4990,24 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JButton btnProv;
     private javax.swing.JButton btnProvBorrar;
     private javax.swing.JButton btnProvMod;
+    private javax.swing.JButton btnUsuarioEmp;
+    private javax.swing.JButton btnUsuarioEmpMod;
     private javax.swing.JButton btnVenta;
     private javax.swing.JButton btnVentaBorrar;
     private javax.swing.JButton btnVentaBuscarBorrar;
     private javax.swing.JButton btnVentaMod;
     private javax.swing.JComboBox<String> cbEstadoCliente;
+    private javax.swing.JComboBox<String> cbEstadoClienteMod;
     private javax.swing.JComboBox<String> cbEstadoEmp;
+    private javax.swing.JComboBox<String> cbEstadoEmpMod;
     private javax.swing.JComboBox<String> cbEstadoPedido;
     private javax.swing.JComboBox<String> cbEstadoPedidoMod;
     private javax.swing.JComboBox<String> cbEstadoProd;
+    private javax.swing.JComboBox<String> cbEstadoProdMod;
     private javax.swing.JComboBox<String> cbEstadoProv;
-    private javax.swing.JComboBox<String> cbEstadoVenta1;
-    private javax.swing.JComboBox<String> cbEstadoVenta3;
+    private javax.swing.JComboBox<String> cbEstadoProvMod;
+    private javax.swing.JComboBox<String> cbEstadoVenta;
+    private javax.swing.JComboBox<String> cbEstadoVentaMod;
     private javax.swing.JComboBox<String> cbProdPedido;
     private javax.swing.JComboBox<String> cbProdPedidoMod;
     private javax.swing.JComboBox<String> cbProdVenta;
@@ -4293,6 +5021,7 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JInternalFrame ifrProv;
     private javax.swing.JInternalFrame ifrVenta;
     private javax.swing.JComboBox<String> jComboBox7;
+    private javax.swing.JComboBox<String> jComboBox8;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -4308,6 +5037,7 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
@@ -4318,6 +5048,7 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
@@ -4366,6 +5097,7 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel78;
     private javax.swing.JLabel jLabel79;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel80;
     private javax.swing.JLabel jLabel82;
     private javax.swing.JLabel jLabel83;
     private javax.swing.JLabel jLabel84;
@@ -4381,6 +5113,7 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel95;
     private javax.swing.JLabel jLabel96;
     private javax.swing.JLabel jLabel97;
+    private javax.swing.JLabel jLabel98;
     private javax.swing.JLabel jLabel99;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
@@ -4503,7 +5236,7 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JTextField txtClienteMod;
     private javax.swing.JTextField txtColoniaProv;
     private javax.swing.JTextField txtColoniaProvMod;
-    private javax.swing.JTextField txtContrasenaEmp1;
+    private javax.swing.JTextField txtContrasenaEmp;
     private javax.swing.JTextField txtContrasenaEmpMod;
     private javax.swing.JTextField txtCorreoCliente;
     private javax.swing.JTextField txtCorreoClienteMod;
@@ -4536,7 +5269,7 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JTextField txtImpuestoPedido;
     private javax.swing.JTextField txtImpuestoPedidoMod;
     private javax.swing.JTextField txtImpuestoVenta;
-    private javax.swing.JTextField txtImpuestoVenta1;
+    private javax.swing.JTextField txtImpuestoVentaMod;
     private javax.swing.JTextField txtNombreCliente;
     private javax.swing.JTextField txtNombreClienteMod;
     private javax.swing.JTextField txtNombreEmp;
@@ -4562,7 +5295,7 @@ public class mdi extends javax.swing.JFrame {
     private javax.swing.JTextField txtTotalPedido;
     private javax.swing.JTextField txtTotalPedidoMod;
     private javax.swing.JTextField txtTotalVenta;
-    private javax.swing.JTextField txtTotalVenta1;
+    private javax.swing.JTextField txtTotalVentaMod;
     private javax.swing.JTextField txtUsuarioEmp;
     private javax.swing.JTextField txtUsuarioEmp1;
     // End of variables declaration//GEN-END:variables

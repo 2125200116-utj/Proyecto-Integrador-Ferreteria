@@ -4,7 +4,7 @@ package dto;
 import java.util.Objects;
 
 public class Empleado {
-    private int id;
+    private int idEmpleado;
     private String usuario;
     private String contrasena;
     private String nombre;
@@ -14,12 +14,12 @@ public class Empleado {
     private byte[] imagen;
     private String estado;
 
-    public int getId() {
-        return id;
+    public int getIdEmpleado() {
+        return idEmpleado;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdEmpleado(int idEmpleado) {
+        this.idEmpleado = idEmpleado;
     }
 
     public String getUsuario() {
@@ -89,7 +89,7 @@ public class Empleado {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 61 * hash + this.id;
+        hash = 61 * hash + this.idEmpleado;
         return hash;
     }
 
@@ -105,12 +105,12 @@ public class Empleado {
             return false;
         }
         final Empleado other = (Empleado) obj;
-        return this.id == other.id;
+        return this.idEmpleado == other.idEmpleado;
     }
 
     @Override
     public String toString() {
-        return "\n Empleado{" + "\nid=" + id + ", \nusuario=" + usuario + 
+        return "\n Empleado{" + "\nid=" + idEmpleado + ", \nusuario=" + usuario + 
                 ", \ncontrasena=" + contrasena + ", \nnombre=" + nombre + 
                 ", \napellido=" + apellido + ", \ntelefono=" + telefono + 
                 ", \nrol=" + rol + ", \nimagen=" + imagen + ", \nestado=" 

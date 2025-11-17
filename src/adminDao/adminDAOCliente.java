@@ -1,11 +1,11 @@
-package dao;
+package adminDao;
 
 import bd.ConectorBaseDeDatos;
 import dto.Cliente;
 import java.util.ArrayList;
 import java.sql.*;
 
-public class DAOCliente implements DAO<Cliente>{
+public class adminDAOCliente implements adminDAO<Cliente>{
 
     @Override
     public boolean insertar(Cliente cliente) {
@@ -35,12 +35,11 @@ public class DAOCliente implements DAO<Cliente>{
     @Override
     public ArrayList<Cliente> seleccionarTodos() {
         ArrayList<Cliente> registros=new ArrayList<>();
-        String sql = "select * from cliente where estado=?";
+        String sql = "select * from cliente";
         Connection con = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
-            query.setString(1, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while(respuestaSQL.next()){
                 Cliente registro = new Cliente();
@@ -64,14 +63,13 @@ public class DAOCliente implements DAO<Cliente>{
     @Override
     public ArrayList<Cliente> seleccionarAlgunos(String nombre) {
         ArrayList<Cliente> registros=new ArrayList<>();
-        String sql = "select * from cliente where nombre=? and estado=?";
+        String sql = "select * from cliente where nombre=?";
         Connection con = null;
         Cliente registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
             query.setString(1, nombre);
-            query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while(respuestaSQL.next()){
                 registro = new Cliente();
@@ -95,14 +93,13 @@ public class DAOCliente implements DAO<Cliente>{
     @Override
     public Cliente seleccionarId(int idCliente) {
         ArrayList<Cliente> registros=new ArrayList<>();
-        String sql = "select * from cliente where idCliente=? and estado=?";
+        String sql = "select * from cliente where idCliente=?";
         Connection con = null;
         Cliente registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
             query.setInt(1, idCliente);
-            query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while(respuestaSQL.next()){
                 registro = new Cliente();
@@ -127,7 +124,7 @@ public class DAOCliente implements DAO<Cliente>{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "update cliente set nombre=?, apellido=?, telefono=?, "
-                + "correo=?, imagen=? where idCliente=? and estado=?";
+                + "correo=?, imagen=? where idCliente=?";
         try {
             con=ConectorBaseDeDatos.conectar();
             query=con.prepareStatement(sql);
@@ -136,8 +133,8 @@ public class DAOCliente implements DAO<Cliente>{
             query.setString(3, cliente.getTelefono());
             query.setString(4, cliente.getCorreo());
             query.setBytes(5, cliente.getImagen());
-            query.setInt(6, cliente.getIdCliente());
-            query.setString(7, "ACTIVO");
+            query.setString(6, cliente.getEstado());
+            query.setInt(7, cliente.getIdCliente());
             int res=query.executeUpdate();
             return(res>0);
         } catch (Exception e) {
@@ -152,12 +149,11 @@ public class DAOCliente implements DAO<Cliente>{
     public boolean borrar(int idCliente) {
         Connection con = null;
         PreparedStatement query = null;
-        String sql = "update cliente set estado=? where idCliente=?";
+        String sql = "delete from cliente where idCliente=?";
         try {
             con=ConectorBaseDeDatos.conectar();
             query=con.prepareStatement(sql);
-            query.setString(1, "INACTIVO");
-            query.setInt(2, idCliente);
+            query.setInt(1, idCliente);
             int res=query.executeUpdate();
             return(res>0);
         } catch (Exception e) {

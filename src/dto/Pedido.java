@@ -2,18 +2,18 @@
 package dto;
 
 public class Pedido {
-    private int id;
+    private int idPedido;
     private double impuesto;
     private String fecha;
     private double total;
     private String estado;
 
-    public int getId() {
-        return id;
+    public int getIdPedido() {
+        return idPedido;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
     }
 
     public double getImpuesto() {
@@ -51,7 +51,7 @@ public class Pedido {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 53 * hash + this.id;
+        hash = 53 * hash + this.idPedido;
         return hash;
     }
 
@@ -67,12 +67,12 @@ public class Pedido {
             return false;
         }
         final Pedido other = (Pedido) obj;
-        return this.id == other.id;
+        return this.idPedido == other.idPedido;
     }
 
     @Override
     public String toString() {
-        return "\nPedido{" + "\nid=" + id + ", \nimpuesto=" + impuesto + 
+        return "\nPedido{" + "\nid=" + idPedido + ", \nimpuesto=" + impuesto + 
                 ", \nfecha=" + fecha + ", \ntotal=" + total + ",\n estado=" 
                 + estado + "}\n";
     }

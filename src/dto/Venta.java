@@ -2,17 +2,18 @@
 package dto;
 
 public class Venta {
-    private int id;
+    private int idVenta;
     private String fecha;
     private double total;
+    private double impuesto;
     private String estado;
 
-    public int getId() {
-        return id;
+    public int getIdVenta() {
+        return idVenta;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdVenta(int idVenta) {
+        this.idVenta = idVenta;
     }
 
     public String getFecha() {
@@ -31,6 +32,14 @@ public class Venta {
         this.total = total;
     }
 
+    public double getImpuesto() {
+        return impuesto;
+    }
+
+    public void setImpuesto(double impuesto) {
+        this.impuesto = impuesto;
+    }
+
     public String getEstado() {
         return estado;
     }
@@ -41,8 +50,8 @@ public class Venta {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 23 * hash + this.id;
+        int hash = 7;
+        hash = 47 * hash + this.idVenta;
         return hash;
     }
 
@@ -58,14 +67,15 @@ public class Venta {
             return false;
         }
         final Venta other = (Venta) obj;
-        return this.id == other.id;
+        return this.idVenta == other.idVenta;
     }
 
     @Override
     public String toString() {
-        return "\nVenta{" + "\nid=" + id + ", \nfecha=" + fecha + ", \ntotal=" + 
-                total + ", \nestado=" + estado + "}\n";
+        return "\nVenta{" + "\nidVenta=" + idVenta + "\n, fecha=" + fecha + 
+                "\n, total=" + total + "\n, impuesto=" + impuesto + "\n, estado=" + estado + "\n}";
     }
+
     
     
 }

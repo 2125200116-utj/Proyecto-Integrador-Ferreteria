@@ -3,7 +3,7 @@ package dto;
 import java.util.Objects;
 
 public class Proveedor {
-    private int id;
+    private int idProveedor;
     private String nombre;
     private String apellido;
     private String telefono;
@@ -17,12 +17,12 @@ public class Proveedor {
     private String numero;
     private String estado;
 
-    public int getId() {
-        return id;
+    public int getIdProveedor() {
+        return idProveedor;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdProveedor(int idProveedor) {
+        this.idProveedor = idProveedor;
     }
 
     public String getNombre() {
@@ -124,7 +124,7 @@ public class Proveedor {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 17 * hash + this.id;
+        hash = 17 * hash + this.idProveedor;
         return hash;
     }
 
@@ -140,12 +140,12 @@ public class Proveedor {
             return false;
         }
         final Proveedor other = (Proveedor) obj;
-        return this.id == other.id;
+        return this.idProveedor == other.idProveedor;
     }
 
     @Override
     public String toString() {
-        return "\nProveedor{" + "\nid=" + id + ", \nnombre=" + nombre + 
+        return "\nProveedor{" + "\nid=" + idProveedor + ", \nnombre=" + nombre + 
                 ", \napellido=" + apellido + ", \ntelefono=" + telefono + 
                 ", \nimagen=" + imagen + ", \nempresa=" + empresa + 
                 ", \ncorreo=" + correo + ", \nciudad=" + ciudad + ", \ncolonia=" 

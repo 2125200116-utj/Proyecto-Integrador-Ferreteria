@@ -109,7 +109,7 @@ public class aut extends javax.swing.JFrame {
         String contrasenaString = new String (contrasenaChar);
         
         if (!(txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0)) {
-            if (daoAut.auth(txtUsuario.getText(), contrasenaString)) {
+            if (daoAut.aut(txtUsuario.getText(), contrasenaString)) {
                 JFrame app = new mdi();
                 app.setVisible(true);
                 app.setTitle("FERRETERÍA - " + txtUsuario.getText());

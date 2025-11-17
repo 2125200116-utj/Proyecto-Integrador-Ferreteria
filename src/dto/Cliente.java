@@ -4,7 +4,7 @@ package dto;
 import java.util.Objects;
 
 public class Cliente {
-    private int id;
+    private int idCliente;
     private String nombre;
     private String apellido;
     private String telefono;
@@ -12,12 +12,12 @@ public class Cliente {
     private byte[] imagen;
     private String estado;
 
-    public int getId() {
-        return id;
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getNombre() {
@@ -71,7 +71,7 @@ public class Cliente {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 23 * hash + this.id;
+        hash = 23 * hash + this.idCliente;
         return hash;
     }
 
@@ -87,12 +87,12 @@ public class Cliente {
             return false;
         }
         final Cliente other = (Cliente) obj;
-        return this.id == other.id;
+        return this.idCliente == other.idCliente;
     }
 
     @Override
     public String toString() {
-        return "\nCliente{" + "\nid=" + id + "\n, nombre=" + nombre + 
+        return "\nCliente{" + "\nid=" + idCliente + "\n, nombre=" + nombre + 
                 "\n, apellido=" + apellido + ", \ntelefono=" + telefono + 
                 ", \ncorreo=" + correo + ", \nimagen=" + imagen + ", \nestado="
                 + estado + "}\n";

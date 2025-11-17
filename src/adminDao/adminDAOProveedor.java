@@ -1,11 +1,11 @@
-package dao;
+package adminDao;
 
 import bd.ConectorBaseDeDatos;
 import dto.Proveedor;
 import java.util.ArrayList;
 import java.sql.*;
 
-public class DAOProveedor implements DAO<Proveedor>{
+public class adminDAOProveedor implements adminDAO<Proveedor>{
 
     @Override
     public boolean insertar(Proveedor prov) {
@@ -43,12 +43,11 @@ public class DAOProveedor implements DAO<Proveedor>{
     @Override
     public ArrayList<Proveedor> seleccionarTodos() {
         ArrayList<Proveedor> registros=new ArrayList<>();
-        String sql = "select * from proveedor where estado=?";
+        String sql = "select * from proveedor";
         Connection con = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
-            query.setString(1, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while(respuestaSQL.next()){
                 Proveedor registro = new Proveedor();
@@ -78,14 +77,13 @@ public class DAOProveedor implements DAO<Proveedor>{
     @Override
     public ArrayList<Proveedor> seleccionarAlgunos(String empresa) {
         ArrayList<Proveedor> registros=new ArrayList<>();
-        String sql = "select * from proveedor where empresa=? and estado=?";
+        String sql = "select * from proveedor where empresa=?";
         Connection con = null;
         Proveedor registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
             query.setString(1, empresa);
-            query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while(respuestaSQL.next()){
             registro = new Proveedor();
@@ -115,14 +113,13 @@ public class DAOProveedor implements DAO<Proveedor>{
     @Override
     public Proveedor seleccionarId(int idProveedor) {
         ArrayList<Proveedor> registros=new ArrayList<>();
-        String sql = "select * from proveedor where idProveedor=? and estado=?";
+        String sql = "select * from proveedor where idProveedor=?";
         Connection con = null;
         Proveedor registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
             query.setInt(1, idProveedor);
-            query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while(respuestaSQL.next()){
             registro = new Proveedor();
@@ -155,7 +152,7 @@ public class DAOProveedor implements DAO<Proveedor>{
         PreparedStatement query = null;
         String sql=" update proveedor set nombre=?, apellido=?, telefono=?, "
                 + "imagen=?, empresa=?, correo=?, ciudad=?, colonia=?, "
-                + "codigoPostal=?, calle=?, numero=? where idProveedor=?";
+                + "codigoPostal=?, calle=?, numero=?, estado=? where idProveedor=?";
         try{
             con=ConectorBaseDeDatos.conectar();
             query=con.prepareStatement(sql);
@@ -170,7 +167,8 @@ public class DAOProveedor implements DAO<Proveedor>{
             query.setString(9, prov.getCodigoPostal());
             query.setString(10, prov.getCalle());
             query.setString(11, prov.getNumero());
-            query.setInt(12, prov.getIdProveedor());
+            query.setString(12, prov.getEstado());
+            query.setInt(13, prov.getIdProveedor());
             int res=query.executeUpdate();
             return(res>0);
         } catch(Exception e) {
@@ -185,12 +183,11 @@ public class DAOProveedor implements DAO<Proveedor>{
     public boolean borrar(int idProveedor) {
         Connection con = null;
         PreparedStatement query = null;
-        String sql=" update proveedor set estado=? where idProveedor=?";
+        String sql=" delete from proveedor where idProveedor=?";
         try{
             con=ConectorBaseDeDatos.conectar();
             query=con.prepareStatement(sql);
-            query.setString(1, "INACTIVO");
-            query.setInt(2, idProveedor);
+            query.setInt(1, idProveedor);
             int res=query.executeUpdate();
             return(res>0);
         } catch(Exception e) {

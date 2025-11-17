@@ -3,7 +3,7 @@ package dto;
 import java.util.Objects;
 
 public class Producto {
-    private int id;
+    private int idProducto;
     private String nombre;
     private String descripcion;
     private double precio;
@@ -13,12 +13,12 @@ public class Producto {
     private int existencia;
     private String estado;
 
-    public int getId() {
-        return id;
+    public int getIdProducto() {
+        return idProducto;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
     public String getNombre() {
@@ -88,7 +88,7 @@ public class Producto {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 23 * hash + this.id;
+        hash = 23 * hash + this.idProducto;
         return hash;
     }
 
@@ -104,12 +104,12 @@ public class Producto {
             return false;
         }
         final Producto other = (Producto) obj;
-        return this.id == other.id;
+        return this.idProducto == other.idProducto;
     }
 
     @Override
     public String toString() {
-        return "\nProducto{" + "\nid=" + id + ", \nnombre=" + nombre + 
+        return "\nProducto{" + "\nid=" + idProducto + ", \nnombre=" + nombre + 
                 ", \ndescripcion=" + descripcion + ", \nprecio=" + precio + 
                 ", \nimagen1=" + imagen1 + ", \nimagen2=" + imagen2 + 
                 ", \nimagen3=" + imagen3 + ", \nexistencia=" + existencia + 

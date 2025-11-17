@@ -1,11 +1,11 @@
-package dao;
+package adminDao;
 
 import bd.ConectorBaseDeDatos;
 import dto.Empleado;
 import java.util.ArrayList;
 import java.sql.*;
 
-public class DAOEmpleado implements DAO<Empleado>{
+public class adminDAOEmpleado implements adminDAO<Empleado>{
 
     @Override
     public boolean insertar(Empleado empleado) {
@@ -36,12 +36,11 @@ public class DAOEmpleado implements DAO<Empleado>{
     @Override
     public ArrayList<Empleado> seleccionarTodos() {
         ArrayList<Empleado> registros= new ArrayList<>();
-        String sql="select * from empleado where estado=?";
+        String sql="select * from empleado";
         Connection con=null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
-            query.setString(1, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while(respuestaSQL.next()){
                 Empleado registro = new Empleado();
@@ -67,14 +66,13 @@ public class DAOEmpleado implements DAO<Empleado>{
     @Override
     public ArrayList<Empleado> seleccionarAlgunos(String nombre) {
         ArrayList<Empleado> registros= new ArrayList<>();
-        String sql="select * from empleado where nombre=? and estado=?";
+        String sql="select * from empleado where nombre=?";
         Connection con=null;
         Empleado registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
             query.setString(1, nombre);
-            query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             
             while(respuestaSQL.next()){
@@ -101,14 +99,13 @@ public class DAOEmpleado implements DAO<Empleado>{
     @Override
     public Empleado seleccionarId(int idEmpleado) {
         ArrayList<Empleado> registros= new ArrayList<>();
-        String sql="select * from empleado where idEmpleado=? and estado=?";
+        String sql="select * from empleado where idEmpleado=?";
         Connection con=null;
         Empleado registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
             query.setInt(1, idEmpleado);
-            query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             
             while(respuestaSQL.next()){
@@ -137,7 +134,7 @@ public class DAOEmpleado implements DAO<Empleado>{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "update empleado set contrasena=?, nombre=?, "
-                + "apellido=?, telefono=?, rol=?, imagen=? where idEmpleado=? and estado=?";
+                + "apellido=?, telefono=?, rol=?, imagen=?, estado=? where idEmpleado=?";
         try {
             con=ConectorBaseDeDatos.conectar();
             query=con.prepareStatement(sql);
@@ -147,8 +144,8 @@ public class DAOEmpleado implements DAO<Empleado>{
             query.setString(4, usuario.getTelefono());
             query.setString(5, usuario.getRol());
             query.setBytes(6, usuario.getImagen());
-            query.setInt(7, usuario.getIdEmpleado());
-            query.setString(8, "ACTIVO");
+            query.setString(7, usuario.getEstado());
+            query.setInt(8, usuario.getIdEmpleado());
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
@@ -163,12 +160,11 @@ public class DAOEmpleado implements DAO<Empleado>{
     public boolean borrar(int idEmpleado) {
         Connection con = null;
         PreparedStatement query = null;
-        String sql = "update empleado set estado=? where idEmpleado=?";
+        String sql = "delete from empleado where idEmpleado=?";
         try {
             con=ConectorBaseDeDatos.conectar();
             query=con.prepareStatement(sql);
-            query.setString(1, "INACTIVO");
-            query.setInt(2, idEmpleado);
+            query.setInt(1, idEmpleado);
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
@@ -178,7 +174,6 @@ public class DAOEmpleado implements DAO<Empleado>{
         }
         return false;
     }
-    
     
     public int seleccionarUltimoId() {
         int id = 0;

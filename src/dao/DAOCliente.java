@@ -136,7 +136,7 @@ public class DAOCliente implements DAO<Cliente>{
             query.setString(3, cliente.getTelefono());
             query.setString(4, cliente.getCorreo());
             query.setBytes(5, cliente.getImagen());
-            query.setInt(6, cliente.getIdCliente());
+            query.setInt(6, idCliente);
             query.setString(7, "ACTIVO");
             int res=query.executeUpdate();
             return(res>0);

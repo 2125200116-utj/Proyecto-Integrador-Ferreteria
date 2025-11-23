@@ -155,7 +155,7 @@ public class DAOProveedor implements DAO<Proveedor>{
         PreparedStatement query = null;
         String sql=" update proveedor set nombre=?, apellido=?, telefono=?, "
                 + "imagen=?, empresa=?, correo=?, ciudad=?, colonia=?, "
-                + "codigoPostal=?, calle=?, numero=? where idProveedor=?";
+                + "codigoPostal=?, calle=?, numero=? where idProveedor=? and estado=?";
         try{
             con=ConectorBaseDeDatos.conectar();
             query=con.prepareStatement(sql);
@@ -170,7 +170,8 @@ public class DAOProveedor implements DAO<Proveedor>{
             query.setString(9, prov.getCodigoPostal());
             query.setString(10, prov.getCalle());
             query.setString(11, prov.getNumero());
-            query.setInt(12, prov.getIdProveedor());
+            query.setInt(12, idProveedor);
+            query.setString(13, "ACTIVO");
             int res=query.executeUpdate();
             return(res>0);
         } catch(Exception e) {

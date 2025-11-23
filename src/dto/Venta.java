@@ -3,6 +3,8 @@ package dto;
 
 public class Venta {
     private int idVenta;
+    private int idCliente;
+    private int idEmpleado;
     private String fecha;
     private double total;
     private double impuesto;
@@ -14,6 +16,22 @@ public class Venta {
 
     public void setIdVenta(int idVenta) {
         this.idVenta = idVenta;
+    }
+
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public int getIdEmpleado() {
+        return idEmpleado;
+    }
+
+    public void setIdEmpleado(int idEmpleado) {
+        this.idEmpleado = idEmpleado;
     }
 
     public String getFecha() {
@@ -50,7 +68,7 @@ public class Venta {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        int hash = 5;
         hash = 47 * hash + this.idVenta;
         return hash;
     }
@@ -72,10 +90,10 @@ public class Venta {
 
     @Override
     public String toString() {
-        return "\nVenta{" + "\nidVenta=" + idVenta + "\n, fecha=" + fecha + 
-                "\n, total=" + total + "\n, impuesto=" + impuesto + "\n, estado=" + estado + "\n}";
+        return "\nVenta{" + "\nidVenta=" + idVenta + ", \nidCliente=" + idCliente + 
+                ", \nidEmpleado=" + idEmpleado + ", \nfecha=" + fecha + ", \ntotal=" + 
+                total + ", \nimpuesto=" + impuesto + ", \nestado=" + estado + "\n}";
     }
 
-    
     
 }

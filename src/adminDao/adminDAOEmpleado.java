@@ -11,8 +11,8 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
     public boolean insertar(Empleado empleado) {
         Connection con = null;
         PreparedStatement query = null;
-        String sql = "insert into empleado (usuario, contrasena, nombre, apellido, telefono, telefono, rol, imagen, estado)"
-                + "values (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into empleado (usuario, contrasena, nombre, apellido, telefono, rol, imagen, estado)"
+                + "values (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             con=ConectorBaseDeDatos.conectar();
             query=con.prepareStatement(sql);
@@ -23,6 +23,7 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
             query.setString(5, empleado.getTelefono());
             query.setString(6, empleado.getRol());
             query.setBytes(7, empleado.getImagen());
+            query.setString(8, empleado.getEstado());
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
@@ -145,7 +146,7 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
             query.setString(5, usuario.getRol());
             query.setBytes(6, usuario.getImagen());
             query.setString(7, usuario.getEstado());
-            query.setInt(8, usuario.getIdEmpleado());
+            query.setInt(8, idEmpleado);
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {

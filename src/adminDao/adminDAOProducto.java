@@ -11,8 +11,8 @@ public class adminDAOProducto implements adminDAO<Producto> {
     public boolean insertar(Producto prod) {
         Connection con = null;
         PreparedStatement query = null;
-        String sql = " insert into producto (nombre, descripcion, precio, imagen1, imagen2, imagen3, existencia, estado)"
-                + "values(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = " insert into producto (nombre, descripcion, precio, imagen1, imagen2, imagen3, existencia, estado, idProveedor)"
+                + "values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             con = ConectorBaseDeDatos.conectar();
             query = con.prepareStatement(sql);
@@ -23,7 +23,8 @@ public class adminDAOProducto implements adminDAO<Producto> {
             query.setBytes(5, prod.getImagen2());
             query.setBytes(6, prod.getImagen3());
             query.setInt(7, prod.getExistencia());
-            query.setString(8, prod.getEstado());       
+            query.setString(8, prod.getEstado());  
+            query.setInt(9, prod.getIdProveedor());
             int res = query.executeUpdate();
             return (res > 0);
         } catch (Exception e) {
@@ -54,6 +55,7 @@ public class adminDAOProducto implements adminDAO<Producto> {
                 registro.setImagen3(respuestaSQL.getBytes("imagen3"));
                 registro.setExistencia(respuestaSQL.getInt("existencia"));
                 registro.setEstado(respuestaSQL.getString("estado"));
+                registro.setIdProveedor(respuestaSQL.getInt("idProveedor"));
                 registros.add(registro);
             }
         } catch (Exception e) {
@@ -86,6 +88,7 @@ public class adminDAOProducto implements adminDAO<Producto> {
                 registro.setImagen3(respuestaSQL.getBytes("imagen3"));
                 registro.setExistencia(respuestaSQL.getInt("existencia"));
                 registro.setEstado(respuestaSQL.getString("estado"));
+                registro.setIdProveedor(respuestaSQL.getInt("idProveedor"));
                 registros.add(registro);
             }
         } catch (Exception e) {
@@ -117,6 +120,7 @@ public class adminDAOProducto implements adminDAO<Producto> {
                 registro.setImagen3(respuestaSQL.getBytes("imagen3"));
                 registro.setExistencia(respuestaSQL.getInt("existencia"));
                 registro.setEstado(respuestaSQL.getString("estado"));
+                registro.setIdProveedor(respuestaSQL.getInt("idProveedor"));
             }
         } catch (Exception e) {
             System.out.println("Error de SQL: " + e.getMessage());
@@ -134,7 +138,7 @@ public class adminDAOProducto implements adminDAO<Producto> {
                 + "nombre=?, descripcion=?, "
                 + "precio=?, imagen1=?, "
                 + "imagen2=?, imagen3=?, "
-                + "existencia=?, estado=?"
+                + "existencia=?, estado=?, idProveedor=? "
                 + "where idProducto=?";
         try {
             con = ConectorBaseDeDatos.conectar();
@@ -147,7 +151,8 @@ public class adminDAOProducto implements adminDAO<Producto> {
             query.setBytes(6, prod.getImagen3());
             query.setInt(7, prod.getExistencia());
             query.setString(8, prod.getEstado());
-            query.setInt(9, prod.getIdProducto());
+            query.setInt(9, prod.getIdProveedor());
+            query.setInt(10, idProducto);
             int res = query.executeUpdate();
             return (res > 0);
         } catch (Exception e) {

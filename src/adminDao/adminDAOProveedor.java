@@ -4,6 +4,7 @@ import bd.ConectorBaseDeDatos;
 import dto.Proveedor;
 import java.util.ArrayList;
 import java.sql.*;
+import javax.swing.JComboBox;
 
 public class adminDAOProveedor implements adminDAO<Proveedor>{
 
@@ -168,7 +169,7 @@ public class adminDAOProveedor implements adminDAO<Proveedor>{
             query.setString(10, prov.getCalle());
             query.setString(11, prov.getNumero());
             query.setString(12, prov.getEstado());
-            query.setInt(13, prov.getIdProveedor());
+            query.setInt(13, idProveedor);
             int res=query.executeUpdate();
             return(res>0);
         } catch(Exception e) {

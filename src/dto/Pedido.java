@@ -3,6 +3,7 @@ package dto;
 
 public class Pedido {
     private int idPedido;
+    private int idProveedor;
     private double impuesto;
     private String fecha;
     private double total;
@@ -14,6 +15,14 @@ public class Pedido {
 
     public void setIdPedido(int idPedido) {
         this.idPedido = idPedido;
+    }
+
+    public int getIdProveedor() {
+        return idProveedor;
+    }
+
+    public void setIdProveedor(int idProveedor) {
+        this.idProveedor = idProveedor;
     }
 
     public double getImpuesto() {
@@ -50,8 +59,8 @@ public class Pedido {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 53 * hash + this.idPedido;
+        int hash = 7;
+        hash = 59 * hash + this.idPedido;
         return hash;
     }
 
@@ -72,10 +81,10 @@ public class Pedido {
 
     @Override
     public String toString() {
-        return "\nPedido{" + "\nid=" + idPedido + ", \nimpuesto=" + impuesto + 
-                ", \nfecha=" + fecha + ", \ntotal=" + total + ",\n estado=" 
-                + estado + "}\n";
+        return "\nPedido{" + "\nidPedido=" + idPedido + ", \nidProveedor=" + 
+                idProveedor + ", \nimpuesto=" + impuesto + ", \nfecha=" + fecha + 
+                ", \ntotal=" + total + ", \nestado=" + estado + "\n}";
     }
-    
-    
+
+        
 }

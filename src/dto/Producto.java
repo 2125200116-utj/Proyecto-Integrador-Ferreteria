@@ -12,6 +12,7 @@ public class Producto {
     private byte[] imagen3;
     private int existencia;
     private String estado;
+    private int idProveedor;
 
     public int getIdProducto() {
         return idProducto;
@@ -85,10 +86,18 @@ public class Producto {
         this.estado = estado;
     }
 
+    public int getIdProveedor() {
+        return idProveedor;
+    }
+
+    public void setIdProveedor(int idProveedor) {
+        this.idProveedor = idProveedor;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 23 * hash + this.idProducto;
+        hash = 59 * hash + this.idProducto;
         return hash;
     }
 
@@ -109,12 +118,14 @@ public class Producto {
 
     @Override
     public String toString() {
-        return "\nProducto{" + "\nid=" + idProducto + ", \nnombre=" + nombre + 
-                ", \ndescripcion=" + descripcion + ", \nprecio=" + precio + 
-                ", \nimagen1=" + imagen1 + ", \nimagen2=" + imagen2 + 
-                ", \nimagen3=" + imagen3 + ", \nexistencia=" + existencia + 
-                ", \nestado=" + estado + '}';
+        return "\nProducto{" + "\nidProducto=" + idProducto + ", \nnombre=" + 
+                nombre + ", \ndescripcion=" + descripcion + ", \nprecio=" + precio + 
+                ", \nimagen1=" + imagen1 + ", \nimagen2=" + imagen2 + ", \nimagen3=" + 
+                imagen3 + ", \nexistencia=" + existencia + ", \nestado=" + estado + 
+                ", \nidProveedor=" + idProveedor + "}\n";
     }
+
+    
 
     
     

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-public class aut extends javax.swing.JFrame {
+public class Aut extends javax.swing.JFrame {
     
     private DAOAut daoAut;
     
@@ -16,7 +16,7 @@ public class aut extends javax.swing.JFrame {
     private ArrayList<Empleado> registrosEmpleado;
     private Empleado empleado;
 
-    public aut() {
+    public Aut() {
         initComponents();
         ImageIcon redivo = new ImageIcon("/home/juan/Documents/UTJ/Tercer Cuatrimestre/Programación orientada a objetos/Netbeans/Sigf/src/iconos/redivo1.png");
         this.setIconImage(redivo.getImage());
@@ -41,7 +41,7 @@ public class aut extends javax.swing.JFrame {
         lblMensaje = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
         lblContrasena = new javax.swing.JLabel();
-        jpfContrasena = new javax.swing.JPasswordField();
+        pfContrasena = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("AUTENTICACIÓN");
@@ -49,6 +49,7 @@ public class aut extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(135, 75));
         getContentPane().setLayout(null);
 
+        btnIngresar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnIngresar.setText("Ingresar");
         btnIngresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -56,13 +57,15 @@ public class aut extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnIngresar);
-        btnIngresar.setBounds(100, 170, 111, 33);
+        btnIngresar.setBounds(100, 170, 94, 33);
 
+        jLabel2.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("Contraseña");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(0, 90, 101, 25);
+        jLabel2.setBounds(10, 90, 92, 33);
 
+        txtUsuario.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtUsuarioKeyTyped(evt);
@@ -71,10 +74,11 @@ public class aut extends javax.swing.JFrame {
         getContentPane().add(txtUsuario);
         txtUsuario.setBounds(110, 40, 150, 33);
 
+        jLabel4.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("Usuario");
         getContentPane().add(jLabel4);
-        jLabel4.setBounds(30, 40, 70, 25);
+        jLabel4.setBounds(30, 40, 70, 33);
 
         lblMensaje.setFont(new java.awt.Font("Cantarell", 3, 18)); // NOI18N
         lblMensaje.setForeground(new java.awt.Color(255, 0, 0));
@@ -91,13 +95,14 @@ public class aut extends javax.swing.JFrame {
         getContentPane().add(lblContrasena);
         lblContrasena.setBounds(260, 90, 40, 40);
 
-        jpfContrasena.addKeyListener(new java.awt.event.KeyAdapter() {
+        pfContrasena.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        pfContrasena.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                jpfContrasenaKeyTyped(evt);
+                pfContrasenaKeyTyped(evt);
             }
         });
-        getContentPane().add(jpfContrasena);
-        jpfContrasena.setBounds(110, 90, 150, 33);
+        getContentPane().add(pfContrasena);
+        pfContrasena.setBounds(110, 90, 150, 33);
 
         pack();
         setLocationRelativeTo(null);
@@ -105,14 +110,14 @@ public class aut extends javax.swing.JFrame {
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         
-        char[] contrasenaChar = jpfContrasena.getPassword();
+        char[] contrasenaChar = pfContrasena.getPassword();
         String contrasenaString = new String (contrasenaChar);
         
-        if (!(txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0)) {
+        if (!(txtUsuario.getText().isBlank() || pfContrasena.getPassword().length == 0)) {
             if (daoAut.aut(txtUsuario.getText(), contrasenaString)) {
-                JFrame app = new mdi();
-                app.setVisible(true);
-                app.setTitle("FERRETERÍA - " + txtUsuario.getText());
+                JFrame adminMDI = new AdminMDI();
+                adminMDI.setVisible(true);
+                adminMDI.setTitle("FERRETERÍA - " + txtUsuario.getText());
                 this.setVisible(false);                
             } else {
                 JOptionPane.showMessageDialog(this, "Datos incorrectos");
@@ -124,16 +129,16 @@ public class aut extends javax.swing.JFrame {
             lblUsuario.setText("");
         }
         
-        if (jpfContrasena.getPassword().length == 0) {
+        if (pfContrasena.getPassword().length == 0) {
             lblContrasena.setText("*");
         } else {
             lblContrasena.setText("");
         }
         
-        if (!(txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0)) {
+        if (!(txtUsuario.getText().isBlank() || pfContrasena.getPassword().length == 0)) {
             lblMensaje.setText("");
         }
-        if (txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0) {
+        if (txtUsuario.getText().isBlank() || pfContrasena.getPassword().length == 0) {
             lblMensaje.setText("* datos obligatorios");
         }
         
@@ -146,40 +151,40 @@ public class aut extends javax.swing.JFrame {
             lblUsuario.setText("");
         }
         
-        if (jpfContrasena.getPassword().length == 0) {
+        if (pfContrasena.getPassword().length == 0) {
             lblContrasena.setText("*");
         } else {
             lblContrasena.setText("");
         }
         
-        if (!(txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0)) {
+        if (!(txtUsuario.getText().isBlank() || pfContrasena.getPassword().length == 0)) {
             lblMensaje.setText("");
         }
-        if (txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0) {
+        if (txtUsuario.getText().isBlank() || pfContrasena.getPassword().length == 0) {
             lblMensaje.setText("* datos obligatorios");
         }
     }//GEN-LAST:event_txtUsuarioKeyTyped
 
-    private void jpfContrasenaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jpfContrasenaKeyTyped
+    private void pfContrasenaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pfContrasenaKeyTyped
         if (txtUsuario.getText().isBlank()) {
             lblUsuario.setText("*");
         } else {
             lblUsuario.setText("");
         }
         
-        if (jpfContrasena.getPassword().length == 0) {
+        if (pfContrasena.getPassword().length == 0) {
             lblContrasena.setText("*");
         } else {
             lblContrasena.setText("");
         }
         
-        if (!(txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0)) {
+        if (!(txtUsuario.getText().isBlank() || pfContrasena.getPassword().length == 0)) {
             lblMensaje.setText("");
         }
-        if (txtUsuario.getText().isBlank() || jpfContrasena.getPassword().length == 0) {
+        if (txtUsuario.getText().isBlank() || pfContrasena.getPassword().length == 0) {
             lblMensaje.setText("* datos obligatorios");
         }
-    }//GEN-LAST:event_jpfContrasenaKeyTyped
+    }//GEN-LAST:event_pfContrasenaKeyTyped
 
     /**
      * @param args the command line arguments
@@ -198,21 +203,23 @@ public class aut extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(aut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Aut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(aut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Aut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(aut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Aut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(aut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Aut.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new aut().setVisible(true);
+                new Aut().setVisible(true);
             }
         });
     }
@@ -221,10 +228,10 @@ public class aut extends javax.swing.JFrame {
     private javax.swing.JButton btnIngresar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPasswordField jpfContrasena;
     private javax.swing.JLabel lblContrasena;
     private javax.swing.JLabel lblMensaje;
     private javax.swing.JLabel lblUsuario;
+    private javax.swing.JPasswordField pfContrasena;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }

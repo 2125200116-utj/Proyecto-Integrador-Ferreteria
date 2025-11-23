@@ -151,8 +151,6 @@ public class Proveedor {
                 ", \ncorreo=" + correo + ", \nciudad=" + ciudad + ", \ncolonia=" 
                 + colonia + ", \ncodigoPostal=" + codigoPostal + ", \ncalle=" + 
                 calle + ", \nnumero=" + numero + ", \nestado=" + estado + "}\n";
-    }
-    
-    
+    }  
     
 }

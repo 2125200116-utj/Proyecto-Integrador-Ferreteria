@@ -124,7 +124,7 @@ public class adminDAOCliente implements adminDAO<Cliente>{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "update cliente set nombre=?, apellido=?, telefono=?, "
-                + "correo=?, imagen=? where idCliente=?";
+                + "correo=?, imagen=?, estado=? where idCliente=?";
         try {
             con=ConectorBaseDeDatos.conectar();
             query=con.prepareStatement(sql);
@@ -134,7 +134,7 @@ public class adminDAOCliente implements adminDAO<Cliente>{
             query.setString(4, cliente.getCorreo());
             query.setBytes(5, cliente.getImagen());
             query.setString(6, cliente.getEstado());
-            query.setInt(7, cliente.getIdCliente());
+            query.setInt(7, idCliente);
             int res=query.executeUpdate();
             return(res>0);
         } catch (Exception e) {

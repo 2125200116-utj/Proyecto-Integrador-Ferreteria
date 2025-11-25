@@ -6,34 +6,34 @@ import dto.Pedido;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DAOPedido implements DAO<Pedido>{
+public class DAOPedido{
     
-    @Override
-    public boolean insertar(Pedido pedido) {
+
+    public boolean insertar(Pedido pedido) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
-        String sql = " insert into pedido (idProveedor,impuesto,fecha,total,estado)"
-                + "values(?, ?, ?, ?, ?)";
+        String sql = " insert into pedido (idProveedor,precio,impuesto,fecha,total,estado)"
+                + "values(?, ?, ?, ?, ?, ?)";
         try {
             con = ConectorBaseDeDatos.conectar();
             query = con.prepareStatement(sql);
             query.setInt(1, pedido.getIdProveedor());
-            query.setDouble(2, pedido.getImpuesto());
-            query.setString(3, pedido.getFecha());
-            query.setDouble(4, pedido.getTotal());
-            query.setString(5, pedido.getEstado());
+            query.setDouble(2, pedido.getPrecio());
+            query.setDouble(3, pedido.getImpuesto());
+            query.setString(4, pedido.getFecha());
+            query.setDouble(5, pedido.getTotal());
+            query.setString(6, pedido.getEstado());
             int res = query.executeUpdate();
             return (res > 0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
     
-    @Override
-    public ArrayList<Pedido> seleccionarTodos() {
+ 
+    public ArrayList<Pedido> seleccionarTodos() throws Exception{
         ArrayList<Pedido> registros = new ArrayList<>();
         String sql = " select * from pedido where estado=?";
         Connection con = null;
@@ -46,6 +46,7 @@ public class DAOPedido implements DAO<Pedido>{
                 Pedido registro = new Pedido();
                 registro.setIdPedido(respuestaSQL.getInt("idPedido"));
                 registro.setIdProveedor(respuestaSQL.getInt("idProveedor"));
+                registro.setPrecio(respuestaSQL.getDouble("precio"));
                 registro.setImpuesto(respuestaSQL.getDouble("impuesto"));
                 registro.setFecha(respuestaSQL.getString("fecha"));
                 registro.setTotal(respuestaSQL.getDouble("total"));
@@ -53,29 +54,30 @@ public class DAOPedido implements DAO<Pedido>{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
         return registros;
     }
     
-    @Override
-    public ArrayList<Pedido> seleccionarAlgunos(String fecha){
+
+    public ArrayList<Pedido> seleccionarAlgunos(int idProveedor) throws Exception{
     ArrayList<Pedido> registros = new ArrayList<>();
-        String sql = " select * from pedido where fecha=? and estado=?";
+        String sql = "select * from pedido where idProveedor = ? and estado=?";
         Connection con = null;
         Pedido registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
-            query.setString(1, fecha);
+            query.setInt(1, idProveedor);
             query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while (respuestaSQL.next()) {
                 registro = new Pedido();
                 registro.setIdPedido(respuestaSQL.getInt("idPedido"));
                 registro.setIdProveedor(respuestaSQL.getInt("idProveedor"));
+                registro.setPrecio(respuestaSQL.getDouble("precio"));
                 registro.setImpuesto(respuestaSQL.getDouble("impuesto"));
                 registro.setFecha(respuestaSQL.getString("fecha"));
                 registro.setTotal(respuestaSQL.getDouble("total"));
@@ -83,15 +85,15 @@ public class DAOPedido implements DAO<Pedido>{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
         return registros;
     }
     
-    @Override
-    public Pedido seleccionarId(int idPedido){
+
+    public Pedido seleccionarId(int idPedido) throws Exception{
     ArrayList<Pedido> registros = new ArrayList<>();
         String sql = " select * from venta where idPedido=? and estado=?";
         Connection con = null;
@@ -106,6 +108,7 @@ public class DAOPedido implements DAO<Pedido>{
                 registro = new Pedido();
                 registro.setIdPedido(respuestaSQL.getInt("idPedido"));
                 registro.setIdProveedor(respuestaSQL.getInt("idProveedor"));
+                registro.setPrecio(respuestaSQL.getDouble("precio"));
                 registro.setImpuesto(respuestaSQL.getDouble("impuesto"));
                 registro.setFecha(respuestaSQL.getString("fecha"));
                 registro.setTotal(respuestaSQL.getDouble("total"));
@@ -113,41 +116,41 @@ public class DAOPedido implements DAO<Pedido>{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
         return registro;    
     }
     
-    @Override
-    public boolean actualizar(int idPedido, Pedido pedido){
+
+    public boolean actualizar(int idPedido, Pedido pedido) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
-        String sql = "update venta set idProveedor=?, impuesto=?, "
+        String sql = "update venta set idProveedor=?, precio=?, impuesto=?, "
                 + "fecha=?, total=?, estado=? where idPedido=? and estado=?";
         try {
             con=ConectorBaseDeDatos.conectar();
             query = con.prepareStatement(sql);
             query.setInt(1, pedido.getIdProveedor());
-            query.setDouble(2, pedido.getImpuesto());
-            query.setString(3, pedido.getFecha());
-            query.setDouble(4, pedido.getTotal());
-            query.setString(5, pedido.getEstado());
-            query.setInt(5, idPedido);
-            query.setString(6, "ACTIVO");
+            query.setDouble(2, pedido.getPrecio());
+            query.setDouble(3, pedido.getImpuesto());
+            query.setString(4, pedido.getFecha());
+            query.setDouble(5, pedido.getTotal());
+            query.setString(6, pedido.getEstado());
+            query.setInt(7, idPedido);
+            query.setString(8, "ACTIVO");
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
     
-    @Override
-    public boolean borrar(int idPedido){
+
+    public boolean borrar(int idPedido) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "update pedido set estado=? where idPedido=?";
@@ -159,11 +162,30 @@ public class DAOPedido implements DAO<Pedido>{
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
     
+    public int seleccionarUltimoId() throws Exception{
+        int id = 0;
+        String sql="select last_insert_id(idPedido) as id from pedido";
+        Connection con=null;
+        Pedido registro = null;
+        try {
+            con = ConectorBaseDeDatos.conectar();
+            PreparedStatement query = con.prepareStatement(sql);
+            ResultSet respuestaSQL = query.executeQuery();
+            
+            while(respuestaSQL.next()){
+                id = respuestaSQL.getInt("id");
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            ConectorBaseDeDatos.desconectar(con);
+        }
+        return id;
+    }
 }

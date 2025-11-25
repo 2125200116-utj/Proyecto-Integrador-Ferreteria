@@ -5,6 +5,8 @@ import dao.DAOAut;
 import dao.DAOEmpleado;
 import dto.Empleado;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
@@ -114,13 +116,17 @@ public class Aut extends javax.swing.JFrame {
         String contrasenaString = new String (contrasenaChar);
         
         if (!(txtUsuario.getText().isBlank() || pfContrasena.getPassword().length == 0)) {
-            if (daoAut.aut(txtUsuario.getText(), contrasenaString)) {
-                JFrame adminMDI = new AdminMDI();
-                adminMDI.setVisible(true);
-                adminMDI.setTitle("FERRETERÍA - " + txtUsuario.getText());
-                this.setVisible(false);                
-            } else {
-                JOptionPane.showMessageDialog(this, "Datos incorrectos");
+            try {
+                if (daoAut.aut(txtUsuario.getText(), contrasenaString)) {
+                    JFrame adminMDI = new AdminMDI();
+                    adminMDI.setVisible(true);
+                    adminMDI.setTitle("FERRETERÍA - " + txtUsuario.getText());
+                    this.setVisible(false);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Datos incorrectos");
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
             }
         }
         if (txtUsuario.getText().isBlank()) {

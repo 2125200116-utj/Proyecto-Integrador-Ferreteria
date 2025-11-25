@@ -8,7 +8,7 @@ import java.sql.*;
 public class DAOProveedor implements DAO<Proveedor>{
 
     @Override
-    public boolean insertar(Proveedor prov) {
+    public boolean insertar(Proveedor prov) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql=" insert into proveedor (nombre, apellido, telefono, "
@@ -33,15 +33,14 @@ public class DAOProveedor implements DAO<Proveedor>{
             int res=query.executeUpdate();
             return(res>0);
         } catch(Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
     @Override
-    public ArrayList<Proveedor> seleccionarTodos() {
+    public ArrayList<Proveedor> seleccionarTodos() throws Exception{
         ArrayList<Proveedor> registros=new ArrayList<>();
         String sql = "select * from proveedor where estado=?";
         Connection con = null;
@@ -68,7 +67,7 @@ public class DAOProveedor implements DAO<Proveedor>{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -76,15 +75,15 @@ public class DAOProveedor implements DAO<Proveedor>{
     }
 
     @Override
-    public ArrayList<Proveedor> seleccionarAlgunos(String empresa) {
+    public ArrayList<Proveedor> seleccionarAlgunos(String empresa) throws Exception{
         ArrayList<Proveedor> registros=new ArrayList<>();
-        String sql = "select * from proveedor where empresa=? and estado=?";
+        String sql = "select * from proveedor where empresa like ? and estado=?";
         Connection con = null;
         Proveedor registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
-            query.setString(1, empresa);
+            query.setString(1, "%" +empresa+"%");
             query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while(respuestaSQL.next()){
@@ -105,7 +104,7 @@ public class DAOProveedor implements DAO<Proveedor>{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -113,7 +112,7 @@ public class DAOProveedor implements DAO<Proveedor>{
     }
 
     @Override
-    public Proveedor seleccionarId(int idProveedor) {
+    public Proveedor seleccionarId(int idProveedor) throws Exception{
         ArrayList<Proveedor> registros=new ArrayList<>();
         String sql = "select * from proveedor where idProveedor=? and estado=?";
         Connection con = null;
@@ -142,7 +141,7 @@ public class DAOProveedor implements DAO<Proveedor>{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -150,7 +149,7 @@ public class DAOProveedor implements DAO<Proveedor>{
     }
 
     @Override
-    public boolean actualizar(int idProveedor, Proveedor prov) {
+    public boolean actualizar(int idProveedor, Proveedor prov) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql=" update proveedor set nombre=?, apellido=?, telefono=?, "
@@ -175,15 +174,14 @@ public class DAOProveedor implements DAO<Proveedor>{
             int res=query.executeUpdate();
             return(res>0);
         } catch(Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
     @Override
-    public boolean borrar(int idProveedor) {
+    public boolean borrar(int idProveedor) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql=" update proveedor set estado=? where idProveedor=?";
@@ -195,10 +193,9 @@ public class DAOProveedor implements DAO<Proveedor>{
             int res=query.executeUpdate();
             return(res>0);
         } catch(Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 }

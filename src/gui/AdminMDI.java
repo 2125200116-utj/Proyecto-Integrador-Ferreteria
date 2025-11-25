@@ -5,6 +5,8 @@
 package gui;
 
 import adminDao.adminDAOCliente;
+import adminDao.adminDAODetallePedido;
+import adminDao.adminDAODetalleVenta;
 import adminDao.adminDAOProducto;
 import adminDao.adminDAOProveedor;
 import adminDao.adminDAOEmpleado;
@@ -12,6 +14,8 @@ import adminDao.adminDAOPedido;
 import adminDao.adminDAOVenta;
 import bd.ConectorBaseDeDatos;
 import dto.Cliente;
+import dto.DetallePedido;
+import dto.DetalleVenta;
 import dto.Producto;
 import dto.Proveedor;
 import dto.Empleado;
@@ -27,6 +31,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,7 +41,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+import service.adminPedidoService;
+import service.adminVentaService;
 
 /**
  *
@@ -65,9 +74,20 @@ public class AdminMDI extends javax.swing.JFrame {
     private ArrayList<Pedido> registrosPedido;
     private Pedido pedido;
 
+    private adminDAODetallePedido adminDaoDetallePedido;
+    private ArrayList<DetallePedido> registrosDetallePedido;
+    private DetallePedido detallePedido;
+
     private adminDAOVenta adminDaoVenta;
     private ArrayList<Venta> registrosVenta;
     private Venta venta;
+
+    private adminDAODetalleVenta adminDaoDetalleVenta;
+    private ArrayList<DetalleVenta> registrosDetalleVenta;
+    private DetalleVenta detalleVenta;
+
+    private adminPedidoService adminPedidoService;
+    private adminVentaService adminVentaService;
 
     private JFileChooser selector = new JFileChooser();
     private FileNameExtensionFilter filtro = new FileNameExtensionFilter("Formato de imagen", "jpg", "png", "jpeg");
@@ -86,7 +106,12 @@ public class AdminMDI extends javax.swing.JFrame {
         adminDaoCliente = new adminDAOCliente();
         adminDaoEmpleado = new adminDAOEmpleado();
         adminDaoVenta = new adminDAOVenta();
+        adminDaoDetalleVenta = new adminDAODetalleVenta();
         adminDaoPedido = new adminDAOPedido();
+        adminDaoDetallePedido = new adminDAODetallePedido();
+         registrosDetallePedido = new ArrayList<>();
+         adminPedidoService = new adminPedidoService();
+         adminVentaService = new adminVentaService();
     }
 
     /**
@@ -124,7 +149,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         btnGuardarProd = new javax.swing.JButton();
-        txtPrecioProd = new javax.swing.JTextField();
+        txtPrecioVentaProd = new javax.swing.JTextField();
         txtExistenciaProd = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         txaDescripcionProd = new javax.swing.JTextArea();
@@ -144,8 +169,9 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel81 = new javax.swing.JLabel();
         txtProvProd = new javax.swing.JTextField();
         cbProvProd = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        txtPrecioCompraProd = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
-        btnConProd = new javax.swing.JButton();
         jScrollPane13 = new javax.swing.JScrollPane();
         txaConProd = new javax.swing.JTextArea();
         txtFiltroProd = new javax.swing.JTextField();
@@ -158,7 +184,7 @@ public class AdminMDI extends javax.swing.JFrame {
         lblPrecioModProd = new javax.swing.JLabel();
         btnProdMod = new javax.swing.JButton();
         lblImagen3ProdMod = new javax.swing.JLabel();
-        txtPrecioProdMod = new javax.swing.JTextField();
+        txtPrecioVentaProdMod = new javax.swing.JTextField();
         txtNombreProdMod = new javax.swing.JTextField();
         lblImagen1ProdMod = new javax.swing.JLabel();
         lblImagen2ProdMod = new javax.swing.JLabel();
@@ -180,6 +206,8 @@ public class AdminMDI extends javax.swing.JFrame {
         cbProvProdMod = new javax.swing.JComboBox<>();
         btnCancelarProdMod = new javax.swing.JButton();
         cbProdMod = new javax.swing.JComboBox<>();
+        lblPrecioModProd1 = new javax.swing.JLabel();
+        txtPrecioCompraProdMod = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel67 = new javax.swing.JLabel();
         txtProdBorrar = new javax.swing.JTextField();
@@ -194,7 +222,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel28 = new javax.swing.JLabel();
         btnGuardarPedido = new javax.swing.JButton();
-        txtIdProvPedido = new javax.swing.JTextField();
+        txtProvPedido = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
         jtPedido = new javax.swing.JTable();
         btnLimpiarPedido = new javax.swing.JButton();
@@ -203,44 +231,56 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel60 = new javax.swing.JLabel();
         txtCantidadPedido = new javax.swing.JTextField();
         btnAgregarProdPedido = new javax.swing.JButton();
-        txtIdProdPedido = new javax.swing.JTextField();
+        txtProdPedido = new javax.swing.JTextField();
         jLabel62 = new javax.swing.JLabel();
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
         txtImpuestoPedido = new javax.swing.JTextField();
         txtTotalPedido = new javax.swing.JTextField();
+        cbProdPedido = new javax.swing.JComboBox<>();
+        txtDescuentoPedido = new javax.swing.JTextField();
+        jLabel49 = new javax.swing.JLabel();
+        cbProvPedido = new javax.swing.JComboBox<>();
+        btnCancelarPedido = new javax.swing.JButton();
+        jTextField10 = new javax.swing.JTextField();
+        txtPrecioPedido = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
-        btnConPedido = new javax.swing.JButton();
         jScrollPane11 = new javax.swing.JScrollPane();
         txaConPedido = new javax.swing.JTextArea();
         txtFiltroPedido = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        txtIdPedido = new javax.swing.JTextField();
+        txtPedidoMod = new javax.swing.JTextField();
         btnBuscarPedido = new javax.swing.JButton();
         jLabel29 = new javax.swing.JLabel();
         btnGuardarPedidoMod = new javax.swing.JButton();
-        txtIdProvPedidoMod = new javax.swing.JTextField();
+        txtProvPedidoMod = new javax.swing.JTextField();
         jScrollPane19 = new javax.swing.JScrollPane();
         jtPedidoMod = new javax.swing.JTable();
         btnLimpiarPedidoMod = new javax.swing.JButton();
-        jLabel63 = new javax.swing.JLabel();
         cbEstadoPedidoMod = new javax.swing.JComboBox<>();
         jLabel75 = new javax.swing.JLabel();
         txtCantidadPedidoMod = new javax.swing.JTextField();
         btnAgregarProdPedidoMod = new javax.swing.JButton();
-        txtIdProdPedidoMod = new javax.swing.JTextField();
+        txtProdPedidoMod = new javax.swing.JTextField();
         jLabel77 = new javax.swing.JLabel();
         jTextField7 = new javax.swing.JTextField();
         jTextField8 = new javax.swing.JTextField();
         txtImpuestoPedidoMod = new javax.swing.JTextField();
         txtTotalPedidoMod = new javax.swing.JTextField();
-        cbBuscarPedidoMod = new javax.swing.JComboBox<>();
+        cbPedidoMod = new javax.swing.JComboBox<>();
         btnCancelarPedidoMod = new javax.swing.JButton();
+        cbProdPedidoMod = new javax.swing.JComboBox<>();
+        jLabel66 = new javax.swing.JLabel();
+        txtDescuentoPedidoMod = new javax.swing.JTextField();
+        jLabel76 = new javax.swing.JLabel();
+        cbProvPedidoMod = new javax.swing.JComboBox<>();
+        jTextField11 = new javax.swing.JTextField();
+        txtPrecioPedidoMod = new javax.swing.JTextField();
         jPanel18 = new javax.swing.JPanel();
         btnBuscarPedidoBorrar = new javax.swing.JButton();
-        txtIdPedidoBorrar = new javax.swing.JTextField();
+        txtPedidoBorrar = new javax.swing.JTextField();
         jLabel68 = new javax.swing.JLabel();
         btnPedidoBorrar = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -265,7 +305,6 @@ public class AdminMDI extends javax.swing.JFrame {
         btnImagenCliente = new javax.swing.JButton();
         btnLimpiarCliente = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
-        btnConClientes = new javax.swing.JButton();
         jScrollPane10 = new javax.swing.JScrollPane();
         txaConCliente = new javax.swing.JTextArea();
         txtFiltroCliente = new javax.swing.JTextField();
@@ -289,7 +328,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel36 = new javax.swing.JLabel();
         cbEstadoClienteMod = new javax.swing.JComboBox<>();
         btnCancelarClienteMod = new javax.swing.JButton();
-        cbBuscarClienteMod1 = new javax.swing.JComboBox<>();
+        cbClienteMod = new javax.swing.JComboBox<>();
         jPanel20 = new javax.swing.JPanel();
         btnBuscarClienteBorrar = new javax.swing.JButton();
         txtClienteBorrar = new javax.swing.JTextField();
@@ -329,7 +368,6 @@ public class AdminMDI extends javax.swing.JFrame {
         txtNumeroProv = new javax.swing.JTextField();
         cbEstadoProv = new javax.swing.JComboBox<>();
         jPanel10 = new javax.swing.JPanel();
-        btnConProv = new javax.swing.JButton();
         jScrollPane14 = new javax.swing.JScrollPane();
         txaConProv = new javax.swing.JTextArea();
         txtFiltroProv = new javax.swing.JTextField();
@@ -365,7 +403,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel98 = new javax.swing.JLabel();
         cbEstadoProvMod = new javax.swing.JComboBox<>();
         btnCancelarProdMod1 = new javax.swing.JButton();
-        cbBuscarProvMod = new javax.swing.JComboBox<>();
+        cbProvMod = new javax.swing.JComboBox<>();
         jPanel22 = new javax.swing.JPanel();
         btnBuscarProvBorrar = new javax.swing.JButton();
         txtProvBorrar = new javax.swing.JTextField();
@@ -401,7 +439,6 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel61 = new javax.swing.JLabel();
         pfContrasena2Emp = new javax.swing.JPasswordField();
         jPanel12 = new javax.swing.JPanel();
-        btnConEmp = new javax.swing.JButton();
         jScrollPane12 = new javax.swing.JScrollPane();
         txaConEmp = new javax.swing.JTextArea();
         txtFiltroEmp = new javax.swing.JTextField();
@@ -432,7 +469,7 @@ public class AdminMDI extends javax.swing.JFrame {
         pfContrasena2EmpMod = new javax.swing.JPasswordField();
         jLabel86 = new javax.swing.JLabel();
         btnCancelarEmpMod = new javax.swing.JButton();
-        cbBuscarEmpMod = new javax.swing.JComboBox<>();
+        cbEmpMod = new javax.swing.JComboBox<>();
         jPanel21 = new javax.swing.JPanel();
         btnBuscarEmpBorrar = new javax.swing.JButton();
         txtEmpBorrar = new javax.swing.JTextField();
@@ -448,64 +485,76 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel30 = new javax.swing.JLabel();
         btnGuardarVenta = new javax.swing.JButton();
         jLabel44 = new javax.swing.JLabel();
-        txtIdEmpleadoVenta = new javax.swing.JTextField();
-        txtIdClienteVenta = new javax.swing.JTextField();
+        txtEmpleadoVenta = new javax.swing.JTextField();
+        txtClienteVenta = new javax.swing.JTextField();
         jScrollPane15 = new javax.swing.JScrollPane();
         jtVenta = new javax.swing.JTable();
         btnLimpiarVenta = new javax.swing.JButton();
         jLabel43 = new javax.swing.JLabel();
-        jLabel46 = new javax.swing.JLabel();
         cbEstadoVenta = new javax.swing.JComboBox<>();
         txtCantidadVenta = new javax.swing.JTextField();
         btnAgregarProdVenta = new javax.swing.JButton();
-        txtIdProdVenta = new javax.swing.JTextField();
+        txtProdVenta = new javax.swing.JTextField();
         jLabel47 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
         txtImpuestoVenta = new javax.swing.JTextField();
         txtTotalVenta = new javax.swing.JTextField();
         cbProdVenta = new javax.swing.JComboBox<>();
+        jLabel63 = new javax.swing.JLabel();
+        txtDescuentoVenta = new javax.swing.JTextField();
+        jLabel106 = new javax.swing.JLabel();
+        cbEmpleadoVenta = new javax.swing.JComboBox<>();
+        cbClienteVenta = new javax.swing.JComboBox<>();
+        jTextField12 = new javax.swing.JTextField();
+        txtPrecioVenta = new javax.swing.JTextField();
         jPanel16 = new javax.swing.JPanel();
-        btnConVenta = new javax.swing.JButton();
         jScrollPane16 = new javax.swing.JScrollPane();
         txaConVenta = new javax.swing.JTextArea();
         txtFiltroVenta = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jPanel23 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
-        txtIdVentaMod = new javax.swing.JTextField();
+        txtVentaMod = new javax.swing.JTextField();
         btnBuscarVentaMod = new javax.swing.JButton();
         jLabel32 = new javax.swing.JLabel();
         btnVentaMod = new javax.swing.JButton();
         jLabel48 = new javax.swing.JLabel();
-        txtIdEmpleadoVentaMod = new javax.swing.JTextField();
-        txtIdClienteVentaMod = new javax.swing.JTextField();
+        txtEmpleadoVentaMod = new javax.swing.JTextField();
+        txtClienteVentaMod = new javax.swing.JTextField();
         jScrollPane17 = new javax.swing.JScrollPane();
         jtVentaMod = new javax.swing.JTable();
         btnLimpiarVentaMod = new javax.swing.JButton();
         jLabel53 = new javax.swing.JLabel();
-        jLabel64 = new javax.swing.JLabel();
         cbEstadoVentaMod = new javax.swing.JComboBox<>();
         txtCantidadVentaMod = new javax.swing.JTextField();
         btnAgregarProdVentaMod = new javax.swing.JButton();
-        txtIdProdVentaMod = new javax.swing.JTextField();
+        txtProdVentaMod = new javax.swing.JTextField();
         jLabel74 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         txtImpuestoVentaMod = new javax.swing.JTextField();
         txtTotalVentaMod = new javax.swing.JTextField();
-        cbProdVenta1 = new javax.swing.JComboBox<>();
+        cbProdVentaMod = new javax.swing.JComboBox<>();
         btnCancelarVentaMod = new javax.swing.JButton();
-        cbBuscarVentaMod = new javax.swing.JComboBox<>();
+        cbVentaMod = new javax.swing.JComboBox<>();
+        txtDescuentoVenta1 = new javax.swing.JTextField();
+        jLabel107 = new javax.swing.JLabel();
+        jLabel108 = new javax.swing.JLabel();
+        cbEmpleadoVentaMod = new javax.swing.JComboBox<>();
+        cbClienteVentaMod = new javax.swing.JComboBox<>();
+        txtPrecioVentaMod = new javax.swing.JTextField();
+        jTextField13 = new javax.swing.JTextField();
         jPanel24 = new javax.swing.JPanel();
         btnVentaBuscarBorrar = new javax.swing.JButton();
-        txtIdVentaBorrar = new javax.swing.JTextField();
+        txtVentaBorrar = new javax.swing.JTextField();
         jLabel73 = new javax.swing.JLabel();
         btnVentaBorrar = new javax.swing.JButton();
         jScrollPane18 = new javax.swing.JScrollPane();
         txaVentaBorrar = new javax.swing.JTextArea();
         cbVentaBorrar = new javax.swing.JComboBox<>();
         btnCancelarVentaBorrar = new javax.swing.JButton();
+        fondo = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menu = new javax.swing.JMenu();
         mniProd = new javax.swing.JMenuItem();
@@ -517,17 +566,19 @@ public class AdminMDI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
+        jToolBar1.setOpaque(false);
 
         jSeparator7.setEnabled(false);
         jToolBar1.add(jSeparator7);
 
         btnProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/productos.png"))); // NOI18N
-        btnProd.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Productos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 14))); // NOI18N
+        btnProd.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Productos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 18))); // NOI18N
         btnProd.setFocusable(false);
         btnProd.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnProd.setPreferredSize(new java.awt.Dimension(150, 85));
+        btnProd.setPreferredSize(new java.awt.Dimension(150, 90));
         btnProd.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnProd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -541,10 +592,10 @@ public class AdminMDI extends javax.swing.JFrame {
 
         btnEmp.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnEmp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/empleados.png"))); // NOI18N
-        btnEmp.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Empleados", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 14))); // NOI18N
+        btnEmp.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Empleados", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 18))); // NOI18N
         btnEmp.setFocusable(false);
         btnEmp.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnEmp.setPreferredSize(new java.awt.Dimension(150, 85));
+        btnEmp.setPreferredSize(new java.awt.Dimension(150, 90));
         btnEmp.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnEmp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -558,10 +609,10 @@ public class AdminMDI extends javax.swing.JFrame {
 
         btnVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/ventas.png"))); // NOI18N
-        btnVenta.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ventas", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 14))); // NOI18N
+        btnVenta.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ventas", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 18))); // NOI18N
         btnVenta.setFocusable(false);
         btnVenta.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnVenta.setPreferredSize(new java.awt.Dimension(150, 85));
+        btnVenta.setPreferredSize(new java.awt.Dimension(150, 90));
         btnVenta.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -575,10 +626,10 @@ public class AdminMDI extends javax.swing.JFrame {
 
         btnCliente.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/clientes.png"))); // NOI18N
-        btnCliente.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Clientes", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 14))); // NOI18N
+        btnCliente.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Clientes", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 18))); // NOI18N
         btnCliente.setFocusable(false);
         btnCliente.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnCliente.setPreferredSize(new java.awt.Dimension(150, 85));
+        btnCliente.setPreferredSize(new java.awt.Dimension(150, 90));
         btnCliente.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -592,10 +643,10 @@ public class AdminMDI extends javax.swing.JFrame {
 
         btnPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/pedidos.png"))); // NOI18N
-        btnPedido.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Pedidos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 14))); // NOI18N
+        btnPedido.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Pedidos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 18))); // NOI18N
         btnPedido.setFocusable(false);
         btnPedido.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnPedido.setPreferredSize(new java.awt.Dimension(150, 85));
+        btnPedido.setPreferredSize(new java.awt.Dimension(150, 90));
         btnPedido.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnPedido.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -609,10 +660,10 @@ public class AdminMDI extends javax.swing.JFrame {
 
         btnProv.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnProv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/proveedores.png"))); // NOI18N
-        btnProv.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Proveedores", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 14))); // NOI18N
+        btnProv.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Proveedores", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 18))); // NOI18N
         btnProv.setFocusable(false);
         btnProv.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnProv.setPreferredSize(new java.awt.Dimension(150, 85));
+        btnProv.setPreferredSize(new java.awt.Dimension(150, 90));
         btnProv.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnProv.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -632,17 +683,17 @@ public class AdminMDI extends javax.swing.JFrame {
         jToolBar1.add(jSeparator10);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/cerrar_sesion.png"))); // NOI18N
-        jButton1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Cerrar Sesión", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 14))); // NOI18N
+        jButton1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Cerrar Sesión", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_BOTTOM, new java.awt.Font("Noto Sans", 1, 18))); // NOI18N
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setPreferredSize(new java.awt.Dimension(150, 85));
+        jButton1.setPreferredSize(new java.awt.Dimension(160, 85));
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButton1);
 
         jSeparator9.setEnabled(false);
         jToolBar1.add(jSeparator9);
 
-        getContentPane().add(jToolBar1, java.awt.BorderLayout.PAGE_START);
+        getContentPane().add(jToolBar1, java.awt.BorderLayout.PAGE_END);
 
         ifrProd.setClosable(true);
         ifrProd.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -654,6 +705,12 @@ public class AdminMDI extends javax.swing.JFrame {
         ifrProd.setVisible(true);
 
         jTabbedPane1.setFont(new java.awt.Font("Cantarell", 0, 20)); // NOI18N
+        jTabbedPane1.setOpaque(true);
+        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane1MouseClicked(evt);
+            }
+        });
 
         jPanel1.setLayout(null);
 
@@ -661,19 +718,19 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Existencias");
         jPanel1.add(jLabel3);
-        jLabel3.setBounds(0, 120, 110, 30);
+        jLabel3.setBounds(20, 110, 110, 30);
 
         jLabel4.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("Descripción");
         jPanel1.add(jLabel4);
-        jLabel4.setBounds(0, 40, 110, 30);
+        jLabel4.setBounds(20, 40, 110, 30);
 
         jLabel5.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("Precio");
+        jLabel5.setText("Precio (Venta)");
         jPanel1.add(jLabel5);
-        jLabel5.setBounds(40, 160, 70, 30);
+        jLabel5.setBounds(10, 140, 120, 30);
 
         btnGuardarProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnGuardarProd.setText("Guardar");
@@ -683,16 +740,16 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnGuardarProd);
-        btnGuardarProd.setBounds(40, 300, 320, 33);
+        btnGuardarProd.setBounds(60, 300, 320, 33);
 
-        txtPrecioProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        txtPrecioProd.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtPrecioVentaProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtPrecioVentaProd.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtPrecioProdKeyTyped(evt);
+                txtPrecioVentaProdKeyTyped(evt);
             }
         });
-        jPanel1.add(txtPrecioProd);
-        txtPrecioProd.setBounds(120, 160, 240, 33);
+        jPanel1.add(txtPrecioVentaProd);
+        txtPrecioVentaProd.setBounds(140, 140, 240, 33);
 
         txtExistenciaProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtExistenciaProd.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -701,7 +758,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel1.add(txtExistenciaProd);
-        txtExistenciaProd.setBounds(120, 120, 240, 33);
+        txtExistenciaProd.setBounds(140, 110, 240, 33);
 
         txaDescripcionProd.setColumns(20);
         txaDescripcionProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
@@ -714,18 +771,18 @@ public class AdminMDI extends javax.swing.JFrame {
         jScrollPane2.setViewportView(txaDescripcionProd);
 
         jPanel1.add(jScrollPane2);
-        jScrollPane2.setBounds(120, 40, 240, 70);
+        jScrollPane2.setBounds(140, 40, 240, 70);
 
         cbEstadoProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         cbEstadoProd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
         jPanel1.add(cbEstadoProd);
-        cbEstadoProd.setBounds(120, 250, 150, 33);
+        cbEstadoProd.setBounds(140, 250, 150, 33);
 
         jLabel72.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel72.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel72.setText("Nombre");
         jPanel1.add(jLabel72);
-        jLabel72.setBounds(30, 10, 80, 30);
+        jLabel72.setBounds(50, 10, 80, 30);
 
         txtNombreProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtNombreProd.setMinimumSize(new java.awt.Dimension(80, 33));
@@ -736,7 +793,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel1.add(txtNombreProd);
-        txtNombreProd.setBounds(120, 10, 240, 33);
+        txtNombreProd.setBounds(140, 10, 240, 33);
 
         lblImagen3Prod.setFont(new java.awt.Font("Cantarell", 0, 14)); // NOI18N
         lblImagen3Prod.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -834,13 +891,13 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel18.setText("Estado");
         jPanel1.add(jLabel18);
-        jLabel18.setBounds(40, 250, 70, 30);
+        jLabel18.setBounds(60, 250, 70, 30);
 
         jLabel81.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel81.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel81.setText("ID Proveedor");
         jPanel1.add(jLabel81);
-        jLabel81.setBounds(-10, 200, 120, 30);
+        jLabel81.setBounds(10, 210, 120, 30);
 
         txtProvProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtProvProd.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -849,7 +906,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel1.add(txtProvProd);
-        txtProvProd.setBounds(120, 200, 40, 33);
+        txtProvProd.setBounds(140, 210, 40, 33);
 
         cbProvProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         cbProvProd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
@@ -868,21 +925,26 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel1.add(cbProvProd);
-        cbProvProd.setBounds(160, 200, 200, 33);
+        cbProvProd.setBounds(180, 210, 200, 33);
+
+        jLabel6.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel6.setText("Precio (Compra)");
+        jPanel1.add(jLabel6);
+        jLabel6.setBounds(0, 170, 130, 30);
+
+        txtPrecioCompraProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtPrecioCompraProd.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrecioCompraProdKeyTyped(evt);
+            }
+        });
+        jPanel1.add(txtPrecioCompraProd);
+        txtPrecioCompraProd.setBounds(140, 170, 240, 33);
 
         jTabbedPane1.addTab("Registrar", jPanel1);
 
         jPanel2.setLayout(null);
-
-        btnConProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        btnConProd.setText("Buscar");
-        btnConProd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConProdActionPerformed(evt);
-            }
-        });
-        jPanel2.add(btnConProd);
-        btnConProd.setBounds(0, 30, 594, 33);
 
         txaConProd.setEditable(false);
         txaConProd.setColumns(20);
@@ -891,7 +953,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jScrollPane13.setViewportView(txaConProd);
 
         jPanel2.add(jScrollPane13);
-        jScrollPane13.setBounds(0, 63, 594, 270);
+        jScrollPane13.setBounds(0, 33, 594, 300);
 
         txtFiltroProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtFiltroProd.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -935,19 +997,19 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel3.add(btnBuscarProdMod);
-        btnBuscarProdMod.setBounds(380, 0, 81, 33);
+        btnBuscarProdMod.setBounds(380, 0, 90, 33);
 
         lblNombreModProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         lblNombreModProd.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblNombreModProd.setText("Nombre");
         jPanel3.add(lblNombreModProd);
-        lblNombreModProd.setBounds(30, 40, 80, 30);
+        lblNombreModProd.setBounds(50, 40, 80, 30);
 
         lblPrecioModProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         lblPrecioModProd.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblPrecioModProd.setText("Precio");
+        lblPrecioModProd.setText("Precio (Venta)");
         jPanel3.add(lblPrecioModProd);
-        lblPrecioModProd.setBounds(40, 180, 70, 30);
+        lblPrecioModProd.setBounds(10, 160, 120, 30);
 
         btnProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnProdMod.setText("Modificar");
@@ -958,7 +1020,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel3.add(btnProdMod);
-        btnProdMod.setBounds(40, 300, 320, 33);
+        btnProdMod.setBounds(70, 300, 310, 33);
 
         lblImagen3ProdMod.setFont(new java.awt.Font("Cantarell", 0, 14)); // NOI18N
         lblImagen3ProdMod.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -967,15 +1029,15 @@ public class AdminMDI extends javax.swing.JFrame {
         jPanel3.add(lblImagen3ProdMod);
         lblImagen3ProdMod.setBounds(450, 220, 75, 75);
 
-        txtPrecioProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        txtPrecioProdMod.setEnabled(false);
-        txtPrecioProdMod.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtPrecioVentaProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtPrecioVentaProdMod.setEnabled(false);
+        txtPrecioVentaProdMod.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtPrecioProdModKeyTyped(evt);
+                txtPrecioVentaProdModKeyTyped(evt);
             }
         });
-        jPanel3.add(txtPrecioProdMod);
-        txtPrecioProdMod.setBounds(120, 180, 240, 33);
+        jPanel3.add(txtPrecioVentaProdMod);
+        txtPrecioVentaProdMod.setBounds(140, 160, 240, 33);
 
         txtNombreProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtNombreProdMod.setEnabled(false);
@@ -985,7 +1047,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel3.add(txtNombreProdMod);
-        txtNombreProdMod.setBounds(120, 40, 240, 33);
+        txtNombreProdMod.setBounds(140, 40, 240, 33);
 
         lblImagen1ProdMod.setFont(new java.awt.Font("Cantarell", 0, 14)); // NOI18N
         lblImagen1ProdMod.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1068,13 +1130,13 @@ public class AdminMDI extends javax.swing.JFrame {
         lblExistenciasModProd.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblExistenciasModProd.setText("Existencias");
         jPanel3.add(lblExistenciasModProd);
-        lblExistenciasModProd.setBounds(0, 150, 110, 30);
+        lblExistenciasModProd.setBounds(20, 130, 110, 30);
 
         lblDescripcionModProd.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         lblDescripcionModProd.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblDescripcionModProd.setText("Descripción");
         jPanel3.add(lblDescripcionModProd);
-        lblDescripcionModProd.setBounds(0, 70, 110, 30);
+        lblDescripcionModProd.setBounds(20, 70, 110, 30);
 
         txtExistenciaProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtExistenciaProdMod.setEnabled(false);
@@ -1084,7 +1146,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel3.add(txtExistenciaProdMod);
-        txtExistenciaProdMod.setBounds(120, 150, 240, 33);
+        txtExistenciaProdMod.setBounds(140, 130, 240, 33);
 
         txaDescripcionProdMod.setColumns(20);
         txaDescripcionProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
@@ -1098,7 +1160,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jScrollPane9.setViewportView(txaDescripcionProdMod);
 
         jPanel3.add(jScrollPane9);
-        jScrollPane9.setBounds(120, 70, 240, 70);
+        jScrollPane9.setBounds(140, 70, 240, 70);
 
         btnLimpiarProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnLimpiarProdMod.setText("Limpiar Campos");
@@ -1115,19 +1177,19 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel17.setText("Estado");
         jPanel3.add(jLabel17);
-        jLabel17.setBounds(40, 260, 70, 30);
+        jLabel17.setBounds(60, 260, 70, 30);
 
         cbEstadoProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         cbEstadoProdMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
         cbEstadoProdMod.setEnabled(false);
         jPanel3.add(cbEstadoProdMod);
-        cbEstadoProdMod.setBounds(120, 260, 150, 33);
+        cbEstadoProdMod.setBounds(140, 260, 150, 33);
 
         jLabel85.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel85.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel85.setText("ID Proveedor");
         jPanel3.add(jLabel85);
-        jLabel85.setBounds(0, 220, 120, 30);
+        jLabel85.setBounds(20, 230, 120, 30);
 
         txtProvProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtProvProdMod.setEnabled(false);
@@ -1137,7 +1199,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel3.add(txtProvProdMod);
-        txtProvProdMod.setBounds(120, 220, 40, 33);
+        txtProvProdMod.setBounds(140, 230, 40, 33);
 
         cbProvProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         cbProvProdMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
@@ -1157,7 +1219,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel3.add(cbProvProdMod);
-        cbProvProdMod.setBounds(160, 220, 200, 33);
+        cbProvProdMod.setBounds(180, 230, 200, 33);
 
         btnCancelarProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnCancelarProdMod.setText("Cancelar");
@@ -1187,6 +1249,22 @@ public class AdminMDI extends javax.swing.JFrame {
         });
         jPanel3.add(cbProdMod);
         cbProdMod.setBounds(170, 0, 210, 33);
+
+        lblPrecioModProd1.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        lblPrecioModProd1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblPrecioModProd1.setText("Precio (Compra)");
+        jPanel3.add(lblPrecioModProd1);
+        lblPrecioModProd1.setBounds(0, 190, 130, 30);
+
+        txtPrecioCompraProdMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtPrecioCompraProdMod.setEnabled(false);
+        txtPrecioCompraProdMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrecioCompraProdModKeyTyped(evt);
+            }
+        });
+        jPanel3.add(txtPrecioCompraProdMod);
+        txtPrecioCompraProdMod.setBounds(140, 190, 240, 33);
 
         jTabbedPane1.addTab("Modificar", jPanel3);
 
@@ -1225,7 +1303,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel4.add(btnBuscarProdBorrar);
-        btnBuscarProdBorrar.setBounds(370, 0, 100, 33);
+        btnBuscarProdBorrar.setBounds(380, 0, 90, 33);
 
         txaProdBorrar.setEditable(false);
         txaProdBorrar.setColumns(20);
@@ -1253,7 +1331,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel4.add(cbProdBorrar);
-        cbProdBorrar.setBounds(170, 0, 200, 33);
+        cbProdBorrar.setBounds(170, 0, 210, 33);
 
         btnCancelarProdBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnCancelarProdBorrar.setText("Cancelar");
@@ -1289,10 +1367,16 @@ public class AdminMDI extends javax.swing.JFrame {
         ifrPedido.setTitle("Pedidos");
         ifrPedido.setFont(new java.awt.Font("Cantarell", 0, 24)); // NOI18N
         ifrPedido.setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/redivo1.png"))); // NOI18N
+        ifrPedido.setOpaque(false);
         ifrPedido.setPreferredSize(new java.awt.Dimension(620, 460));
         ifrPedido.setVisible(true);
 
         jTabbedPane2.setFont(new java.awt.Font("Cantarell", 0, 20)); // NOI18N
+        jTabbedPane2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane2MouseClicked(evt);
+            }
+        });
 
         jPanel5.setLayout(null);
 
@@ -1304,44 +1388,25 @@ public class AdminMDI extends javax.swing.JFrame {
 
         btnGuardarPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnGuardarPedido.setText("Guardar");
+        btnGuardarPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarPedidoActionPerformed(evt);
+            }
+        });
         jPanel5.add(btnGuardarPedido);
-        btnGuardarPedido.setBounds(40, 300, 320, 33);
+        btnGuardarPedido.setBounds(10, 300, 260, 33);
 
-        txtIdProvPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel5.add(txtIdProvPedido);
-        txtIdProvPedido.setBounds(120, 30, 150, 33);
+        txtProvPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel5.add(txtProvPedido);
+        txtProvPedido.setBounds(120, 30, 40, 33);
 
         jtPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jtPedido.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "ID Producto", "Cantidad", "Precio", "Suma"
+                "Nombre", "Cantidad", "Precio", "Suma"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -1358,23 +1423,28 @@ public class AdminMDI extends javax.swing.JFrame {
         }
 
         jPanel5.add(jScrollPane4);
-        jScrollPane4.setBounds(280, 30, 320, 200);
+        jScrollPane4.setBounds(230, 60, 370, 140);
 
         btnLimpiarPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnLimpiarPedido.setText("Limpiar Campos");
+        btnLimpiarPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarPedidoActionPerformed(evt);
+            }
+        });
         jPanel5.add(btnLimpiarPedido);
-        btnLimpiarPedido.setBounds(390, 300, 190, 33);
+        btnLimpiarPedido.setBounds(280, 300, 300, 33);
 
         jLabel37.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel37.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel37.setText("Estado");
+        jLabel37.setText("Descuento %");
         jPanel5.add(jLabel37);
-        jLabel37.setBounds(30, 260, 70, 33);
+        jLabel37.setBounds(10, 180, 110, 33);
 
         cbEstadoPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         cbEstadoPedido.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
         jPanel5.add(cbEstadoPedido);
-        cbEstadoPedido.setBounds(120, 260, 150, 33);
+        cbEstadoPedido.setBounds(120, 260, 100, 33);
 
         jLabel60.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel60.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1384,16 +1454,21 @@ public class AdminMDI extends javax.swing.JFrame {
 
         txtCantidadPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jPanel5.add(txtCantidadPedido);
-        txtCantidadPedido.setBounds(120, 150, 150, 33);
+        txtCantidadPedido.setBounds(120, 150, 100, 33);
 
         btnAgregarProdPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnAgregarProdPedido.setText("Agregar al listado");
+        btnAgregarProdPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarProdPedidoActionPerformed(evt);
+            }
+        });
         jPanel5.add(btnAgregarProdPedido);
-        btnAgregarProdPedido.setBounds(30, 190, 240, 33);
+        btnAgregarProdPedido.setBounds(10, 220, 210, 33);
 
-        txtIdProdPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel5.add(txtIdProdPedido);
-        txtIdProdPedido.setBounds(120, 120, 150, 33);
+        txtProdPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel5.add(txtProdPedido);
+        txtProdPedido.setBounds(120, 120, 100, 33);
 
         jLabel62.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel62.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1407,7 +1482,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jTextField5.setText("Total");
         jTextField5.setFocusable(false);
         jPanel5.add(jTextField5);
-        jTextField5.setBounds(280, 260, 100, 33);
+        jTextField5.setBounds(230, 260, 100, 33);
 
         jTextField6.setEditable(false);
         jTextField6.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
@@ -1415,28 +1490,95 @@ public class AdminMDI extends javax.swing.JFrame {
         jTextField6.setText("Impuesto");
         jTextField6.setFocusable(false);
         jPanel5.add(jTextField6);
-        jTextField6.setBounds(280, 230, 100, 33);
+        jTextField6.setBounds(230, 230, 100, 33);
 
         txtImpuestoPedido.setEditable(false);
         txtImpuestoPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtImpuestoPedido.setFocusable(false);
         jPanel5.add(txtImpuestoPedido);
-        txtImpuestoPedido.setBounds(374, 230, 210, 33);
+        txtImpuestoPedido.setBounds(324, 230, 260, 33);
 
         txtTotalPedido.setEditable(false);
         txtTotalPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtTotalPedido.setFocusable(false);
         jPanel5.add(txtTotalPedido);
-        txtTotalPedido.setBounds(374, 260, 210, 33);
+        txtTotalPedido.setBounds(324, 260, 260, 33);
+
+        cbProdPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        cbProdPedido.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbProdPedido.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbProdPedidoPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbProdPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbProdPedidoActionPerformed(evt);
+            }
+        });
+        jPanel5.add(cbProdPedido);
+        cbProdPedido.setBounds(10, 90, 210, 32);
+
+        txtDescuentoPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel5.add(txtDescuentoPedido);
+        txtDescuentoPedido.setBounds(120, 180, 100, 33);
+
+        jLabel49.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jLabel49.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel49.setText("Estado   ");
+        jPanel5.add(jLabel49);
+        jLabel49.setBounds(40, 260, 70, 33);
+
+        cbProvPedido.setFont(new java.awt.Font("Cantarell", 0, 16)); // NOI18N
+        cbProvPedido.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbProvPedido.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbProvPedidoPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbProvPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbProvPedidoActionPerformed(evt);
+            }
+        });
+        jPanel5.add(cbProvPedido);
+        cbProvPedido.setBounds(160, 30, 330, 33);
+
+        btnCancelarPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        btnCancelarPedido.setText("Cancelar");
+        btnCancelarPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarPedidoActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btnCancelarPedido);
+        btnCancelarPedido.setBounds(490, 30, 98, 33);
+
+        jTextField10.setEditable(false);
+        jTextField10.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jTextField10.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField10.setText("Subtotal");
+        jTextField10.setFocusable(false);
+        jPanel5.add(jTextField10);
+        jTextField10.setBounds(230, 200, 100, 33);
+
+        txtPrecioPedido.setEditable(false);
+        txtPrecioPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtPrecioPedido.setFocusable(false);
+        jPanel5.add(txtPrecioPedido);
+        txtPrecioPedido.setBounds(320, 200, 264, 33);
 
         jTabbedPane2.addTab("Registrar", jPanel5);
 
         jPanel6.setLayout(null);
-
-        btnConPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        btnConPedido.setText("Buscar");
-        jPanel6.add(btnConPedido);
-        btnConPedido.setBounds(0, 30, 594, 33);
 
         txaConPedido.setEditable(false);
         txaConPedido.setColumns(20);
@@ -1445,18 +1587,23 @@ public class AdminMDI extends javax.swing.JFrame {
         jScrollPane11.setViewportView(txaConPedido);
 
         jPanel6.add(jScrollPane11);
-        jScrollPane11.setBounds(0, 65, 594, 270);
+        jScrollPane11.setBounds(0, 35, 594, 300);
 
         txtFiltroPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtFiltroPedido.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFiltroPedidoKeyTyped(evt);
+            }
+        });
         jPanel6.add(txtFiltroPedido);
-        txtFiltroPedido.setBounds(220, 0, 370, 33);
+        txtFiltroPedido.setBounds(280, 0, 310, 33);
 
         jLabel14.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel14.setText("Filtrar por Id de proveedor");
+        jLabel14.setText("Filtrar por empresa de proveedor");
         jLabel14.setToolTipText("");
         jPanel6.add(jLabel14);
-        jLabel14.setBounds(0, 0, 210, 33);
+        jLabel14.setBounds(0, 0, 270, 33);
 
         jTabbedPane2.addTab("Consultar", jPanel6);
 
@@ -1468,14 +1615,14 @@ public class AdminMDI extends javax.swing.JFrame {
         jPanel14.add(jLabel2);
         jLabel2.setBounds(20, 0, 90, 33);
 
-        txtIdPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel14.add(txtIdPedido);
-        txtIdPedido.setBounds(120, 0, 50, 33);
+        txtPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel14.add(txtPedidoMod);
+        txtPedidoMod.setBounds(120, 0, 50, 33);
 
         btnBuscarPedido.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnBuscarPedido.setText("Buscar");
         jPanel14.add(btnBuscarPedido);
-        btnBuscarPedido.setBounds(380, 0, 100, 33);
+        btnBuscarPedido.setBounds(390, 0, 90, 33);
 
         jLabel29.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel29.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1486,43 +1633,19 @@ public class AdminMDI extends javax.swing.JFrame {
         btnGuardarPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnGuardarPedidoMod.setText("Guardar");
         jPanel14.add(btnGuardarPedidoMod);
-        btnGuardarPedidoMod.setBounds(40, 300, 320, 33);
+        btnGuardarPedidoMod.setBounds(10, 300, 260, 33);
 
-        txtIdProvPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel14.add(txtIdProvPedidoMod);
-        txtIdProvPedidoMod.setBounds(120, 50, 150, 33);
+        txtProvPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel14.add(txtProvPedidoMod);
+        txtProvPedidoMod.setBounds(120, 50, 40, 33);
 
         jtPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jtPedidoMod.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "ID Producto", "Cantidad", "Precio", "Suma"
+                "Nombre", "Cantidad", "Precio", "Suma"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -1539,23 +1662,22 @@ public class AdminMDI extends javax.swing.JFrame {
         }
 
         jPanel14.add(jScrollPane19);
-        jScrollPane19.setBounds(280, 50, 320, 180);
+        jScrollPane19.setBounds(230, 80, 370, 120);
 
         btnLimpiarPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnLimpiarPedidoMod.setText("Limpiar Campos");
+        btnLimpiarPedidoMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarPedidoModActionPerformed(evt);
+            }
+        });
         jPanel14.add(btnLimpiarPedidoMod);
-        btnLimpiarPedidoMod.setBounds(390, 300, 190, 33);
-
-        jLabel63.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jLabel63.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel63.setText("Estado");
-        jPanel14.add(jLabel63);
-        jLabel63.setBounds(30, 260, 70, 33);
+        btnLimpiarPedidoMod.setBounds(280, 300, 300, 33);
 
         cbEstadoPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         cbEstadoPedidoMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
         jPanel14.add(cbEstadoPedidoMod);
-        cbEstadoPedidoMod.setBounds(120, 260, 150, 33);
+        cbEstadoPedidoMod.setBounds(120, 260, 100, 33);
 
         jLabel75.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel75.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1565,16 +1687,21 @@ public class AdminMDI extends javax.swing.JFrame {
 
         txtCantidadPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jPanel14.add(txtCantidadPedidoMod);
-        txtCantidadPedidoMod.setBounds(120, 150, 150, 33);
+        txtCantidadPedidoMod.setBounds(120, 150, 100, 33);
 
         btnAgregarProdPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnAgregarProdPedidoMod.setText("Agregar al listado");
+        btnAgregarProdPedidoMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarProdPedidoModActionPerformed(evt);
+            }
+        });
         jPanel14.add(btnAgregarProdPedidoMod);
-        btnAgregarProdPedidoMod.setBounds(30, 190, 240, 33);
+        btnAgregarProdPedidoMod.setBounds(10, 220, 210, 33);
 
-        txtIdProdPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel14.add(txtIdProdPedidoMod);
-        txtIdProdPedidoMod.setBounds(120, 120, 150, 33);
+        txtProdPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel14.add(txtProdPedidoMod);
+        txtProdPedidoMod.setBounds(120, 120, 100, 33);
 
         jLabel77.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel77.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1588,7 +1715,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jTextField7.setText("Total");
         jTextField7.setFocusable(false);
         jPanel14.add(jTextField7);
-        jTextField7.setBounds(280, 260, 100, 33);
+        jTextField7.setBounds(230, 260, 100, 33);
 
         jTextField8.setEditable(false);
         jTextField8.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
@@ -1596,24 +1723,38 @@ public class AdminMDI extends javax.swing.JFrame {
         jTextField8.setText("Impuesto");
         jTextField8.setFocusable(false);
         jPanel14.add(jTextField8);
-        jTextField8.setBounds(280, 230, 100, 33);
+        jTextField8.setBounds(230, 230, 100, 33);
 
         txtImpuestoPedidoMod.setEditable(false);
         txtImpuestoPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtImpuestoPedidoMod.setFocusable(false);
         jPanel14.add(txtImpuestoPedidoMod);
-        txtImpuestoPedidoMod.setBounds(374, 230, 210, 33);
+        txtImpuestoPedidoMod.setBounds(324, 230, 260, 33);
 
         txtTotalPedidoMod.setEditable(false);
         txtTotalPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtTotalPedidoMod.setFocusable(false);
         jPanel14.add(txtTotalPedidoMod);
-        txtTotalPedidoMod.setBounds(374, 260, 210, 33);
+        txtTotalPedidoMod.setBounds(324, 260, 260, 33);
 
-        cbBuscarPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        cbBuscarPedidoMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
-        jPanel14.add(cbBuscarPedidoMod);
-        cbBuscarPedidoMod.setBounds(170, 0, 210, 33);
+        cbPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        cbPedidoMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbPedidoMod.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbPedidoModPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbPedidoMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbPedidoModActionPerformed(evt);
+            }
+        });
+        jPanel14.add(cbPedidoMod);
+        cbPedidoMod.setBounds(170, 0, 220, 33);
 
         btnCancelarPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnCancelarPedidoMod.setText("Cancelar");
@@ -1625,6 +1766,74 @@ public class AdminMDI extends javax.swing.JFrame {
         jPanel14.add(btnCancelarPedidoMod);
         btnCancelarPedidoMod.setBounds(480, 0, 98, 33);
 
+        cbProdPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        cbProdPedidoMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbProdPedidoMod.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbProdPedidoModPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbProdPedidoMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbProdPedidoModActionPerformed(evt);
+            }
+        });
+        jPanel14.add(cbProdPedidoMod);
+        cbProdPedidoMod.setBounds(10, 90, 210, 32);
+
+        jLabel66.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jLabel66.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel66.setText("Descuento %");
+        jPanel14.add(jLabel66);
+        jLabel66.setBounds(10, 180, 110, 33);
+
+        txtDescuentoPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel14.add(txtDescuentoPedidoMod);
+        txtDescuentoPedidoMod.setBounds(120, 180, 100, 33);
+
+        jLabel76.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jLabel76.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel76.setText("Estado    ");
+        jPanel14.add(jLabel76);
+        jLabel76.setBounds(33, 260, 80, 33);
+
+        cbProvPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 16)); // NOI18N
+        cbProvPedidoMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbProvPedidoMod.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbProvPedidoModPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbProvPedidoMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbProvPedidoModActionPerformed(evt);
+            }
+        });
+        jPanel14.add(cbProvPedidoMod);
+        cbProvPedidoMod.setBounds(160, 50, 430, 33);
+
+        jTextField11.setEditable(false);
+        jTextField11.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jTextField11.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField11.setText("Precio");
+        jTextField11.setFocusable(false);
+        jPanel14.add(jTextField11);
+        jTextField11.setBounds(230, 200, 100, 33);
+
+        txtPrecioPedidoMod.setEditable(false);
+        txtPrecioPedidoMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtPrecioPedidoMod.setFocusable(false);
+        jPanel14.add(txtPrecioPedidoMod);
+        txtPrecioPedidoMod.setBounds(320, 200, 264, 33);
+
         jTabbedPane2.addTab("Modificar", jPanel14);
 
         jPanel18.setLayout(null);
@@ -1632,11 +1841,11 @@ public class AdminMDI extends javax.swing.JFrame {
         btnBuscarPedidoBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnBuscarPedidoBorrar.setText("Buscar");
         jPanel18.add(btnBuscarPedidoBorrar);
-        btnBuscarPedidoBorrar.setBounds(370, 0, 100, 33);
+        btnBuscarPedidoBorrar.setBounds(390, 0, 90, 33);
 
-        txtIdPedidoBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel18.add(txtIdPedidoBorrar);
-        txtIdPedidoBorrar.setBounds(120, 0, 50, 33);
+        txtPedidoBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel18.add(txtPedidoBorrar);
+        txtPedidoBorrar.setBounds(120, 0, 50, 33);
 
         jLabel68.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel68.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1675,7 +1884,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel18.add(cbPedidoBorrar);
-        cbPedidoBorrar.setBounds(170, 0, 200, 33);
+        cbPedidoBorrar.setBounds(170, 0, 220, 33);
 
         btnCancelarPedidoBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnCancelarPedidoBorrar.setText("Cancelar");
@@ -1685,7 +1894,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel18.add(btnCancelarPedidoBorrar);
-        btnCancelarPedidoBorrar.setBounds(470, 0, 98, 33);
+        btnCancelarPedidoBorrar.setBounds(480, 0, 98, 33);
 
         jTabbedPane2.addTab("Borrar", jPanel18);
 
@@ -1701,8 +1910,9 @@ public class AdminMDI extends javax.swing.JFrame {
         );
 
         jDesktopPane1.add(ifrPedido);
-        ifrPedido.setBounds(650, 430, 620, 415);
+        ifrPedido.setBounds(650, 440, 620, 415);
 
+        ifrCliente.setBackground(new java.awt.Color(255, 255, 255));
         ifrCliente.setClosable(true);
         ifrCliente.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         ifrCliente.setIconifiable(true);
@@ -1713,6 +1923,12 @@ public class AdminMDI extends javax.swing.JFrame {
         ifrCliente.setVisible(true);
 
         jTabbedPane3.setFont(new java.awt.Font("Cantarell", 0, 20)); // NOI18N
+        jTabbedPane3.setOpaque(true);
+        jTabbedPane3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane3MouseClicked(evt);
+            }
+        });
 
         jPanel7.setLayout(null);
 
@@ -1828,16 +2044,6 @@ public class AdminMDI extends javax.swing.JFrame {
 
         jPanel8.setLayout(null);
 
-        btnConClientes.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        btnConClientes.setText("Buscar");
-        btnConClientes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConClientesActionPerformed(evt);
-            }
-        });
-        jPanel8.add(btnConClientes);
-        btnConClientes.setBounds(0, 30, 594, 33);
-
         txaConCliente.setEditable(false);
         txaConCliente.setColumns(20);
         txaConCliente.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
@@ -1845,7 +2051,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jScrollPane10.setViewportView(txaConCliente);
 
         jPanel8.add(jScrollPane10);
-        jScrollPane10.setBounds(0, 65, 594, 270);
+        jScrollPane10.setBounds(0, 35, 594, 300);
 
         txtFiltroCliente.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtFiltroCliente.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1889,7 +2095,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel19.add(btnBuscarClienteMod);
-        btnBuscarClienteMod.setBounds(380, 0, 81, 33);
+        btnBuscarClienteMod.setBounds(380, 0, 90, 33);
 
         jLabel50.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel50.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -2019,10 +2225,24 @@ public class AdminMDI extends javax.swing.JFrame {
         jPanel19.add(btnCancelarClienteMod);
         btnCancelarClienteMod.setBounds(470, 0, 98, 33);
 
-        cbBuscarClienteMod1.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        cbBuscarClienteMod1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
-        jPanel19.add(cbBuscarClienteMod1);
-        cbBuscarClienteMod1.setBounds(170, 0, 210, 33);
+        cbClienteMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        cbClienteMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbClienteMod.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbClienteModPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbClienteMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbClienteModActionPerformed(evt);
+            }
+        });
+        jPanel19.add(cbClienteMod);
+        cbClienteMod.setBounds(170, 0, 210, 33);
 
         jTabbedPane3.addTab("Modificar", jPanel19);
 
@@ -2036,7 +2256,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel20.add(btnBuscarClienteBorrar);
-        btnBuscarClienteBorrar.setBounds(370, 0, 100, 33);
+        btnBuscarClienteBorrar.setBounds(380, 0, 90, 33);
 
         txtClienteBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtClienteBorrar.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -2089,7 +2309,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel20.add(cbClienteBorrar);
-        cbClienteBorrar.setBounds(170, 0, 200, 33);
+        cbClienteBorrar.setBounds(170, 0, 210, 33);
 
         btnCancelarClienteBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnCancelarClienteBorrar.setText("Cancelar");
@@ -2115,7 +2335,7 @@ public class AdminMDI extends javax.swing.JFrame {
         );
 
         jDesktopPane1.add(ifrCliente);
-        ifrCliente.setBounds(10, 430, 620, 415);
+        ifrCliente.setBounds(10, 440, 620, 415);
 
         ifrProv.setClosable(true);
         ifrProv.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -2127,6 +2347,11 @@ public class AdminMDI extends javax.swing.JFrame {
         ifrProv.setVisible(true);
 
         jTabbedPane4.setFont(new java.awt.Font("Cantarell", 0, 20)); // NOI18N
+        jTabbedPane4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane4MouseClicked(evt);
+            }
+        });
 
         jPanel9.setLayout(null);
 
@@ -2333,23 +2558,14 @@ public class AdminMDI extends javax.swing.JFrame {
 
         jPanel10.setLayout(null);
 
-        btnConProv.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        btnConProv.setText("Buscar");
-        btnConProv.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConProvActionPerformed(evt);
-            }
-        });
-        jPanel10.add(btnConProv);
-        btnConProv.setBounds(0, 30, 594, 33);
-
         txaConProv.setEditable(false);
         txaConProv.setColumns(20);
+        txaConProv.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txaConProv.setRows(5);
         jScrollPane14.setViewportView(txaConProv);
 
         jPanel10.add(jScrollPane14);
-        jScrollPane14.setBounds(0, 65, 594, 270);
+        jScrollPane14.setBounds(0, 35, 594, 300);
 
         txtFiltroProv.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtFiltroProv.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -2393,7 +2609,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel17.add(btnBuscarProvMod);
-        btnBuscarProvMod.setBounds(380, 0, 81, 33);
+        btnBuscarProvMod.setBounds(390, 0, 90, 33);
 
         jLabel82.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel82.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -2617,12 +2833,26 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel17.add(btnCancelarProdMod1);
-        btnCancelarProdMod1.setBounds(470, 0, 98, 33);
+        btnCancelarProdMod1.setBounds(480, 0, 98, 33);
 
-        cbBuscarProvMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        cbBuscarProvMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
-        jPanel17.add(cbBuscarProvMod);
-        cbBuscarProvMod.setBounds(170, 0, 210, 33);
+        cbProvMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        cbProvMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbProvMod.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbProvModPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbProvMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbProvModActionPerformed(evt);
+            }
+        });
+        jPanel17.add(cbProvMod);
+        cbProvMod.setBounds(170, 0, 220, 33);
 
         jTabbedPane4.addTab("Modificar", jPanel17);
 
@@ -2636,7 +2866,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel22.add(btnBuscarProvBorrar);
-        btnBuscarProvBorrar.setBounds(370, 0, 100, 33);
+        btnBuscarProvBorrar.setBounds(390, 0, 90, 33);
 
         txtProvBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtProvBorrar.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -2689,7 +2919,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel22.add(cbProvBorrar);
-        cbProvBorrar.setBounds(170, 0, 200, 33);
+        cbProvBorrar.setBounds(170, 0, 220, 33);
 
         btnCancelarProvBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnCancelarProvBorrar.setText("Cancelar");
@@ -2699,7 +2929,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel22.add(btnCancelarProvBorrar);
-        btnCancelarProvBorrar.setBounds(470, 0, 98, 33);
+        btnCancelarProvBorrar.setBounds(480, 0, 98, 33);
 
         jTabbedPane4.addTab("Borrar", jPanel22);
 
@@ -2715,7 +2945,7 @@ public class AdminMDI extends javax.swing.JFrame {
         );
 
         jDesktopPane1.add(ifrProv);
-        ifrProv.setBounds(1290, 430, 620, 415);
+        ifrProv.setBounds(1290, 440, 620, 415);
 
         ifrEmp.setClosable(true);
         ifrEmp.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -2727,6 +2957,11 @@ public class AdminMDI extends javax.swing.JFrame {
         ifrEmp.setVisible(true);
 
         jTabbedPaneUsuario.setFont(new java.awt.Font("Cantarell", 0, 20)); // NOI18N
+        jTabbedPaneUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPaneUsuarioMouseClicked(evt);
+            }
+        });
 
         jPanel11.setLayout(null);
 
@@ -2871,6 +3106,11 @@ public class AdminMDI extends javax.swing.JFrame {
         btnImagenEmp.setBounds(540, 90, 40, 40);
 
         pfContrasenaEmp.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        pfContrasenaEmp.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                pfContrasenaEmpKeyTyped(evt);
+            }
+        });
         jPanel11.add(pfContrasenaEmp);
         pfContrasenaEmp.setBounds(120, 150, 240, 33);
 
@@ -2881,22 +3121,17 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel61.setBounds(0, 180, 110, 33);
 
         pfContrasena2Emp.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        pfContrasena2Emp.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                pfContrasena2EmpKeyTyped(evt);
+            }
+        });
         jPanel11.add(pfContrasena2Emp);
         pfContrasena2Emp.setBounds(120, 180, 240, 33);
 
         jTabbedPaneUsuario.addTab("Registrar", jPanel11);
 
         jPanel12.setLayout(null);
-
-        btnConEmp.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        btnConEmp.setText("Buscar");
-        btnConEmp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConEmpActionPerformed(evt);
-            }
-        });
-        jPanel12.add(btnConEmp);
-        btnConEmp.setBounds(0, 30, 594, 33);
 
         txaConEmp.setEditable(false);
         txaConEmp.setColumns(20);
@@ -2905,9 +3140,14 @@ public class AdminMDI extends javax.swing.JFrame {
         jScrollPane12.setViewportView(txaConEmp);
 
         jPanel12.add(jScrollPane12);
-        jScrollPane12.setBounds(0, 65, 594, 270);
+        jScrollPane12.setBounds(0, 35, 594, 300);
 
         txtFiltroEmp.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtFiltroEmp.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFiltroEmpKeyTyped(evt);
+            }
+        });
         jPanel12.add(txtFiltroEmp);
         txtFiltroEmp.setBounds(170, 0, 420, 33);
 
@@ -2927,6 +3167,11 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel12.setBounds(-10, 0, 120, 33);
 
         txtEmpMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtEmpMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtEmpModKeyTyped(evt);
+            }
+        });
         jPanel13.add(txtEmpMod);
         txtEmpMod.setBounds(120, 0, 50, 33);
 
@@ -2938,7 +3183,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel13.add(btnBuscarEmpMod);
-        btnBuscarEmpMod.setBounds(380, 0, 81, 33);
+        btnBuscarEmpMod.setBounds(381, 0, 90, 33);
 
         btnEmpMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnEmpMod.setText("Modificar");
@@ -3002,11 +3247,21 @@ public class AdminMDI extends javax.swing.JFrame {
 
         txtNombreEmpMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtNombreEmpMod.setEnabled(false);
+        txtNombreEmpMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreEmpModKeyTyped(evt);
+            }
+        });
         jPanel13.add(txtNombreEmpMod);
         txtNombreEmpMod.setBounds(120, 40, 240, 33);
 
         txtApellidoEmpMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtApellidoEmpMod.setEnabled(false);
+        txtApellidoEmpMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtApellidoEmpModKeyTyped(evt);
+            }
+        });
         jPanel13.add(txtApellidoEmpMod);
         txtApellidoEmpMod.setBounds(120, 70, 240, 33);
 
@@ -3070,11 +3325,21 @@ public class AdminMDI extends javax.swing.JFrame {
 
         pfContrasenaEmpMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         pfContrasenaEmpMod.setEnabled(false);
+        pfContrasenaEmpMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                pfContrasenaEmpModKeyTyped(evt);
+            }
+        });
         jPanel13.add(pfContrasenaEmpMod);
         pfContrasenaEmpMod.setBounds(120, 160, 240, 33);
 
         pfContrasena2EmpMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         pfContrasena2EmpMod.setEnabled(false);
+        pfContrasena2EmpMod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                pfContrasena2EmpModKeyTyped(evt);
+            }
+        });
         jPanel13.add(pfContrasena2EmpMod);
         pfContrasena2EmpMod.setBounds(120, 190, 240, 33);
 
@@ -3094,10 +3359,24 @@ public class AdminMDI extends javax.swing.JFrame {
         jPanel13.add(btnCancelarEmpMod);
         btnCancelarEmpMod.setBounds(470, 0, 98, 33);
 
-        cbBuscarEmpMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        cbBuscarEmpMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
-        jPanel13.add(cbBuscarEmpMod);
-        cbBuscarEmpMod.setBounds(170, 0, 210, 33);
+        cbEmpMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        cbEmpMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbEmpMod.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbEmpModPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbEmpMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbEmpModActionPerformed(evt);
+            }
+        });
+        jPanel13.add(cbEmpMod);
+        cbEmpMod.setBounds(170, 0, 210, 33);
 
         jTabbedPaneUsuario.addTab("Modificar", jPanel13);
 
@@ -3111,9 +3390,14 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel21.add(btnBuscarEmpBorrar);
-        btnBuscarEmpBorrar.setBounds(370, 0, 100, 33);
+        btnBuscarEmpBorrar.setBounds(380, 0, 90, 33);
 
         txtEmpBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtEmpBorrar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtEmpBorrarKeyTyped(evt);
+            }
+        });
         jPanel21.add(txtEmpBorrar);
         txtEmpBorrar.setBounds(120, 0, 50, 33);
 
@@ -3159,7 +3443,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel21.add(cbEmpBorrar);
-        cbEmpBorrar.setBounds(170, 0, 200, 33);
+        cbEmpBorrar.setBounds(170, 0, 210, 33);
 
         btnCancelarEmpBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnCancelarEmpBorrar.setText("Cancelar");
@@ -3220,47 +3504,23 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel44.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel44.setText("Cantidad");
         jPanel15.add(jLabel44);
-        jLabel44.setBounds(10, 170, 100, 33);
+        jLabel44.setBounds(10, 160, 100, 33);
 
-        txtIdEmpleadoVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel15.add(txtIdEmpleadoVenta);
-        txtIdEmpleadoVenta.setBounds(120, 60, 150, 33);
+        txtEmpleadoVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel15.add(txtEmpleadoVenta);
+        txtEmpleadoVenta.setBounds(120, 60, 40, 33);
 
-        txtIdClienteVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel15.add(txtIdClienteVenta);
-        txtIdClienteVenta.setBounds(120, 30, 150, 33);
+        txtClienteVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel15.add(txtClienteVenta);
+        txtClienteVenta.setBounds(120, 30, 40, 33);
 
         jtVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jtVenta.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "ID Producto", "Cantidad", "Precio", "Suma"
+                "Nombre", "Cantidad", "Precio", "Suma"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -3277,7 +3537,7 @@ public class AdminMDI extends javax.swing.JFrame {
         }
 
         jPanel15.add(jScrollPane15);
-        jScrollPane15.setBounds(280, 30, 310, 200);
+        jScrollPane15.setBounds(230, 90, 360, 110);
 
         btnLimpiarVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnLimpiarVenta.setText("Limpiar Campos");
@@ -3290,12 +3550,6 @@ public class AdminMDI extends javax.swing.JFrame {
         jPanel15.add(jLabel43);
         jLabel43.setBounds(-10, 60, 120, 33);
 
-        jLabel46.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jLabel46.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel46.setText("Estado");
-        jPanel15.add(jLabel46);
-        jLabel46.setBounds(-10, 260, 120, 33);
-
         cbEstadoVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         cbEstadoVenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
         cbEstadoVenta.addActionListener(new java.awt.event.ActionListener() {
@@ -3304,26 +3558,26 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel15.add(cbEstadoVenta);
-        cbEstadoVenta.setBounds(120, 260, 150, 33);
+        cbEstadoVenta.setBounds(120, 260, 100, 33);
 
         txtCantidadVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jPanel15.add(txtCantidadVenta);
-        txtCantidadVenta.setBounds(120, 170, 150, 33);
+        txtCantidadVenta.setBounds(120, 160, 100, 33);
 
         btnAgregarProdVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnAgregarProdVenta.setText("Agregar al listado");
         jPanel15.add(btnAgregarProdVenta);
-        btnAgregarProdVenta.setBounds(10, 210, 260, 33);
+        btnAgregarProdVenta.setBounds(10, 220, 210, 33);
 
-        txtIdProdVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel15.add(txtIdProdVenta);
-        txtIdProdVenta.setBounds(120, 140, 150, 33);
+        txtProdVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel15.add(txtProdVenta);
+        txtProdVenta.setBounds(120, 130, 100, 33);
 
         jLabel47.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel47.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel47.setText("ID Producto");
         jPanel15.add(jLabel47);
-        jLabel47.setBounds(-10, 140, 120, 33);
+        jLabel47.setBounds(10, 130, 100, 33);
 
         jTextField2.setEditable(false);
         jTextField2.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
@@ -3331,7 +3585,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jTextField2.setText("Total");
         jTextField2.setFocusable(false);
         jPanel15.add(jTextField2);
-        jTextField2.setBounds(280, 260, 100, 33);
+        jTextField2.setBounds(230, 260, 100, 33);
 
         jTextField4.setEditable(false);
         jTextField4.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
@@ -3339,33 +3593,110 @@ public class AdminMDI extends javax.swing.JFrame {
         jTextField4.setText("Impuesto");
         jTextField4.setFocusable(false);
         jPanel15.add(jTextField4);
-        jTextField4.setBounds(280, 230, 100, 33);
+        jTextField4.setBounds(230, 230, 100, 33);
 
         txtImpuestoVenta.setEditable(false);
         txtImpuestoVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtImpuestoVenta.setFocusable(false);
         jPanel15.add(txtImpuestoVenta);
-        txtImpuestoVenta.setBounds(374, 230, 210, 33);
+        txtImpuestoVenta.setBounds(324, 230, 260, 33);
 
         txtTotalVenta.setEditable(false);
         txtTotalVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtTotalVenta.setFocusable(false);
         jPanel15.add(txtTotalVenta);
-        txtTotalVenta.setBounds(374, 260, 210, 33);
+        txtTotalVenta.setBounds(324, 260, 260, 33);
 
         cbProdVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         cbProdVenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbProdVenta.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbProdVentaPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbProdVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbProdVentaActionPerformed(evt);
+            }
+        });
         jPanel15.add(cbProdVenta);
-        cbProdVenta.setBounds(10, 110, 260, 32);
+        cbProdVenta.setBounds(10, 100, 210, 32);
+
+        jLabel63.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jLabel63.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel63.setText("Descuento %");
+        jPanel15.add(jLabel63);
+        jLabel63.setBounds(10, 190, 110, 33);
+
+        txtDescuentoVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel15.add(txtDescuentoVenta);
+        txtDescuentoVenta.setBounds(120, 190, 100, 33);
+
+        jLabel106.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jLabel106.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel106.setText("Estado   ");
+        jPanel15.add(jLabel106);
+        jLabel106.setBounds(40, 260, 70, 33);
+
+        cbEmpleadoVenta.setFont(new java.awt.Font("Cantarell", 0, 16)); // NOI18N
+        cbEmpleadoVenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbEmpleadoVenta.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbEmpleadoVentaPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbEmpleadoVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbEmpleadoVentaActionPerformed(evt);
+            }
+        });
+        jPanel15.add(cbEmpleadoVenta);
+        cbEmpleadoVenta.setBounds(160, 60, 430, 33);
+
+        cbClienteVenta.setFont(new java.awt.Font("Cantarell", 0, 16)); // NOI18N
+        cbClienteVenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbClienteVenta.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbClienteVentaPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbClienteVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbClienteVentaActionPerformed(evt);
+            }
+        });
+        jPanel15.add(cbClienteVenta);
+        cbClienteVenta.setBounds(160, 30, 430, 33);
+
+        jTextField12.setEditable(false);
+        jTextField12.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jTextField12.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField12.setText("Subtotal");
+        jTextField12.setFocusable(false);
+        jPanel15.add(jTextField12);
+        jTextField12.setBounds(230, 200, 100, 33);
+
+        txtPrecioVenta.setEditable(false);
+        txtPrecioVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtPrecioVenta.setFocusable(false);
+        jPanel15.add(txtPrecioVenta);
+        txtPrecioVenta.setBounds(320, 200, 264, 33);
 
         jTabbedPane5.addTab("Registrar", jPanel15);
 
         jPanel16.setLayout(null);
-
-        btnConVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        btnConVenta.setText("Buscar");
-        jPanel16.add(btnConVenta);
-        btnConVenta.setBounds(0, 30, 594, 33);
 
         txaConVenta.setEditable(false);
         txaConVenta.setColumns(20);
@@ -3374,17 +3705,17 @@ public class AdminMDI extends javax.swing.JFrame {
         jScrollPane16.setViewportView(txaConVenta);
 
         jPanel16.add(jScrollPane16);
-        jScrollPane16.setBounds(0, 65, 594, 270);
+        jScrollPane16.setBounds(0, 35, 594, 300);
 
         txtFiltroVenta.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jPanel16.add(txtFiltroVenta);
-        txtFiltroVenta.setBounds(200, 0, 390, 33);
+        txtFiltroVenta.setBounds(240, 0, 350, 33);
 
         jLabel15.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel15.setText("Filtrar por Id de cliente");
+        jLabel15.setText("Filtrar por nombre de cliente");
         jPanel16.add(jLabel15);
-        jLabel15.setBounds(0, 0, 190, 33);
+        jLabel15.setBounds(0, 0, 230, 33);
 
         jTabbedPane5.addTab("Consultar", jPanel16);
 
@@ -3396,14 +3727,14 @@ public class AdminMDI extends javax.swing.JFrame {
         jPanel23.add(jLabel16);
         jLabel16.setBounds(20, 0, 90, 33);
 
-        txtIdVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel23.add(txtIdVentaMod);
-        txtIdVentaMod.setBounds(120, 0, 50, 33);
+        txtVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel23.add(txtVentaMod);
+        txtVentaMod.setBounds(120, 0, 50, 33);
 
         btnBuscarVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnBuscarVentaMod.setText("Buscar");
         jPanel23.add(btnBuscarVentaMod);
-        btnBuscarVentaMod.setBounds(380, 0, 100, 33);
+        btnBuscarVentaMod.setBounds(390, 0, 90, 33);
 
         jLabel32.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel32.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -3425,47 +3756,23 @@ public class AdminMDI extends javax.swing.JFrame {
         jLabel48.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel48.setText("Cantidad");
         jPanel23.add(jLabel48);
-        jLabel48.setBounds(10, 190, 100, 33);
+        jLabel48.setBounds(10, 180, 100, 33);
 
-        txtIdEmpleadoVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel23.add(txtIdEmpleadoVentaMod);
-        txtIdEmpleadoVentaMod.setBounds(120, 80, 150, 33);
+        txtEmpleadoVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel23.add(txtEmpleadoVentaMod);
+        txtEmpleadoVentaMod.setBounds(120, 80, 40, 33);
 
-        txtIdClienteVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel23.add(txtIdClienteVentaMod);
-        txtIdClienteVentaMod.setBounds(120, 50, 150, 33);
+        txtClienteVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel23.add(txtClienteVentaMod);
+        txtClienteVentaMod.setBounds(120, 50, 40, 33);
 
         jtVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jtVentaMod.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "ID Producto", "Cantidad", "Precio", "Suma"
+                "Nombre", "Cantidad", "Precio", "Suma"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -3482,7 +3789,7 @@ public class AdminMDI extends javax.swing.JFrame {
         }
 
         jPanel23.add(jScrollPane17);
-        jScrollPane17.setBounds(280, 50, 310, 180);
+        jScrollPane17.setBounds(230, 110, 360, 90);
 
         btnLimpiarVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnLimpiarVentaMod.setText("Limpiar Campos");
@@ -3495,12 +3802,6 @@ public class AdminMDI extends javax.swing.JFrame {
         jPanel23.add(jLabel53);
         jLabel53.setBounds(-10, 80, 120, 33);
 
-        jLabel64.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jLabel64.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel64.setText("Estado");
-        jPanel23.add(jLabel64);
-        jLabel64.setBounds(-10, 260, 120, 33);
-
         cbEstadoVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         cbEstadoVentaMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO" }));
         cbEstadoVentaMod.addActionListener(new java.awt.event.ActionListener() {
@@ -3509,26 +3810,26 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel23.add(cbEstadoVentaMod);
-        cbEstadoVentaMod.setBounds(120, 260, 150, 33);
+        cbEstadoVentaMod.setBounds(120, 270, 100, 33);
 
         txtCantidadVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jPanel23.add(txtCantidadVentaMod);
-        txtCantidadVentaMod.setBounds(120, 190, 150, 33);
+        txtCantidadVentaMod.setBounds(120, 180, 100, 33);
 
         btnAgregarProdVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnAgregarProdVentaMod.setText("Agregar al listado");
         jPanel23.add(btnAgregarProdVentaMod);
-        btnAgregarProdVentaMod.setBounds(10, 220, 260, 33);
+        btnAgregarProdVentaMod.setBounds(10, 240, 210, 33);
 
-        txtIdProdVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel23.add(txtIdProdVentaMod);
-        txtIdProdVentaMod.setBounds(120, 160, 150, 33);
+        txtProdVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel23.add(txtProdVentaMod);
+        txtProdVentaMod.setBounds(120, 150, 100, 33);
 
         jLabel74.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel74.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel74.setText("ID Producto");
         jPanel23.add(jLabel74);
-        jLabel74.setBounds(0, 160, 110, 33);
+        jLabel74.setBounds(0, 150, 110, 33);
 
         jTextField1.setEditable(false);
         jTextField1.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
@@ -3536,7 +3837,7 @@ public class AdminMDI extends javax.swing.JFrame {
         jTextField1.setText("Total");
         jTextField1.setFocusable(false);
         jPanel23.add(jTextField1);
-        jTextField1.setBounds(280, 260, 100, 33);
+        jTextField1.setBounds(230, 260, 100, 33);
 
         jTextField3.setEditable(false);
         jTextField3.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
@@ -3544,24 +3845,38 @@ public class AdminMDI extends javax.swing.JFrame {
         jTextField3.setText("Impuesto");
         jTextField3.setFocusable(false);
         jPanel23.add(jTextField3);
-        jTextField3.setBounds(280, 230, 100, 33);
+        jTextField3.setBounds(230, 230, 100, 33);
 
         txtImpuestoVentaMod.setEditable(false);
         txtImpuestoVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtImpuestoVentaMod.setFocusable(false);
         jPanel23.add(txtImpuestoVentaMod);
-        txtImpuestoVentaMod.setBounds(374, 230, 210, 33);
+        txtImpuestoVentaMod.setBounds(324, 230, 260, 33);
 
         txtTotalVentaMod.setEditable(false);
         txtTotalVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         txtTotalVentaMod.setFocusable(false);
         jPanel23.add(txtTotalVentaMod);
-        txtTotalVentaMod.setBounds(374, 260, 210, 33);
+        txtTotalVentaMod.setBounds(324, 260, 260, 33);
 
-        cbProdVenta1.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        cbProdVenta1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
-        jPanel23.add(cbProdVenta1);
-        cbProdVenta1.setBounds(10, 130, 260, 32);
+        cbProdVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        cbProdVentaMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbProdVentaMod.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbProdVentaModPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbProdVentaMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbProdVentaModActionPerformed(evt);
+            }
+        });
+        jPanel23.add(cbProdVentaMod);
+        cbProdVentaMod.setBounds(10, 120, 210, 32);
 
         btnCancelarVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnCancelarVentaMod.setText("Cancelar");
@@ -3573,10 +3888,92 @@ public class AdminMDI extends javax.swing.JFrame {
         jPanel23.add(btnCancelarVentaMod);
         btnCancelarVentaMod.setBounds(480, 0, 98, 33);
 
-        cbBuscarVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        cbBuscarVentaMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
-        jPanel23.add(cbBuscarVentaMod);
-        cbBuscarVentaMod.setBounds(170, 0, 210, 33);
+        cbVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        cbVentaMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbVentaMod.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbVentaModPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbVentaMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbVentaModActionPerformed(evt);
+            }
+        });
+        jPanel23.add(cbVentaMod);
+        cbVentaMod.setBounds(170, 0, 220, 33);
+
+        txtDescuentoVenta1.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel23.add(txtDescuentoVenta1);
+        txtDescuentoVenta1.setBounds(120, 210, 100, 33);
+
+        jLabel107.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jLabel107.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel107.setText("Descuento %");
+        jPanel23.add(jLabel107);
+        jLabel107.setBounds(10, 210, 110, 33);
+
+        jLabel108.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jLabel108.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel108.setText("Estado   ");
+        jPanel23.add(jLabel108);
+        jLabel108.setBounds(40, 270, 70, 33);
+
+        cbEmpleadoVentaMod.setFont(new java.awt.Font("Cantarell", 0, 16)); // NOI18N
+        cbEmpleadoVentaMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbEmpleadoVentaMod.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbEmpleadoVentaModPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbEmpleadoVentaMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbEmpleadoVentaModActionPerformed(evt);
+            }
+        });
+        jPanel23.add(cbEmpleadoVentaMod);
+        cbEmpleadoVentaMod.setBounds(160, 80, 430, 33);
+
+        cbClienteVentaMod.setFont(new java.awt.Font("Cantarell", 0, 16)); // NOI18N
+        cbClienteVentaMod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona" }));
+        cbClienteVentaMod.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                cbClienteVentaModPopupMenuWillBecomeVisible(evt);
+            }
+        });
+        cbClienteVentaMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbClienteVentaModActionPerformed(evt);
+            }
+        });
+        jPanel23.add(cbClienteVentaMod);
+        cbClienteVentaMod.setBounds(160, 50, 430, 33);
+
+        txtPrecioVentaMod.setEditable(false);
+        txtPrecioVentaMod.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        txtPrecioVentaMod.setFocusable(false);
+        jPanel23.add(txtPrecioVentaMod);
+        txtPrecioVentaMod.setBounds(324, 200, 260, 33);
+
+        jTextField13.setEditable(false);
+        jTextField13.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jTextField13.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextField13.setText("Subtotal");
+        jTextField13.setFocusable(false);
+        jPanel23.add(jTextField13);
+        jTextField13.setBounds(230, 200, 100, 33);
 
         jTabbedPane5.addTab("Modificar", jPanel23);
 
@@ -3585,11 +3982,11 @@ public class AdminMDI extends javax.swing.JFrame {
         btnVentaBuscarBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnVentaBuscarBorrar.setText("Buscar");
         jPanel24.add(btnVentaBuscarBorrar);
-        btnVentaBuscarBorrar.setBounds(370, 0, 100, 33);
+        btnVentaBuscarBorrar.setBounds(390, 0, 90, 33);
 
-        txtIdVentaBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
-        jPanel24.add(txtIdVentaBorrar);
-        txtIdVentaBorrar.setBounds(120, 0, 50, 33);
+        txtVentaBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
+        jPanel24.add(txtVentaBorrar);
+        txtVentaBorrar.setBounds(120, 0, 50, 33);
 
         jLabel73.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel73.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -3627,7 +4024,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel24.add(cbVentaBorrar);
-        cbVentaBorrar.setBounds(170, 0, 200, 33);
+        cbVentaBorrar.setBounds(170, 0, 220, 33);
 
         btnCancelarVentaBorrar.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         btnCancelarVentaBorrar.setText("Cancelar");
@@ -3637,7 +4034,7 @@ public class AdminMDI extends javax.swing.JFrame {
             }
         });
         jPanel24.add(btnCancelarVentaBorrar);
-        btnCancelarVentaBorrar.setBounds(470, 0, 98, 33);
+        btnCancelarVentaBorrar.setBounds(480, 0, 98, 33);
 
         jTabbedPane5.addTab("Borrar", jPanel24);
 
@@ -3654,6 +4051,12 @@ public class AdminMDI extends javax.swing.JFrame {
 
         jDesktopPane1.add(ifrVenta);
         ifrVenta.setBounds(1290, 10, 620, 415);
+
+        fondo.setBackground(new java.awt.Color(0, 0, 0));
+        fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/fondo.png"))); // NOI18N
+        fondo.setText("jLabel6");
+        jDesktopPane1.add(fondo);
+        fondo.setBounds(0, 0, 1920, 940);
 
         getContentPane().add(jDesktopPane1, java.awt.BorderLayout.CENTER);
 
@@ -3784,22 +4187,31 @@ public class AdminMDI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "El campo nombre no puede estar vacío");
         } else if (txtExistenciaProd.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "El campo existencias no puede estar vacío");
-        } else if (txtPrecioProd.getText().isBlank()) {
-            JOptionPane.showMessageDialog(this, "El campo precio no puede estar vacío");
+        } else if (txtPrecioVentaProd.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo precio (venta) no puede estar vacío");
+        } else if (txtPrecioCompraProd.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo precio (compra) no puede estar vacío");
         } else if (lblImagen1Prod.getIcon() == null) {
             JOptionPane.showMessageDialog(this, "Debes agregar al menos una imagen");
         } else if (txtProvProd.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "El campo proveedor no puede estar vacío");
         } else {
+
             int idProv = Integer.parseInt(txtProvProd.getText());
-            prov = adminDaoProv.seleccionarId(idProv);
+            try {
+                prov = adminDaoProv.seleccionarId(idProv);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
             if (prov == null) {
                 JOptionPane.showMessageDialog(this, "El proveedor ingresado no existe");
+
             } else {
                 prod = new Producto();
                 prod.setNombre(txtNombreProd.getText());
                 prod.setDescripcion(txaDescripcionProd.getText());
-                prod.setPrecio(Double.parseDouble(txtPrecioProd.getText()));
+                prod.setPrecioVenta(Double.parseDouble(txtPrecioVentaProd.getText()));
+                prod.setPrecioCompra(Double.parseDouble(txtPrecioCompraProd.getText()));
                 prod.setExistencia(Integer.parseInt(txtExistenciaProd.getText()));
                 prod.setEstado(cbEstadoProd.getSelectedItem().toString());
                 prod.setIdProveedor(Integer.parseInt(txtProvProd.getText()));
@@ -3813,8 +4225,10 @@ public class AdminMDI extends javax.swing.JFrame {
                         prod.setImagen1(Bytes);
                     } catch (FileNotFoundException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     } catch (IOException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     }
                 }
 
@@ -3827,8 +4241,10 @@ public class AdminMDI extends javax.swing.JFrame {
                         prod.setImagen2(Bytes);
                     } catch (FileNotFoundException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     } catch (IOException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     }
                 } else {
                     prod.setImagen2(null);
@@ -3843,20 +4259,24 @@ public class AdminMDI extends javax.swing.JFrame {
                         prod.setImagen3(Bytes);
                     } catch (FileNotFoundException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     } catch (IOException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     }
                 } else {
                     prod.setImagen3(null);
                 }
 
-                if (adminDaoProd.insertar(prod)) {
+                try {
+                    adminDaoProd.insertar(prod);
                     JOptionPane.showMessageDialog(this, "Guardado");
                     txtNombreProd.setText(null);
                     txaDescripcionProd.setText(null);
                     txtExistenciaProd.setText(null);
                     txtProvProd.setText(null);
-                    txtPrecioProd.setText(null);
+                    txtPrecioVentaProd.setText(null);
+                    txtPrecioCompraProd.setText(null);
                     lblImagen1Prod.setIcon(null);
                     lblImagen2Prod.setIcon(null);
                     lblImagen3Prod.setIcon(null);
@@ -3867,8 +4287,8 @@ public class AdminMDI extends javax.swing.JFrame {
                     lblImagen3Prod.setEnabled(false);
                     btnImagen3Prod.setEnabled(false);
                     btnImagen3ProdQuitar.setEnabled(false);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
                 }
 
             }
@@ -3886,12 +4306,14 @@ public class AdminMDI extends javax.swing.JFrame {
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagen3Prod.getWidth(), lblImagen3Prod.getHeight(), Image.SCALE_DEFAULT));
             lblImagen3Prod.setIcon(icono);
             lblImagen3Prod.setIcon(icono);
-        }
-        if (imgProducto3.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagen3Prod.setIcon(null);
 
+            if (imgProducto3.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagen3Prod.setIcon(null);
+
+            }
         }
+
     }//GEN-LAST:event_btnImagen3ProdActionPerformed
 
     private void btnImagen2ProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagen2ProdActionPerformed
@@ -3904,12 +4326,14 @@ public class AdminMDI extends javax.swing.JFrame {
             imagen = new ImageIcon(imgProducto2.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagen2Prod.getWidth(), lblImagen2Prod.getHeight(), Image.SCALE_DEFAULT));
             lblImagen2Prod.setIcon(icono);
-        }
-        if (imgProducto2.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagen2Prod.setIcon(null);
 
+            if (imgProducto2.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagen2Prod.setIcon(null);
+
+            }
         }
+
     }//GEN-LAST:event_btnImagen2ProdActionPerformed
 
     private void btnImagen2ProdQuitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagen2ProdQuitarActionPerformed
@@ -3937,19 +4361,22 @@ public class AdminMDI extends javax.swing.JFrame {
             lblImagen3Prod.setEnabled(true);
             btnImagen3Prod.setEnabled(true);
             btnImagen3ProdQuitar.setEnabled(true);
-        }
-        if (imgProducto1.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagen1Prod.setIcon(null);
 
+            if (imgProducto1.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagen1Prod.setIcon(null);
+
+            }
         }
+
     }//GEN-LAST:event_btnImagen1ProdActionPerformed
 
     private void btnLimpiarProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarProdActionPerformed
         txtNombreProd.setText(null);
         txaDescripcionProd.setText(null);
         txtExistenciaProd.setText(null);
-        txtPrecioProd.setText(null);
+        txtPrecioVentaProd.setText(null);
+        txtPrecioCompraProd.setText(null);
         txtProvProd.setText(null);
         lblImagen1Prod.setIcon(null);
         lblImagen2Prod.setIcon(null);
@@ -3963,33 +4390,24 @@ public class AdminMDI extends javax.swing.JFrame {
         cbEstadoProd.setSelectedItem("ACTIVO");
     }//GEN-LAST:event_btnLimpiarProdActionPerformed
 
-    private void btnConProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConProdActionPerformed
-        if (txtFiltroProd.getText().isBlank()) {
-            registrosProd = adminDaoProd.seleccionarTodos();
-            String datosProd = "";
-            for (Producto registroProd : registrosProd) {
-                datosProd += registroProd;
-            }
-            txaConProd.setText(datosProd);
-        } else {
-            String nombreProd = txtFiltroProd.getText();
-            txaConProd.setText(adminDaoProd.seleccionarAlgunos(nombreProd).toString());
-        }
-    }//GEN-LAST:event_btnConProdActionPerformed
-
     private void btnBuscarProdModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarProdModActionPerformed
         if (txtProdMod.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "Ingresa el id del producto");
         } else {
 
             int idProd = Integer.parseInt(txtProdMod.getText());
-            prod = adminDaoProd.seleccionarId(idProd);
+            try {
+                prod = adminDaoProd.seleccionarId(idProd);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
             if (prod == null) {
                 //deshabilitar modulo de modificación
                 txtNombreProdMod.setEnabled(false);
                 txaDescripcionProdMod.setEnabled(false);
                 txtExistenciaProdMod.setEnabled(false);
-                txtPrecioProdMod.setEnabled(false);
+                txtPrecioVentaProdMod.setEnabled(false);
+                txtPrecioCompraProdMod.setEnabled(false);
                 txtProvProdMod.setEnabled(false);
                 btnProdMod.setEnabled(false);
                 lblImagen1ProdMod.setEnabled(false);
@@ -4008,7 +4426,8 @@ public class AdminMDI extends javax.swing.JFrame {
                 txtNombreProdMod.setText(null);
                 txaDescripcionProdMod.setText(null);
                 txtExistenciaProdMod.setText(null);
-                txtPrecioProdMod.setText(null);
+                txtPrecioVentaProdMod.setText(null);
+                txtPrecioCompraProdMod.setText(null);
                 txtProvProdMod.setText(null);
                 lblImagen1ProdMod.setIcon(null);
                 lblImagen2ProdMod.setIcon(null);
@@ -4022,7 +4441,8 @@ public class AdminMDI extends javax.swing.JFrame {
                 txtNombreProdMod.setEnabled(true);
                 txaDescripcionProdMod.setEnabled(true);
                 txtExistenciaProdMod.setEnabled(true);
-                txtPrecioProdMod.setEnabled(true);
+                txtPrecioVentaProdMod.setEnabled(true);
+                txtPrecioCompraProdMod.setEnabled(true);
                 txtProvProdMod.setEnabled(true);
                 btnProdMod.setEnabled(true);
                 lblImagen1ProdMod.setEnabled(true);
@@ -4033,7 +4453,8 @@ public class AdminMDI extends javax.swing.JFrame {
                 txtNombreProdMod.setText(prod.getNombre());
                 txaDescripcionProdMod.setText(prod.getDescripcion());
                 txtExistenciaProdMod.setText(Integer.toString(prod.getExistencia()));
-                txtPrecioProdMod.setText(Double.toString(prod.getPrecio()));
+                txtPrecioVentaProdMod.setText(Double.toString(prod.getPrecioVenta()));
+                txtPrecioCompraProdMod.setText(Double.toString(prod.getPrecioCompra()));
                 cbEstadoProdMod.setSelectedItem(prod.getEstado());
                 txtProvProdMod.setText(Integer.toString(prod.getIdProveedor()));
                 lblImagen1ProdMod.setIcon(null);
@@ -4120,20 +4541,27 @@ public class AdminMDI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "El campo nombre no puede estar vacío");
         } else if (txtExistenciaProdMod.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "El campo existencias no puede estar vacío");
-        } else if (txtPrecioProdMod.getText().isBlank()) {
-            JOptionPane.showMessageDialog(this, "El campo precio no puede estar vacío");
+        } else if (txtPrecioVentaProdMod.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo precio (venta) no puede estar vacío");
+        } else if (txtPrecioCompraProdMod.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "El campo precio (compra) no puede estar vacío");
         } else if (lblImagen1ProdMod.getIcon() == null) {
             JOptionPane.showMessageDialog(this, "Debes agregar al menos una imagen");
         } else {
             int idProv = Integer.parseInt(txtProvProdMod.getText());
-            prov = adminDaoProv.seleccionarId(idProv);
+            try {
+                prov = adminDaoProv.seleccionarId(idProv);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
             if (prov == null) {
                 JOptionPane.showMessageDialog(this, "El proveedor ingresado no existe");
             } else {
                 prod.setNombre(txtNombreProdMod.getText());
                 prod.setDescripcion(txaDescripcionProdMod.getText());
                 prod.setExistencia(Integer.parseInt(txtExistenciaProdMod.getText()));
-                prod.setPrecio(Double.parseDouble(txtPrecioProdMod.getText()));
+                prod.setPrecioVenta(Double.parseDouble(txtPrecioVentaProdMod.getText()));
+                prod.setPrecioCompra(Double.parseDouble(txtPrecioCompraProdMod.getText()));
                 prod.setEstado(cbEstadoProdMod.getSelectedItem().toString());
                 prod.setIdProveedor(Integer.parseInt(txtProvProdMod.getText()));
 
@@ -4146,8 +4574,10 @@ public class AdminMDI extends javax.swing.JFrame {
                         prod.setImagen1(Bytes);
                     } catch (FileNotFoundException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     } catch (IOException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     }
                 }
 
@@ -4162,8 +4592,10 @@ public class AdminMDI extends javax.swing.JFrame {
                         prod.setImagen2(Bytes);
                     } catch (FileNotFoundException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     } catch (IOException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     }
                 }
                 if (lblImagen2ProdMod.getIcon() == null) {
@@ -4181,8 +4613,10 @@ public class AdminMDI extends javax.swing.JFrame {
                         prod.setImagen3(Bytes);
                     } catch (FileNotFoundException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     } catch (IOException ex) {
                         Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                     }
                 }
                 if (lblImagen3ProdMod.getIcon() == null) {
@@ -4191,14 +4625,16 @@ public class AdminMDI extends javax.swing.JFrame {
 
                 System.out.println("tercera imagen verificada");
 
-                if (adminDaoProd.actualizar(prod.getIdProducto(), prod)) {
+                try {
+                    adminDaoProd.actualizar(prod.getIdProducto(), prod);
                     JOptionPane.showMessageDialog(this, "Producto Actualizado");
 
                     //deshabilitar cuadros de texto
                     txtNombreProdMod.setEnabled(false);
                     txaDescripcionProdMod.setEnabled(false);
                     txtExistenciaProdMod.setEnabled(false);
-                    txtPrecioProdMod.setEnabled(false);
+                    txtPrecioVentaProdMod.setEnabled(false);
+                    txtPrecioCompraProdMod.setEnabled(false);
                     txtProvProdMod.setEnabled(false);
                     btnProdMod.setEnabled(false);
                     lblImagen1ProdMod.setEnabled(false);
@@ -4217,7 +4653,8 @@ public class AdminMDI extends javax.swing.JFrame {
                     txtNombreProdMod.setText(null);
                     txaDescripcionProdMod.setText(null);
                     txtExistenciaProdMod.setText(null);
-                    txtPrecioProdMod.setText(null);
+                    txtPrecioVentaProdMod.setText(null);
+                    txtPrecioCompraProdMod.setText(null);
                     txtProvProdMod.setText(null);
                     lblImagen1ProdMod.setIcon(null);
                     lblImagen2ProdMod.setIcon(null);
@@ -4228,8 +4665,8 @@ public class AdminMDI extends javax.swing.JFrame {
                     //vaciar modulo de busqueda
                     txtProdMod.setText(null);
                     cbProdMod.setSelectedItem("Selecciona");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
                 }
             }
         }
@@ -4246,12 +4683,14 @@ public class AdminMDI extends javax.swing.JFrame {
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagen3ProdMod.getWidth(), lblImagen3ProdMod.getHeight(), Image.SCALE_DEFAULT));
             lblImagen3ProdMod.setIcon(icono);
             lblImagen3ProdMod.setIcon(icono);
-        }
-        if (imgProducto3.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagen3Prod.setIcon(null);
 
+            if (imgProducto3.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagen3Prod.setIcon(null);
+
+            }
         }
+
     }//GEN-LAST:event_btnImagen3ProdModActionPerformed
 
     private void btnImagen2ProdModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagen2ProdModActionPerformed
@@ -4265,12 +4704,14 @@ public class AdminMDI extends javax.swing.JFrame {
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagen2ProdMod.getWidth(), lblImagen2ProdMod.getHeight(), Image.SCALE_DEFAULT));
             lblImagen2ProdMod.setIcon(icono);
             lblImagen2ProdMod.setIcon(icono);
-        }
-        if (imgProducto2.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagen2Prod.setIcon(null);
 
+            if (imgProducto2.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagen2Prod.setIcon(null);
+
+            }
         }
+
     }//GEN-LAST:event_btnImagen2ProdModActionPerformed
 
     private void btnImagen2ProdQuitarModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagen2ProdQuitarModActionPerformed
@@ -4298,11 +4739,12 @@ public class AdminMDI extends javax.swing.JFrame {
             lblImagen3ProdMod.setEnabled(true);
             btnImagen3ProdMod.setEnabled(true);
             btnImagen3ProdQuitarMod.setEnabled(true);
-        }
-        if (imgProducto1.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagen1ProdMod.setIcon(null);
 
+            if (imgProducto1.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagen1ProdMod.setIcon(null);
+
+            }
         }
     }//GEN-LAST:event_btnImagen1ProdModActionPerformed
 
@@ -4310,7 +4752,8 @@ public class AdminMDI extends javax.swing.JFrame {
         txtNombreProdMod.setText(null);
         txaDescripcionProdMod.setText(null);
         txtExistenciaProdMod.setText(null);
-        txtPrecioProdMod.setText(null);
+        txtPrecioVentaProdMod.setText(null);
+        txtPrecioCompraProdMod.setText(null);
         txtProvProdMod.setText(null);
         lblImagen1ProdMod.setIcon(null);
         lblImagen2ProdMod.setIcon(null);
@@ -4332,14 +4775,20 @@ public class AdminMDI extends javax.swing.JFrame {
             if (txtProdBorrar.getText().isBlank()) {
                 JOptionPane.showMessageDialog(this, "Ingresa el id del producto");
             } else {
-                adminDaoProd.borrar(prod.getIdProducto());
+                try {
+                    adminDaoProd.borrar(prod.getIdProducto());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+                }
 
-                if (adminDaoProd.borrar(prod.getIdProducto())) {
+                try {
+                    adminDaoProd.borrar(prod.getIdProducto());
                     txtProdBorrar.setText(null);
+                    cbProdBorrar.setSelectedItem("Selecciona");
                     txaProdBorrar.setText(null);
                     JOptionPane.showMessageDialog(this, "Producto Borrado");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
                 }
 
             }
@@ -4353,7 +4802,13 @@ public class AdminMDI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ingresa el id del producto");
         } else {
             int id = Integer.parseInt(txtProdBorrar.getText());
-            prod = adminDaoProd.seleccionarId(id);
+
+            try {
+                prod = adminDaoProd.seleccionarId(id);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+
             if (prod == null) {
                 JOptionPane.showMessageDialog(this, "No se encontró el producto con id: " + id);
             } else {
@@ -4367,7 +4822,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void btnGuardarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarClienteActionPerformed
 //GUARDAR CLIENTES EN LA BASE DE DATOS
         if (txtNombreCliente.getText().isBlank()) {
-            JOptionPane.showMessageDialog(this, "EL campo nombre no puede estar vacio");
+            JOptionPane.showMessageDialog(this, "El campo nombre no puede estar vacio");
         } else if (txtApellidoCliente.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "El campo ciudad no puede estar vacío");
         } else if (txtApellidoCliente.getText().isBlank()) {
@@ -4393,11 +4848,14 @@ public class AdminMDI extends javax.swing.JFrame {
                 cliente.setImagen(imagenbytes);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
             } catch (IOException ex) {
                 Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
             }
 
-            if (adminDaoCliente.insertar(cliente)) {
+            try {
+                adminDaoCliente.insertar(cliente);
                 JOptionPane.showMessageDialog(this, "Guardado");
                 txtNombreCliente.setText(null);
                 txtApellidoCliente.setText(null);
@@ -4405,10 +4863,9 @@ public class AdminMDI extends javax.swing.JFrame {
                 txtCorreoCliente.setText(null);
                 lblImagenCliente.setIcon(null);
                 cbEstadoCliente.setSelectedItem("ACTIVO");
-            } else {
-                JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
             }
-
         }
     }//GEN-LAST:event_btnGuardarClienteActionPerformed
 
@@ -4428,12 +4885,14 @@ public class AdminMDI extends javax.swing.JFrame {
             lblImagenCliente.setIcon(icono);
             System.out.println("total " + imgCliente.getTotalSpace());
             System.out.println("length " + imgCliente.length());
-        }
-        if (imgCliente.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagenCliente.setIcon(null);
 
+            if (imgCliente.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagenCliente.setIcon(null);
+
+            }
         }
+
     }//GEN-LAST:event_btnImagenClienteActionPerformed
 
     private void btnLimpiarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarClienteActionPerformed
@@ -4445,27 +4904,17 @@ public class AdminMDI extends javax.swing.JFrame {
         cbEstadoCliente.setSelectedItem("ACTIVO");
     }//GEN-LAST:event_btnLimpiarClienteActionPerformed
 
-    private void btnConClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConClientesActionPerformed
-        if (txtFiltroCliente.getText().isBlank()) {
-            registrosCliente = adminDaoCliente.seleccionarTodos();
-            String datosCliente = "";
-            for (Cliente registroCliente : registrosCliente) {
-                datosCliente += registroCliente;
-            }
-            txaConCliente.setText(datosCliente);
-        } else {
-            String actualizarCliente = txtFiltroCliente.getText();
-            txaConCliente.setText(adminDaoCliente.seleccionarAlgunos(actualizarCliente).toString());
-        }
-    }//GEN-LAST:event_btnConClientesActionPerformed
-
     private void btnBuscarClienteModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarClienteModActionPerformed
         if (txtClienteMod.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "Ingresa el id del proveedor");
         } else {
 
             int idCliente = Integer.parseInt(txtClienteMod.getText());
-            cliente = adminDaoCliente.seleccionarId(idCliente);
+            try {
+                cliente = adminDaoCliente.seleccionarId(idCliente);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
             if (cliente == null) {
                 //deshabilitar cuadros de texto
 
@@ -4546,12 +4995,15 @@ public class AdminMDI extends javax.swing.JFrame {
                     cliente.setImagen(Bytes);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                 } catch (IOException ex) {
                     Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                 }
             }
 
-            if (adminDaoCliente.actualizar(cliente.getIdCliente(), cliente)) {
+            try {
+                adminDaoCliente.actualizar(cliente.getIdCliente(), cliente);
                 JOptionPane.showMessageDialog(this, "Cliente Actualizado");
 
                 //deshabilitar cuadros de texto
@@ -4569,8 +5021,8 @@ public class AdminMDI extends javax.swing.JFrame {
                 txtCorreoClienteMod.setText(null);
                 lblImagenClienteMod.setIcon(null);
                 cbEstadoClienteMod.setSelectedItem("ACTIVO");
-            } else {
-                JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
             }
         }
     }//GEN-LAST:event_btnClienteModActionPerformed
@@ -4589,12 +5041,13 @@ public class AdminMDI extends javax.swing.JFrame {
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagenClienteMod.getWidth(), lblImagenClienteMod.getHeight(), Image.SCALE_DEFAULT));
             lblImagenClienteMod.setIcon(icono);
 
-        }
-        if (imgCliente.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagenCliente.setIcon(null);
+            if (imgCliente.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagenCliente.setIcon(null);
 
+            }
         }
+
     }//GEN-LAST:event_btnImagenClienteModActionPerformed
 
     private void btnLimpiarClienteModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarClienteModActionPerformed
@@ -4611,7 +5064,11 @@ public class AdminMDI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ingresa el id del Cliente");
         } else {
             int id = Integer.parseInt(txtClienteBorrar.getText());
-            cliente = adminDaoCliente.seleccionarId(id);
+            try {
+                cliente = adminDaoCliente.seleccionarId(id);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
             if (cliente == null) {
                 JOptionPane.showMessageDialog(this, "No se encontró el Cliente con id: " + id);
             } else {
@@ -4626,14 +5083,20 @@ public class AdminMDI extends javax.swing.JFrame {
             if (txtClienteBorrar.getText().isBlank()) {
                 JOptionPane.showMessageDialog(this, "Ingresa el id del cliente");
             } else {
-                adminDaoCliente.borrar(cliente.getIdCliente());
+                try {
+                    adminDaoCliente.borrar(cliente.getIdCliente());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+                }
 
-                if (adminDaoCliente.borrar(cliente.getIdCliente())) {
+                try {
+                    adminDaoCliente.borrar(cliente.getIdCliente());
                     txtClienteBorrar.setText(null);
+                    cbClienteBorrar.setSelectedItem("Selecciona");
                     txaClienteBorrar.setText(null);
                     JOptionPane.showMessageDialog(this, "Cliente Borrado");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
                 }
 
             }
@@ -4688,11 +5151,14 @@ public class AdminMDI extends javax.swing.JFrame {
                     prov.setImagen(Bytes);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                 } catch (IOException ex) {
                     Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                 }
 
-                if (adminDaoProv.insertar(prov)) {
+                try {
+                    adminDaoProv.insertar(prov);
                     JOptionPane.showMessageDialog(this, "Guardado");
                     txtEmpresaProv.setText(null);
                     txtCiudadProv.setText(null);
@@ -4706,8 +5172,8 @@ public class AdminMDI extends javax.swing.JFrame {
                     txtCorreoProv.setText(null);
                     lblImagenProv.setIcon(null);
                     cbEstadoProv.setSelectedItem("ACTIVO");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
                 }
             }
         }
@@ -4723,12 +5189,14 @@ public class AdminMDI extends javax.swing.JFrame {
             imagen = new ImageIcon(imgProveedor.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagenProv.getWidth(), lblImagenProv.getHeight(), Image.SCALE_DEFAULT));
             lblImagenProv.setIcon(icono);
-        }
-        if (imgProveedor.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagenProv.setIcon(null);
 
+            if (imgProveedor.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagenProv.setIcon(null);
+
+            }
         }
+
     }//GEN-LAST:event_btnImagenProvActionPerformed
 
     private void btnLimpiarProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarProvActionPerformed
@@ -4746,27 +5214,17 @@ public class AdminMDI extends javax.swing.JFrame {
         cbEstadoProv.setSelectedItem("ACTIVO");
     }//GEN-LAST:event_btnLimpiarProvActionPerformed
 
-    private void btnConProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConProvActionPerformed
-        if (txtFiltroProv.getText().isBlank()) {
-            registrosProv = adminDaoProv.seleccionarTodos();
-            String datosProv = "";
-            for (Proveedor registroProv : registrosProv) {
-                datosProv += registroProv;
-            }
-            txaConProv.setText(datosProv);
-        } else {
-            String empresaProv = txtFiltroProv.getText();
-            txaConProv.setText(adminDaoProv.seleccionarAlgunos(empresaProv).toString());
-        }
-    }//GEN-LAST:event_btnConProvActionPerformed
-
     private void btnBuscarProvModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarProvModActionPerformed
         if (txtProvMod.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "Ingresa el id del proveedor");
         } else {
 
             int idProv = Integer.parseInt(txtProvMod.getText());
-            prov = adminDaoProv.seleccionarId(idProv);
+            try {
+                prov = adminDaoProv.seleccionarId(idProv);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
             if (prov == null) {
                 //deshabilitar cuadros de texto
                 txtEmpresaProvMod.setEnabled(false);
@@ -4905,12 +5363,15 @@ public class AdminMDI extends javax.swing.JFrame {
                     prov.setImagen(Bytes);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                 } catch (IOException ex) {
                     Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                 }
             }
 
-            if (adminDaoProv.actualizar(prov.getIdProveedor(), prov)) {
+            try {
+                adminDaoProv.actualizar(prov.getIdProveedor(), prov);
                 JOptionPane.showMessageDialog(this, "Proveedor Actualizado");
 
                 //deshabilitar cuadros de texto
@@ -4944,8 +5405,8 @@ public class AdminMDI extends javax.swing.JFrame {
                 txtProvMod.setText(null);
                 lblImagenProvMod.setIcon(null);
                 cbEstadoProvMod.setSelectedItem("ACTIVO");
-            } else {
-                JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
             }
         }
     }//GEN-LAST:event_btnProvModActionPerformed
@@ -4962,12 +5423,14 @@ public class AdminMDI extends javax.swing.JFrame {
                     lblImagenProvMod.getHeight(), Image.SCALE_DEFAULT));
             lblImagenProvMod.setIcon(icono);
             lblImagenProvMod.setIcon(icono);
-        }
-        if (imgProveedor.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagenProvMod.setIcon(null);
 
+            if (imgProveedor.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagenProvMod.setIcon(null);
+
+            }
         }
+
     }//GEN-LAST:event_btnImagenProvModActionPerformed
 
     private void btnLimpiarProvModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarProvModActionPerformed
@@ -4990,7 +5453,11 @@ public class AdminMDI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ingresa el id del proveedor");
         } else {
             int id = Integer.parseInt(txtProvBorrar.getText());
-            prov = adminDaoProv.seleccionarId(id);
+            try {
+                prov = adminDaoProv.seleccionarId(id);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
             if (prov == null) {
                 JOptionPane.showMessageDialog(this, "No se encontró el proveedor con id: " + id);
             } else {
@@ -5005,14 +5472,20 @@ public class AdminMDI extends javax.swing.JFrame {
             if (txtProvBorrar.getText().isBlank()) {
                 JOptionPane.showMessageDialog(this, "Ingresa el id del proveedor");
             } else {
-                adminDaoProv.borrar(prov.getIdProveedor());
+                try {
+                    adminDaoProv.borrar(prov.getIdProveedor());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+                }
 
-                if (adminDaoProv.borrar(prov.getIdProveedor())) {
+                try {
+                    adminDaoProv.borrar(prov.getIdProveedor());
                     txtProvBorrar.setText(null);
+                    cbProvBorrar.setSelectedItem("Selecciona");
                     txaProvBorrar.setText(null);
                     JOptionPane.showMessageDialog(this, "Proveedor Borrado");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
                 }
 
             }
@@ -5021,26 +5494,12 @@ public class AdminMDI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnProvBorrarActionPerformed
 
-    private void btnConEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConEmpActionPerformed
-        if (txtFiltroEmp.getText().isBlank()) {
-            registrosEmpleado = adminDaoEmpleado.seleccionarTodos();
-            String datosEmpleado = "";
-            for (Empleado registroEmpleado : registrosEmpleado) {
-                datosEmpleado += registroEmpleado;
-            }
-            txaConEmp.setText(datosEmpleado);
-        } else {
-            String nombreEmpleado = txtFiltroEmp.getText();
-            txaConEmp.setText(adminDaoEmpleado.seleccionarAlgunos(nombreEmpleado).toString());
-        }
-    }//GEN-LAST:event_btnConEmpActionPerformed
-
     private void btnGuardarEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarEmpActionPerformed
         char[] contrasenaChar = pfContrasenaEmp.getPassword();
-            String contrasenaString = new String(contrasenaChar);
+        String contrasenaString = new String(contrasenaChar);
         char[] contrasena2Char = pfContrasena2Emp.getPassword();
-            String contrasena2String = new String(contrasena2Char);
-        
+        String contrasena2String = new String(contrasena2Char);
+
         if (txtNombreEmp.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "El campo nombre no puede estar vacío");
         } else if (txtApellidoEmp.getText().isBlank()) {
@@ -5078,22 +5537,25 @@ public class AdminMDI extends javax.swing.JFrame {
                     empleado.setImagen(Bytes);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                 } catch (IOException ex) {
                     Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                 }
-                    if (adminDaoEmpleado.insertar(empleado)) {
-                        JOptionPane.showMessageDialog(this, "Guardado");
-                        txtNombreEmp.setText(null);
-                        txtApellidoEmp.setText(null);
-                        txtTelefonoEmp.setText(null);
-                        cbRolEmp.setSelectedItem("EMPLEADO");
-                        txtUsuarioEmp.setText("< usuario generado >");
-                        pfContrasenaEmp.setText(null);
-                        pfContrasena2Emp.setText(null);
-                        lblImagenEmp.setIcon(null);
-                        cbEstadoEmp.setSelectedItem("ACTIVO");
-                    }else{
-                    JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");    
+                try {
+                    adminDaoEmpleado.insertar(empleado);
+                    JOptionPane.showMessageDialog(this, "Guardado");
+                    txtNombreEmp.setText(null);
+                    txtApellidoEmp.setText(null);
+                    txtTelefonoEmp.setText(null);
+                    cbRolEmp.setSelectedItem("EMPLEADO");
+                    txtUsuarioEmp.setText("< usuario generado >");
+                    pfContrasenaEmp.setText(null);
+                    pfContrasena2Emp.setText(null);
+                    lblImagenEmp.setIcon(null);
+                    cbEstadoEmp.setSelectedItem("ACTIVO");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
                 }
             }
         }
@@ -5103,9 +5565,16 @@ public class AdminMDI extends javax.swing.JFrame {
         if (!(txtNombreEmp.getText().isBlank())) {
             String a = txtNombreEmp.getText().toUpperCase();
             String arr[] = a.split(" ");
-            String b = Integer.toString(adminDaoEmpleado.seleccionarUltimoId() + 1);
-            String ab = arr[0] + b;
-            txtUsuarioEmp.setText(ab);
+            String b;
+
+            try {
+                b = Integer.toString(adminDaoEmpleado.seleccionarUltimoId() + 1);
+                String ab = arr[0] + b;
+                txtUsuarioEmp.setText(ab);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+
         } else {
             JOptionPane.showMessageDialog(this, "Debes ingresar un nombre para generar el usuario");
         }
@@ -5132,7 +5601,11 @@ public class AdminMDI extends javax.swing.JFrame {
 
             int idUsuario = Integer.parseInt(txtEmpMod.getText());
             lblImagenEmpMod.setIcon(null);
-            empleado = adminDaoEmpleado.seleccionarId(idUsuario);
+            try {
+                empleado = adminDaoEmpleado.seleccionarId(idUsuario);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
             if (empleado == null) {
                 //deshabilitar cuadros de texto
                 txtNombreEmpMod.setEnabled(false);
@@ -5218,10 +5691,10 @@ public class AdminMDI extends javax.swing.JFrame {
 
     private void btnEmpModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmpModActionPerformed
         char[] contrasenaChar = pfContrasenaEmpMod.getPassword();
-            String contrasenaString = new String(contrasenaChar);
+        String contrasenaString = new String(contrasenaChar);
         char[] contrasena2Char = pfContrasena2EmpMod.getPassword();
-            String contrasena2String = new String(contrasena2Char);
-        
+        String contrasena2String = new String(contrasena2Char);
+
         if (txtNombreEmpMod.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "El campo nombre no puede estar vacío");
         } else if (txtApellidoEmpMod.getText().isBlank()) {
@@ -5258,12 +5731,15 @@ public class AdminMDI extends javax.swing.JFrame {
                     empleado.setImagen(Bytes);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                 } catch (IOException ex) {
                     Logger.getLogger(AdminMDI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(this, "Error al subir imagen: " + ex.getMessage());
                 }
             }
 
-            if (adminDaoEmpleado.actualizar(empleado.getIdEmpleado(), empleado)) {
+            try {
+                adminDaoEmpleado.actualizar(empleado.getIdEmpleado(), empleado);
                 JOptionPane.showMessageDialog(this, "Empleado Actualizado");
 
                 //deshabilitar cuadros de texto
@@ -5291,8 +5767,8 @@ public class AdminMDI extends javax.swing.JFrame {
                 pfContrasena2EmpMod.setText(null);
                 txtEmpMod.setText(null);
                 lblImagenEmpMod.setIcon(null);
-            } else {
-                JOptionPane.showMessageDialog(this, "Error, vuelve a intentar");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
             }
         }
     }//GEN-LAST:event_btnEmpModActionPerformed
@@ -5308,12 +5784,14 @@ public class AdminMDI extends javax.swing.JFrame {
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagenEmpMod.getWidth(), lblImagenEmpMod.getHeight(), Image.SCALE_DEFAULT));
             lblImagenEmpMod.setIcon(icono);
             lblImagenEmpMod.setIcon(icono);
-        }
-        if (imgEmpleado.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagenEmpMod.setIcon(null);
 
+            if (imgEmpleado.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagenEmpMod.setIcon(null);
+
+            }
         }
+
     }//GEN-LAST:event_btnImagenEmpModActionPerformed
 
     private void btnLimpiarEmpModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarEmpModActionPerformed
@@ -5328,11 +5806,49 @@ public class AdminMDI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarEmpModActionPerformed
 
     private void btnBuscarEmpBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarEmpBorrarActionPerformed
+        if (txtEmpBorrar.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Ingresa el id del empleado");
+        } else {
+            int id = Integer.parseInt(txtEmpBorrar.getText());
+            try {
+                empleado = adminDaoEmpleado.seleccionarId(id);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+            if (empleado == null) {
+                JOptionPane.showMessageDialog(this, "No se encontró el empleado con id: " + id);
+            } else {
+                //mostrar en txa
+                txaEmpBorrar.setText(empleado.toString());
 
+            }
+        }
     }//GEN-LAST:event_btnBuscarEmpBorrarActionPerformed
 
     private void btnEmpBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmpBorrarActionPerformed
+        if (empleado != null) {
+            if (txtEmpBorrar.getText().isBlank()) {
+                JOptionPane.showMessageDialog(this, "Ingresa el id del producto");
+            } else {
+                try {
+                    adminDaoEmpleado.borrar(empleado.getIdEmpleado());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+                }
 
+                try {
+                    adminDaoEmpleado.borrar(empleado.getIdEmpleado());
+                    txtEmpBorrar.setText(null);
+                    cbProdBorrar.setSelectedItem("Selecciona");
+                    txaProdBorrar.setText(null);
+                    JOptionPane.showMessageDialog(this, "Empleado Borrado");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se encontró el empleado");
+        }
     }//GEN-LAST:event_btnEmpBorrarActionPerformed
 
     private void txtNombreProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreProdKeyTyped
@@ -5342,8 +5858,8 @@ public class AdminMDI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtNombreProdKeyTyped
 
-    private void txtPrecioProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioProdKeyTyped
-        if (txtPrecioProd.getText().length() > 8) {
+    private void txtPrecioVentaProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioVentaProdKeyTyped
+        if (txtPrecioVentaProd.getText().length() > 8) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
             evt.consume();
         }
@@ -5355,11 +5871,11 @@ public class AdminMDI extends javax.swing.JFrame {
             evt.consume();
             JOptionPane.showMessageDialog(null, "El campo solo admite números y un punto");
         }
-        if ((key == '.') && txtPrecioProd.getText().contains(".")) {
+        if ((key == '.') && txtPrecioVentaProd.getText().contains(".")) {
             evt.consume();
             JOptionPane.showMessageDialog(null, "Ingresa solo un punto");
         }
-    }//GEN-LAST:event_txtPrecioProdKeyTyped
+    }//GEN-LAST:event_txtPrecioVentaProdKeyTyped
 
     private void txtExistenciaProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtExistenciaProdKeyTyped
         if (txtExistenciaProd.getText().length() > 9) {
@@ -5447,7 +5963,15 @@ public class AdminMDI extends javax.swing.JFrame {
                 || tecla == KeyEvent.VK_SPACE)) {
             JOptionPane.showMessageDialog(this, "El campo solo admite letras");
             evt.consume();
+        } else {
+            String actualizarCliente = txtFiltroCliente.getText();
+            try {
+                txaConCliente.setText(adminDaoCliente.seleccionarAlgunos(actualizarCliente).toString());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
         }
+
     }//GEN-LAST:event_txtFiltroClienteKeyTyped
 
     private void txtClienteModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteModKeyTyped
@@ -5526,17 +6050,21 @@ public class AdminMDI extends javax.swing.JFrame {
             imagen = new ImageIcon(imgEmpleado.getAbsolutePath());
             icono = new ImageIcon(imagen.getImage().getScaledInstance(lblImagenEmp.getWidth(), lblImagenEmp.getHeight(), Image.SCALE_DEFAULT));
             lblImagenEmp.setIcon(icono);
-        }
-        if (imgEmpleado.length() > 16777214) {
-            JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
-            lblImagenEmp.setIcon(null);
 
+            if (imgEmpleado.length() > 16777214) {
+                JOptionPane.showMessageDialog(this, "Imagen demasiado grande");
+                lblImagenEmp.setIcon(null);
+
+            }
         }
+
+
     }//GEN-LAST:event_btnImagenEmpActionPerformed
 
     private void txtNombreEmpKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreEmpKeyTyped
         if (txtNombreEmp.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5551,6 +6079,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtApellidoEmpKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoEmpKeyTyped
         if (txtApellidoEmp.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5579,6 +6108,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtEmpresaProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmpresaProvKeyTyped
         if (txtEmpresaProv.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5592,6 +6122,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtCiudadProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCiudadProvKeyTyped
         if (txtCiudadProv.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5606,6 +6137,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtColoniaProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtColoniaProvKeyTyped
         if (txtColoniaProv.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5620,6 +6152,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtCpProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCpProvKeyTyped
         if (txtCpProv.getText().length() > 4) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5632,6 +6165,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtCalleProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCalleProvKeyTyped
         if (txtCalleProvMod.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5645,6 +6179,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtNumeroProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroProvKeyTyped
         if (txtNumeroProv.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5658,6 +6193,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtNombreProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreProvKeyTyped
         if (txtNombreProv.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5672,6 +6208,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtApellidoProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoProvKeyTyped
         if (txtApellidoProv.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5686,6 +6223,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtTelefonoProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoProvKeyTyped
         if (txtTelefonoProv.getText().length() > 9) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5698,12 +6236,14 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtCorreoProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCorreoProvKeyTyped
         if (txtCorreoProv.getText().length() > 149) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
     }//GEN-LAST:event_txtCorreoProvKeyTyped
 
     private void txtFiltroProvKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroProvKeyTyped
         if (txtFiltroProv.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5711,12 +6251,20 @@ public class AdminMDI extends javax.swing.JFrame {
                 || key == KeyEvent.VK_SPACE)) {
             evt.consume();
             JOptionPane.showMessageDialog(null, "El campo solo admite letras y números");
+        } else {
+            String empresaProv = txtFiltroProv.getText();
+            try {
+                txaConProv.setText(adminDaoProv.seleccionarAlgunos(empresaProv).toString());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
         }
     }//GEN-LAST:event_txtFiltroProvKeyTyped
 
     private void txtProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProvModKeyTyped
-        if (txtProvMod.getText().length() > 9) {
+        if (txtProvMod.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5729,6 +6277,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtEmpresaProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmpresaProvModKeyTyped
         if (txtEmpresaProvMod.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5742,6 +6291,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtCiudadProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCiudadProvModKeyTyped
         if (txtCiudadProvMod.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5756,6 +6306,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtColoniaProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtColoniaProvModKeyTyped
         if (txtColoniaProvMod.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5770,6 +6321,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtCpProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCpProvModKeyTyped
         if (txtCpProvMod.getText().length() > 4) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5782,6 +6334,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtCalleProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCalleProvModKeyTyped
         if (txtCalleProv.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5795,6 +6348,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtNumeroProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroProvModKeyTyped
         if (txtNumeroProvMod.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5808,6 +6362,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtNombreProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreProvModKeyTyped
         if (txtNombreProvMod.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5822,6 +6377,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtApellidoProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoProvModKeyTyped
         if (txtApellidoProvMod.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5836,6 +6392,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtTelefonoProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoProvModKeyTyped
         if (txtTelefonoProvMod.getText().length() > 9) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         evt.consume();
 
@@ -5850,12 +6407,14 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtCorreoProvModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCorreoProvModKeyTyped
         if (txtCorreoProv.getText().length() > 149) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
     }//GEN-LAST:event_txtCorreoProvModKeyTyped
 
     private void txtProvBorrarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProvBorrarKeyTyped
         if (txtProvBorrar.getText().length() > 9) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
         }
         char key = evt.getKeyChar();
 
@@ -5868,14 +6427,13 @@ public class AdminMDI extends javax.swing.JFrame {
     private void txtFiltroProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroProdKeyTyped
         if (txtFiltroProd.getText().length() > 49) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
-        }
-        char key = evt.getKeyChar();
-
-        if (!(Character.isLetter(key)
-                || key == KeyEvent.VK_BACK_SPACE
-                || key == KeyEvent.VK_SPACE)) {
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        } else {
+            String nombreProd = txtFiltroProd.getText();
+            try {
+                txaConProd.setText(adminDaoProd.seleccionarAlgunos(nombreProd).toString());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
         }
     }//GEN-LAST:event_txtFiltroProdKeyTyped
 
@@ -5939,8 +6497,8 @@ public class AdminMDI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtExistenciaProdModKeyTyped
 
-    private void txtPrecioProdModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioProdModKeyTyped
-        if (txtPrecioProdMod.getText().length() > 8) {
+    private void txtPrecioVentaProdModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioVentaProdModKeyTyped
+        if (txtPrecioVentaProdMod.getText().length() > 8) {
             JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
             evt.consume();
         }
@@ -5952,11 +6510,11 @@ public class AdminMDI extends javax.swing.JFrame {
             evt.consume();
             JOptionPane.showMessageDialog(null, "El campo solo admite números y un punto");
         }
-        if ((key == '.') && txtPrecioProdMod.getText().contains(".")) {
+        if ((key == '.') && txtPrecioVentaProdMod.getText().contains(".")) {
             evt.consume();
             JOptionPane.showMessageDialog(null, "Ingresa solo un punto");
         }
-    }//GEN-LAST:event_txtPrecioProdModKeyTyped
+    }//GEN-LAST:event_txtPrecioVentaProdModKeyTyped
 
     private void txtProvProdModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProvProdModKeyTyped
         if (txtProvProdMod.getText().length() > 49) {
@@ -6003,7 +6561,8 @@ public class AdminMDI extends javax.swing.JFrame {
         txtNombreProdMod.setEnabled(false);
         txaDescripcionProdMod.setEnabled(false);
         txtExistenciaProdMod.setEnabled(false);
-        txtPrecioProdMod.setEnabled(false);
+        txtPrecioVentaProdMod.setEnabled(false);
+        txtPrecioCompraProdMod.setEnabled(false);
         txtProvProdMod.setEnabled(false);
         btnProdMod.setEnabled(false);
         lblImagen1ProdMod.setEnabled(false);
@@ -6022,7 +6581,8 @@ public class AdminMDI extends javax.swing.JFrame {
         txtNombreProdMod.setText(null);
         txaDescripcionProdMod.setText(null);
         txtExistenciaProdMod.setText(null);
-        txtPrecioProdMod.setText(null);
+        txtPrecioVentaProdMod.setText(null);
+        txtPrecioCompraProdMod.setText(null);
         txtProvProdMod.setText(null);
         lblImagen1ProdMod.setIcon(null);
         lblImagen2ProdMod.setIcon(null);
@@ -6040,15 +6600,95 @@ public class AdminMDI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarVentaModActionPerformed
 
     private void btnCancelarEmpModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarEmpModActionPerformed
-        // TODO add your handling code here:
+        //deshabilitar cuadros de texto
+        txtNombreEmpMod.setEnabled(false);
+        txtApellidoEmpMod.setEnabled(false);
+        txtTelefonoEmpMod.setEnabled(false);
+        cbRolEmpMod.setEnabled(false);
+        txtUsuarioEmpMod.setEnabled(false);
+        pfContrasenaEmpMod.setEnabled(false);
+        pfContrasena2EmpMod.setEnabled(false);
+        lblImagenEmpMod.setEnabled(false);
+        btnImagenEmpMod.setEnabled(false);
+        btnEmpMod.setEnabled(false);
+        btnLimpiarEmpMod.setEnabled(false);
+        cbEstadoEmpMod.setEnabled(false);
+
+        //vaciar cuadros de texto
+        txtNombreEmpMod.setText(null);
+        txtApellidoEmpMod.setText(null);
+        txtTelefonoEmpMod.setText(null);
+        cbRolEmpMod.setSelectedItem("EMPLEADO");
+        cbEstadoEmpMod.setSelectedItem("Activo");
+        txtUsuarioEmpMod.setText(null);
+        pfContrasenaEmpMod.setText(null);
+        pfContrasena2EmpMod.setText(null);
+        txtEmpMod.setText(null);
+        lblImagenEmpMod.setIcon(null);
+
+        //vaciar modulo de busqueda
+        txtEmpMod.setText(null);
+        cbEmpMod.setSelectedItem("Selecciona");
     }//GEN-LAST:event_btnCancelarEmpModActionPerformed
 
     private void btnCancelarClienteModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarClienteModActionPerformed
-        // TODO add your handling code here:
+        //deshabilitar cuadros de texto
+        txtNombreClienteMod.setEnabled(false);
+        txtApellidoClienteMod.setEnabled(false);
+        txtTelefonoClienteMod.setEnabled(false);
+        txtCorreoClienteMod.setEnabled(false);
+        lblImagenClienteMod.setEnabled(false);
+        cbEstadoClienteMod.setEnabled(false);
+
+        //vaciar cuadros de texto
+        txtNombreClienteMod.setText(null);
+        txtApellidoClienteMod.setText(null);
+        txtTelefonoClienteMod.setText(null);
+        txtCorreoClienteMod.setText(null);
+        lblImagenClienteMod.setIcon(null);
+        cbEstadoClienteMod.setSelectedItem("ACTIVO");
+
+        //vaciar modulo de busqueda
+        txtClienteMod.setText(null);
+        cbClienteMod.setSelectedItem("Selecciona");
     }//GEN-LAST:event_btnCancelarClienteModActionPerformed
 
     private void btnCancelarProdMod1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarProdMod1ActionPerformed
-        // TODO add your handling code here:
+        //deshabilitar cuadros de texto
+        txtEmpresaProvMod.setEnabled(false);
+        txtCiudadProvMod.setEnabled(false);
+        txtColoniaProvMod.setEnabled(false);
+        txtCpProvMod.setEnabled(false);
+        txtCalleProvMod.setEnabled(false);
+        txtNumeroProvMod.setEnabled(false);
+        txtNombreProvMod.setEnabled(false);
+        txtApellidoProvMod.setEnabled(false);
+        txtTelefonoProvMod.setEnabled(false);
+        txtCorreoProvMod.setEnabled(false);
+        btnProvMod.setEnabled(false);
+        lblImagenProvMod.setEnabled(false);
+        btnImagenProvMod.setEnabled(false);
+        btnLimpiarProvMod.setEnabled(false);
+        cbEstadoProvMod.setEnabled(false);
+
+        //vaciar cuadros de texto
+        txtEmpresaProvMod.setText(null);
+        txtCiudadProvMod.setText(null);
+        txtColoniaProvMod.setText(null);
+        txtCpProvMod.setText(null);
+        txtCalleProvMod.setText(null);
+        txtNumeroProvMod.setText(null);
+        txtNombreProvMod.setText(null);
+        txtApellidoProvMod.setText(null);
+        txtTelefonoProvMod.setText(null);
+        txtCorreoProvMod.setText(null);
+        txtProvMod.setText(null);
+        lblImagenProvMod.setIcon(null);
+        cbEstadoProvMod.setSelectedItem("ACTIVO");
+
+        //vaciar modulo de busqueda
+        txtProvMod.setText(null);
+        cbProvMod.setSelectedItem("Selecciona");
     }//GEN-LAST:event_btnCancelarProdMod1ActionPerformed
 
     private void btnCancelarPedidoModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarPedidoModActionPerformed
@@ -6060,8 +6700,12 @@ public class AdminMDI extends javax.swing.JFrame {
         String[] a = {"Selecciona"};
         Object[] Selecciona = a;
         cbProvProd.setModel(new DefaultComboBoxModel(Selecciona));
-        //rellenar para agregar objetos actualizados
-        RellenarComboBox("proveedor", "idProveedor", "empresa", cbProvProd);
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("proveedor", "idProveedor", "empresa", cbProvProd);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
     }//GEN-LAST:event_cbProvProdPopupMenuWillBecomeVisible
 
     private void cbProvProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProvProdActionPerformed
@@ -6082,8 +6726,13 @@ public class AdminMDI extends javax.swing.JFrame {
         String[] a = {"Selecciona"};
         Object[] Selecciona = a;
         cbProdMod.setModel(new DefaultComboBoxModel(Selecciona));
-        //rellenar para agregar objetos actualizados
-        RellenarComboBox("producto", "idProducto", "nombre", cbProdMod);
+
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("producto", "idProducto", "nombre", cbProdMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
     }//GEN-LAST:event_cbProdModPopupMenuWillBecomeVisible
 
     private void cbProdModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProdModActionPerformed
@@ -6103,8 +6752,12 @@ public class AdminMDI extends javax.swing.JFrame {
         String[] a = {"Selecciona"};
         Object[] Selecciona = a;
         cbProdBorrar.setModel(new DefaultComboBoxModel(Selecciona));
-        //rellenar para agregar objetos actualizados
-        RellenarComboBox("producto", "idProducto", "nombre", cbProdBorrar);
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("producto", "idProducto", "nombre", cbProdBorrar);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
     }//GEN-LAST:event_cbProdBorrarPopupMenuWillBecomeVisible
 
     private void cbProdBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProdBorrarActionPerformed
@@ -6126,47 +6779,134 @@ public class AdminMDI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarProdBorrarActionPerformed
 
     private void cbEmpBorrarPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbEmpBorrarPopupMenuWillBecomeVisible
-        // TODO add your handling code here:
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbEmpBorrar.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("empleado", "idEmpleado", "usuario", cbEmpBorrar);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
     }//GEN-LAST:event_cbEmpBorrarPopupMenuWillBecomeVisible
 
     private void cbEmpBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEmpBorrarActionPerformed
-        // TODO add your handling code here:
+        String a = cbEmpBorrar.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtEmpBorrar.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtEmpBorrar.setText(null);
+        }
     }//GEN-LAST:event_cbEmpBorrarActionPerformed
 
     private void btnCancelarEmpBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarEmpBorrarActionPerformed
-        // TODO add your handling code here:
+        txtEmpBorrar.setText(null);
+        cbEmpBorrar.setSelectedItem("Selecciona");
+        txaEmpBorrar.setText(null);
     }//GEN-LAST:event_btnCancelarEmpBorrarActionPerformed
 
     private void cbClienteBorrarPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbClienteBorrarPopupMenuWillBecomeVisible
-        // TODO add your handling code here:
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbClienteBorrar.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("cliente", "idCliente", "nombre", cbClienteBorrar);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
     }//GEN-LAST:event_cbClienteBorrarPopupMenuWillBecomeVisible
 
     private void cbClienteBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbClienteBorrarActionPerformed
-        // TODO add your handling code here:
+        String a = cbClienteBorrar.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtClienteBorrar.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtClienteBorrar.setText(null);
+        }
     }//GEN-LAST:event_cbClienteBorrarActionPerformed
 
     private void cbPedidoBorrarPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbPedidoBorrarPopupMenuWillBecomeVisible
-        // TODO add your handling code here:
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbPedidoBorrar.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("pedido", "idPedido", "fecha", cbPedidoBorrar);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
     }//GEN-LAST:event_cbPedidoBorrarPopupMenuWillBecomeVisible
 
     private void cbPedidoBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPedidoBorrarActionPerformed
-        // TODO add your handling code here:
+        String a = cbPedidoBorrar.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtPedidoBorrar.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtPedidoBorrar.setText(null);
+        }
     }//GEN-LAST:event_cbPedidoBorrarActionPerformed
 
     private void cbProvBorrarPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbProvBorrarPopupMenuWillBecomeVisible
-        // TODO add your handling code here:
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbPedidoBorrar.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("pedido", "idPedido", "fecha", cbProvBorrar);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
     }//GEN-LAST:event_cbProvBorrarPopupMenuWillBecomeVisible
 
     private void cbProvBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProvBorrarActionPerformed
-        // TODO add your handling code here:
+        String a = cbProvBorrar.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtProvBorrar.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtProvBorrar.setText(null);
+        }
     }//GEN-LAST:event_cbProvBorrarActionPerformed
 
     private void cbVentaBorrarPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbVentaBorrarPopupMenuWillBecomeVisible
-        // TODO add your handling code here:
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbVentaBorrar.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("venta", "idVenta", "fecha", cbVentaBorrar);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
     }//GEN-LAST:event_cbVentaBorrarPopupMenuWillBecomeVisible
 
     private void cbVentaBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbVentaBorrarActionPerformed
-        // TODO add your handling code here:
+        String a = cbVentaBorrar.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtVentaBorrar.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtVentaBorrar.setText(null);
+        }
     }//GEN-LAST:event_cbVentaBorrarActionPerformed
 
     private void btnCancelarVentaBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarVentaBorrarActionPerformed
@@ -6174,7 +6914,9 @@ public class AdminMDI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarVentaBorrarActionPerformed
 
     private void btnCancelarProvBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarProvBorrarActionPerformed
-        // TODO add your handling code here:
+        txtProvBorrar.setText(null);
+        cbProvBorrar.setSelectedItem("Selecciona");
+        txaProvBorrar.setText(null);
     }//GEN-LAST:event_btnCancelarProvBorrarActionPerformed
 
     private void btnCancelarPedidoBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarPedidoBorrarActionPerformed
@@ -6182,7 +6924,9 @@ public class AdminMDI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarPedidoBorrarActionPerformed
 
     private void btnCancelarClienteBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarClienteBorrarActionPerformed
-        // TODO add your handling code here:
+        txtClienteBorrar.setText(null);
+        cbClienteBorrar.setSelectedItem("Selecciona");
+        txaClienteBorrar.setText(null);
     }//GEN-LAST:event_btnCancelarClienteBorrarActionPerformed
 
     private void cbProvProdModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbProvProdModPopupMenuWillBecomeVisible
@@ -6190,8 +6934,12 @@ public class AdminMDI extends javax.swing.JFrame {
         String[] a = {"Selecciona"};
         Object[] Selecciona = a;
         cbProvProdMod.setModel(new DefaultComboBoxModel(Selecciona));
-        //rellenar para agregar objetos actualizados
-        RellenarComboBox("proveedor", "idProveedor", "empresa", cbProvProdMod);
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("proveedor", "idProveedor", "empresa", cbProvProdMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
     }//GEN-LAST:event_cbProvProdModPopupMenuWillBecomeVisible
 
     private void cbProvProdModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProvProdModActionPerformed
@@ -6205,6 +6953,767 @@ public class AdminMDI extends javax.swing.JFrame {
             txtProvProdMod.setText(null);
         }
     }//GEN-LAST:event_cbProvProdModActionPerformed
+
+    private void pfContrasenaEmpKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pfContrasenaEmpKeyTyped
+        if (pfContrasenaEmp.getPassword().length > 49) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_pfContrasenaEmpKeyTyped
+
+    private void pfContrasena2EmpKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pfContrasena2EmpKeyTyped
+        if (pfContrasena2Emp.getPassword().length > 49) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_pfContrasena2EmpKeyTyped
+
+    private void txtFiltroEmpKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroEmpKeyTyped
+        if (txtFiltroEmp.getText().length() > 49) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        } else {
+            String nombreEmpleado = txtFiltroEmp.getText();
+            try {
+                txaConEmp.setText(adminDaoEmpleado.seleccionarAlgunos(nombreEmpleado).toString());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_txtFiltroEmpKeyTyped
+
+    private void txtNombreEmpModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreEmpModKeyTyped
+        if (txtNombreEmp.getText().length() > 49) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtNombreEmpModKeyTyped
+
+    private void txtEmpModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmpModKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isDigit(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE
+                || tecla == KeyEvent.VK_SPACE)) {
+            JOptionPane.showMessageDialog(this, "El campo solo admite números");
+            evt.consume();
+        }
+        if (txtEmpMod.getText().length() > 49) {
+            JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtEmpModKeyTyped
+
+    private void txtApellidoEmpModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoEmpModKeyTyped
+        if (txtApellidoEmpMod.getText().length() > 49) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isLetter(key)
+                || key == KeyEvent.VK_BACK_SPACE
+                || key == KeyEvent.VK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite letras");
+        }
+    }//GEN-LAST:event_txtApellidoEmpModKeyTyped
+
+    private void pfContrasenaEmpModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pfContrasenaEmpModKeyTyped
+        if (pfContrasenaEmpMod.getPassword().length > 49) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_pfContrasenaEmpModKeyTyped
+
+    private void pfContrasena2EmpModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pfContrasena2EmpModKeyTyped
+        if (pfContrasena2EmpMod.getPassword().length > 49) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_pfContrasena2EmpModKeyTyped
+
+    private void txtEmpBorrarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmpBorrarKeyTyped
+        char tecla = evt.getKeyChar();
+        if (!(Character.isDigit(tecla)
+                || tecla == KeyEvent.VK_BACK_SPACE
+                || tecla == KeyEvent.VK_SPACE)) {
+            JOptionPane.showMessageDialog(this, "El campo solo admite números");
+            evt.consume();
+        }
+        if (txtEmpBorrar.getText().length() > 49) {
+            JOptionPane.showMessageDialog(this, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtEmpBorrarKeyTyped
+
+    private void cbClienteModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbClienteModPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbClienteMod.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("cliente", "idCliente", "correo", cbClienteMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbClienteModPopupMenuWillBecomeVisible
+
+    private void cbClienteModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbClienteModActionPerformed
+        String a = cbClienteMod.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtClienteMod.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtClienteMod.setText(null);
+        }
+    }//GEN-LAST:event_cbClienteModActionPerformed
+
+    private void cbEmpModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEmpModActionPerformed
+        String a = cbEmpMod.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtEmpMod.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtEmpMod.setText(null);
+        }
+    }//GEN-LAST:event_cbEmpModActionPerformed
+
+    private void cbEmpModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbEmpModPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbEmpMod.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("empleado", "idEmpleado", "usuario", cbEmpMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbEmpModPopupMenuWillBecomeVisible
+
+    private void cbProvModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProvModActionPerformed
+        String a = cbProvMod.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtProvMod.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtProvMod.setText(null);
+        }
+    }//GEN-LAST:event_cbProvModActionPerformed
+
+    private void cbProvModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbProvModPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbProvMod.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("proveedor", "idProveedor", "empresa", cbProvMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbProvModPopupMenuWillBecomeVisible
+
+    private void jTabbedPane3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane3MouseClicked
+        if (txtFiltroCliente.getText().isBlank()) {
+            try {
+                registrosCliente = adminDaoCliente.seleccionarTodos();
+                String datosCliente = "";
+                for (Cliente registroCliente : registrosCliente) {
+                    datosCliente += registroCliente;
+                }
+                txaConCliente.setText(datosCliente);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_jTabbedPane3MouseClicked
+
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+        if (txtFiltroProd.getText().isBlank()) {
+            try {
+                registrosProd = adminDaoProd.seleccionarTodos();
+                String datosProd = "";
+                for (Producto registroProd : registrosProd) {
+                    datosProd += registroProd;
+                }
+                txaConProd.setText(datosProd);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
+
+    private void jTabbedPaneUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPaneUsuarioMouseClicked
+        if (txtFiltroEmp.getText().isBlank()) {
+            try {
+                registrosEmpleado = adminDaoEmpleado.seleccionarTodos();
+                String datosEmpleado = "";
+                for (Empleado registroEmpleado : registrosEmpleado) {
+                    datosEmpleado += registroEmpleado;
+                }
+                txaConEmp.setText(datosEmpleado);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+
+        }
+    }//GEN-LAST:event_jTabbedPaneUsuarioMouseClicked
+
+    private void jTabbedPane4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane4MouseClicked
+        if (txtFiltroProv.getText().isBlank()) {
+            try {
+                registrosProv = adminDaoProv.seleccionarTodos();
+                String datosProv = "";
+                for (Proveedor registroProv : registrosProv) {
+                    datosProv += registroProv;
+                }
+                txaConProv.setText(datosProv);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_jTabbedPane4MouseClicked
+
+    private void txtFiltroPedidoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroPedidoKeyTyped
+        if (txtFiltroPedido.getText().length() > 49) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+        char key = evt.getKeyChar();
+
+        if (!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE)) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite números");
+        } else {
+            int actualizarPedido = Integer.parseInt(txtFiltroPedido.getText());
+            try {
+                txaConPedido.setText(adminDaoPedido.seleccionarId(actualizarPedido).toString());
+                // adminDaoDetallePedido.seleccionarId(actualizarPedido).toString();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+        }
+
+    }//GEN-LAST:event_txtFiltroPedidoKeyTyped
+
+    private void cbProdPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProdPedidoActionPerformed
+
+        String a = cbProdPedido.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtProdPedido.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtProdPedido.setText(null);
+        }
+    }//GEN-LAST:event_cbProdPedidoActionPerformed
+
+    private void cbProvPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProvPedidoActionPerformed
+        String a = cbProvPedido.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtProvPedido.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtProvPedido.setText(null);
+        }
+    }//GEN-LAST:event_cbProvPedidoActionPerformed
+
+    private void cbProvPedidoPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbProvPedidoPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbProvPedido.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("proveedor", "idProveedor", "empresa", cbProvPedido);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbProvPedidoPopupMenuWillBecomeVisible
+
+    private void cbProdPedidoPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbProdPedidoPopupMenuWillBecomeVisible
+        if (txtProvPedido.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Ingresa el provedor antes de agregar productos");
+        } else {
+//limpiar para evitar objetos repetidos
+            String[] a = {"Selecciona"};
+            Object[] Selecciona = a;
+            cbProdPedido.setModel(new DefaultComboBoxModel(Selecciona));
+            try {
+                //rellenar para agregar objetos actualizados
+                RellenarComboBoxProv("producto", "idProducto", "nombre", cbProdPedido, txtProvPedido.getText());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_cbProdPedidoPopupMenuWillBecomeVisible
+
+    private void jTabbedPane2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane2MouseClicked
+
+    }//GEN-LAST:event_jTabbedPane2MouseClicked
+
+    private void cbProvPedidoModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProvPedidoModActionPerformed
+        String a = cbProvPedidoMod.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtProvPedidoMod.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtProvPedidoMod.setText(null);
+        }
+    }//GEN-LAST:event_cbProvPedidoModActionPerformed
+
+    private void cbProvPedidoModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbProvPedidoModPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbProvPedidoMod.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("proveedor", "idProveedor", "empresa", cbProvPedidoMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbProvPedidoModPopupMenuWillBecomeVisible
+
+    private void cbPedidoModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPedidoModActionPerformed
+        String a = cbPedidoMod.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtPedidoMod.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtPedidoMod.setText(null);
+        }
+    }//GEN-LAST:event_cbPedidoModActionPerformed
+
+    private void cbPedidoModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbPedidoModPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbPedidoMod.setModel(new DefaultComboBoxModel(Selecciona));
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("pedido", "idPedido", "fecha", cbPedidoMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbPedidoModPopupMenuWillBecomeVisible
+
+    private void cbProdPedidoModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProdPedidoModActionPerformed
+        String a = cbProdPedido.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtProdPedido.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtProdPedido.setText(null);
+        }
+    }//GEN-LAST:event_cbProdPedidoModActionPerformed
+
+    private void cbProdPedidoModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbProdPedidoModPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbProdPedidoMod.setModel(new DefaultComboBoxModel(Selecciona));
+
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBoxProv("producto", "idProducto", "nombre", cbProdPedidoMod, txtProvPedidoMod.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbProdPedidoModPopupMenuWillBecomeVisible
+
+    private void cbClienteVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbClienteVentaActionPerformed
+        String a = cbClienteVenta.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtClienteVenta.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtClienteVenta.setText(null);
+        }
+    }//GEN-LAST:event_cbClienteVentaActionPerformed
+
+    private void cbClienteVentaPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbClienteVentaPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbClienteVenta.setModel(new DefaultComboBoxModel(Selecciona));
+
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("cliente", "idCliente", "correo", cbClienteVenta);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbClienteVentaPopupMenuWillBecomeVisible
+
+    private void cbEmpleadoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEmpleadoVentaActionPerformed
+        String a = cbEmpleadoVenta.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtEmpleadoVenta.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtEmpleadoVenta.setText(null);
+        }
+    }//GEN-LAST:event_cbEmpleadoVentaActionPerformed
+
+    private void cbEmpleadoVentaPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbEmpleadoVentaPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbEmpleadoVenta.setModel(new DefaultComboBoxModel(Selecciona));
+
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("empleado", "idEmpleado", "usuario", cbEmpleadoVenta);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbEmpleadoVentaPopupMenuWillBecomeVisible
+
+    private void cbProdVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProdVentaActionPerformed
+        String a = cbProdVenta.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtProdVenta.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtProdVenta.setText(null);
+        }
+    }//GEN-LAST:event_cbProdVentaActionPerformed
+
+    private void cbProdVentaPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbProdVentaPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbProdVenta.setModel(new DefaultComboBoxModel(Selecciona));
+
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("producto", "idProducto", "nombre", cbProdVenta);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbProdVentaPopupMenuWillBecomeVisible
+
+    private void cbVentaModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbVentaModActionPerformed
+        String a = cbVentaMod.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtVentaMod.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtVentaMod.setText(null);
+        }
+    }//GEN-LAST:event_cbVentaModActionPerformed
+
+    private void cbVentaModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbVentaModPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbVentaMod.setModel(new DefaultComboBoxModel(Selecciona));
+
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("venta", "idVenta", "fecha", cbVentaMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbVentaModPopupMenuWillBecomeVisible
+
+    private void cbClienteVentaModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbClienteVentaModActionPerformed
+        String a = cbClienteVentaMod.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtClienteVentaMod.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtClienteVentaMod.setText(null);
+        }
+    }//GEN-LAST:event_cbClienteVentaModActionPerformed
+
+    private void cbClienteVentaModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbClienteVentaModPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbClienteVentaMod.setModel(new DefaultComboBoxModel(Selecciona));
+
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("cliente", "idCliente", "correo", cbClienteVentaMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbClienteVentaModPopupMenuWillBecomeVisible
+
+    private void cbEmpleadoVentaModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEmpleadoVentaModActionPerformed
+        String a = cbEmpleadoVentaMod.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtEmpleadoVentaMod.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtEmpleadoVentaMod.setText(null);
+        }
+    }//GEN-LAST:event_cbEmpleadoVentaModActionPerformed
+
+    private void cbEmpleadoVentaModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbEmpleadoVentaModPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbEmpleadoVentaMod.setModel(new DefaultComboBoxModel(Selecciona));
+
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("empleado", "idEmpleado", "usuario", cbEmpleadoVentaMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbEmpleadoVentaModPopupMenuWillBecomeVisible
+
+    private void cbProdVentaModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProdVentaModActionPerformed
+        String a = cbProdVentaMod.getSelectedItem().toString();
+        String arr[] = a.split(" ");
+        String id = arr[0];
+
+        if (!(id.equals("Selecciona"))) {
+            txtProdVentaMod.setText(id);
+        } else if (id.equals("Selecciona")) {
+            txtProdVentaMod.setText(null);
+        }
+    }//GEN-LAST:event_cbProdVentaModActionPerformed
+
+    private void cbProdVentaModPopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cbProdVentaModPopupMenuWillBecomeVisible
+        //limpiar para evitar objetos repetidos
+        String[] a = {"Selecciona"};
+        Object[] Selecciona = a;
+        cbProdVentaMod.setModel(new DefaultComboBoxModel(Selecciona));
+
+        try {
+            //rellenar para agregar objetos actualizados
+            RellenarComboBox("producto", "idProducto", "nombre", cbProdVentaMod);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+    }//GEN-LAST:event_cbProdVentaModPopupMenuWillBecomeVisible
+
+    private void btnAgregarProdPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProdPedidoActionPerformed
+        if (txtProvPedido.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Ingresa un proveedor antes de agregar productos");
+        } else if (txtProdPedido.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Ingresa un producto");
+        } else if (txtCantidadPedido.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Ingresa la cantidad pedida");
+        } else {
+
+            //Deshabilitar seleccion de proveedor para evitar cambios hasta guardar el pedido   
+            cbProvPedido.setEnabled(false);
+            txtProvPedido.setEnabled(false);
+            cbEstadoPedido.setEnabled(false);
+
+            //Agregar a la tabla
+            String idProducto = txtProdPedido.getText();
+            int Cantidad = Integer.parseInt(txtCantidadPedido.getText());
+            
+            int Descuento = 0;
+            
+            if(!txtDescuentoPedido.getText().isBlank()){
+            Descuento = Integer.parseInt(txtDescuentoPedido.getText());
+            }                        
+            
+            try {
+                AgregarProductoPedido(idProducto, jtPedido, Cantidad, Descuento);                
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+
+            //Obtener impuesto acumulado
+            double impuesto = (SumarColumna(jtPedido)) * (0.16);
+            txtImpuestoPedido.setText(String.valueOf(impuesto));
+
+            //Sumar lo agregado a la tabla al total 
+            double suma = (SumarColumna(jtPedido));
+            double total = (suma + impuesto);
+
+            txtTotalPedido.setText(String.valueOf(total));
+            txtPrecioPedido.setText(String.valueOf(suma));
+
+            //registrar detalles
+            detallePedido = new DetallePedido();
+            int id = Integer.parseInt(txtProdPedido.getText());
+            detallePedido.setIdProducto(id);
+            detallePedido.setCantidad(Integer.parseInt(txtCantidadPedido.getText()));
+            detallePedido.setDescuento(0);
+            
+
+            try {
+                //registrar precio
+                double precio = adminDaoProd.obtenerPrecio(id);
+                
+                //Aplicar descuento si fue ingresado
+                if (!txtDescuentoPedido.getText().isBlank()) {
+                    double descuento = Double.parseDouble(txtDescuentoPedido.getText()) / 100;
+                    precio = precio - precio * descuento;
+                    //registrarlo
+                    detallePedido.setDescuento(precio * descuento);
+                    detallePedido.setPrecio(precio);
+                    
+                }
+                System.out.println("el precio es: " + precio);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+            }
+
+        }
+                
+        registrosDetallePedido.add(detallePedido);
+
+        //limpiar campos para agregar más productos
+        txtCantidadPedido.setText(null);
+        txtProdPedido.setText(null);
+        txtDescuentoPedido.setText(null);
+        cbProdPedido.setSelectedItem("Selecciona");
+
+    }//GEN-LAST:event_btnAgregarProdPedidoActionPerformed
+
+    private void btnAgregarProdPedidoModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProdPedidoModActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAgregarProdPedidoModActionPerformed
+
+    private void txtPrecioCompraProdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioCompraProdKeyTyped
+        if (txtPrecioCompraProd.getText().length() > 8) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+
+        char key = evt.getKeyChar();
+
+        if ((!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE
+                || key == '.'))) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite números y un punto");
+        }
+        if ((key == '.') && txtPrecioCompraProd.getText().contains(".")) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "Ingresa solo un punto");
+        }
+    }//GEN-LAST:event_txtPrecioCompraProdKeyTyped
+
+    private void txtPrecioCompraProdModKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioCompraProdModKeyTyped
+        if (txtPrecioCompraProdMod.getText().length() > 8) {
+            JOptionPane.showMessageDialog(null, "Limite de caracteres alcanzado");
+            evt.consume();
+        }
+
+        char key = evt.getKeyChar();
+
+        if ((!(Character.isDigit(key) || key == KeyEvent.VK_BACK_SPACE
+                || key == '.'))) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "El campo solo admite números y un punto");
+        }
+        if ((key == '.') && txtPrecioCompraProdMod.getText().contains(".")) {
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "Ingresa solo un punto");
+        }
+    }//GEN-LAST:event_txtPrecioCompraProdModKeyTyped
+
+    private void btnCancelarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarPedidoActionPerformed
+        cbProvPedido.setEnabled(true);
+        cbProvPedido.setSelectedItem("Selecciona");
+        txtProvPedido.setEnabled(true);
+        txtProvPedido.setText(null);
+        txtPrecioPedido.setText(null);
+        txtDescuentoPedido.setText(null);
+        cbProdPedido.setEnabled(true);
+        cbProdPedido.setSelectedItem("Selecciona");
+        txtProdPedido.setText(null);
+        txtCantidadPedido.setText(null);
+        txtImpuestoPedido.setText(null);
+        txtTotalPedido.setText(null);
+        cbEstadoPedido.setSelectedItem("ACTIVO");
+        LimpiarTabla(jtPedido);
+        cbEstadoPedido.setEnabled(false);
+        registrosDetallePedido.clear();
+    }//GEN-LAST:event_btnCancelarPedidoActionPerformed
+
+    private void btnLimpiarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarPedidoActionPerformed
+        txtDescuentoPedido.setText(null);
+        txtPrecioPedido.setText(null);
+        cbProdPedido.setSelectedItem("Selecciona");
+        txtProdPedido.setText(null);
+        txtCantidadPedido.setText(null);
+        txtImpuestoPedido.setText(null);
+        txtTotalPedido.setText(null);
+        cbEstadoPedido.setSelectedItem("ACTIVO");
+        LimpiarTabla(jtPedido);
+        registrosDetallePedido.clear();
+    }//GEN-LAST:event_btnLimpiarPedidoActionPerformed
+
+    private void btnGuardarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarPedidoActionPerformed
+        
+        pedido = new Pedido();
+        //registrar pedido
+                pedido.setIdProveedor(Integer.parseInt(txtProvPedido.getText()));
+                pedido.setImpuesto(Double.parseDouble(txtImpuestoPedido.getText()));
+                pedido.setTotal(Double.parseDouble(txtTotalPedido.getText()));
+                pedido.setEstado(cbEstadoPedido.getSelectedItem().toString());
+                pedido.setPrecio(Double.parseDouble(txtPrecioPedido.getText()));
+                pedido.setDetallePedido(registrosDetallePedido);
+        try {
+            adminPedidoService.registrarPedido(pedido, pedido.getDetallePedido());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de SQL: " + e.getMessage());
+        }
+
+        registrosDetallePedido.clear();
+                
+                           
+    }//GEN-LAST:event_btnGuardarPedidoActionPerformed
+
+    private void btnLimpiarPedidoModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarPedidoModActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnLimpiarPedidoModActionPerformed
 
     /**
      * @param args the command line arguments
@@ -6220,16 +7729,28 @@ public class AdminMDI extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                }
+
+}
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AdminMDI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AdminMDI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AdminMDI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AdminMDI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AdminMDI.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+} catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(AdminMDI.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+} catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(AdminMDI.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(AdminMDI.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -6244,7 +7765,7 @@ public class AdminMDI extends javax.swing.JFrame {
         });
     }
 
-    public void RellenarComboBox(String tabla, String id, String valor, JComboBox cb) {
+    public void RellenarComboBox(String tabla, String id, String valor, JComboBox cb) throws Exception {
         String sql = "select * from " + tabla;
         Statement st;
         Connection con = null;
@@ -6256,12 +7777,117 @@ public class AdminMDI extends javax.swing.JFrame {
                 cb.addItem(respuestaSQL.getString(id) + " " + respuestaSQL.getString(valor));
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
     }
 
+    public void RellenarComboBoxProv(String tabla, String id, String valor, JComboBox cb, String idProveedor) throws Exception {
+        String sql = "select * from " + tabla + " where idProveedor=" + idProveedor;
+        Statement st;
+        Connection con = null;
+        try {
+            con = ConectorBaseDeDatos.conectar();
+            st = con.createStatement();
+            ResultSet respuestaSQL = st.executeQuery(sql);
+            while (respuestaSQL.next()) {
+                cb.addItem(respuestaSQL.getString(id) + " " + respuestaSQL.getString(valor));
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            ConectorBaseDeDatos.desconectar(con);
+        }
+    }
+
+    //metodo para agregar productos a jtable de pedido
+    public void AgregarProductoPedido(String idProducto, JTable jt, int Cantidad, double Descuento) throws Exception {
+        String sql = "select nombre,precioCompra from producto where idProducto=" + idProducto;
+        Statement st;
+        Connection con = null;
+        try {
+            con = ConectorBaseDeDatos.conectar();
+
+            DefaultTableModel dtm;
+            dtm = (DefaultTableModel) jt.getModel();
+
+            st = con.createStatement();
+            ResultSet respuestaSQL = st.executeQuery(sql);
+
+            String[] datos = new String[4];
+            while (respuestaSQL.next()) {
+                datos[0] = respuestaSQL.getString(1);
+                datos[1] = Integer.toString(Cantidad);
+                datos[2] = respuestaSQL.getString(2);
+                if (Descuento != 0) {
+                    Descuento = (Descuento / 100);
+                    datos[2] = Double.toString(Double.parseDouble(datos[2]) - (Double.parseDouble(datos[2]) * Descuento));
+                }
+                datos[3] = Double.toString(Double.parseDouble(datos[2]) * Integer.parseInt(datos[1]));
+                dtm.addRow(datos);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            ConectorBaseDeDatos.desconectar(con);
+        }
+    }
+
+    //metodo para agregar productos a jtable de pedido
+    public void AgregarProductoVenta(String idProducto, JTable jt, int Cantidad, int Descuento) throws Exception {
+        String sql = "select nombre,precioVenta from producto where idProducto=" + idProducto;
+        Statement st;
+        Connection con = null;
+        try {
+            con = ConectorBaseDeDatos.conectar();
+
+            DefaultTableModel dtm;
+            dtm = (DefaultTableModel) jt.getModel();
+
+            st = con.createStatement();
+            ResultSet respuestaSQL = st.executeQuery(sql);
+
+            String[] datos = new String[4];
+            while (respuestaSQL.next()) {
+                datos[0] = respuestaSQL.getString(1);
+                datos[1] = Integer.toString(Cantidad);
+                datos[2] = respuestaSQL.getString(2);
+                if (Descuento != 0) {
+                    Descuento = (Descuento / 100);
+                    datos[2] = Double.toString(Double.parseDouble(datos[2]) - (Double.parseDouble(datos[2]) * Descuento));
+                }
+                datos[3] = Double.toString(Double.parseDouble(datos[2]) * Integer.parseInt(datos[1]));
+                dtm.addRow(datos);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            ConectorBaseDeDatos.desconectar(con);
+        }
+    }
+
+    public double SumarColumna(JTable jt) {
+        double total = 0;
+        double valor = 0;
+
+        for (int i = 0; i < jt.getRowCount(); i++) {
+
+            valor = Double.valueOf(jt.getValueAt(i, 3).toString());
+
+            total = total + valor;
+        }
+        return total;
+    }
+
+    public void LimpiarTabla(JTable jt) {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("IdProducto");
+        model.addColumn("Cantidad");
+        model.addColumn("Precio");
+        model.addColumn("Suma");
+        jt.setModel(model);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarProdPedido;
@@ -6283,6 +7909,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelarClienteMod;
     private javax.swing.JButton btnCancelarEmpBorrar;
     private javax.swing.JButton btnCancelarEmpMod;
+    private javax.swing.JButton btnCancelarPedido;
     private javax.swing.JButton btnCancelarPedidoBorrar;
     private javax.swing.JButton btnCancelarPedidoMod;
     private javax.swing.JButton btnCancelarProdBorrar;
@@ -6294,12 +7921,6 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JButton btnCliente;
     private javax.swing.JButton btnClienteBorrar;
     private javax.swing.JButton btnClienteMod;
-    private javax.swing.JButton btnConClientes;
-    private javax.swing.JButton btnConEmp;
-    private javax.swing.JButton btnConPedido;
-    private javax.swing.JButton btnConProd;
-    private javax.swing.JButton btnConProv;
-    private javax.swing.JButton btnConVenta;
     private javax.swing.JButton btnEmp;
     private javax.swing.JButton btnEmpBorrar;
     private javax.swing.JButton btnEmpMod;
@@ -6351,13 +7972,14 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JButton btnVentaBorrar;
     private javax.swing.JButton btnVentaBuscarBorrar;
     private javax.swing.JButton btnVentaMod;
-    private javax.swing.JComboBox<String> cbBuscarClienteMod1;
-    private javax.swing.JComboBox<String> cbBuscarEmpMod;
-    private javax.swing.JComboBox<String> cbBuscarPedidoMod;
-    private javax.swing.JComboBox<String> cbBuscarProvMod;
-    private javax.swing.JComboBox<String> cbBuscarVentaMod;
     private javax.swing.JComboBox<String> cbClienteBorrar;
+    private javax.swing.JComboBox<String> cbClienteMod;
+    private javax.swing.JComboBox<String> cbClienteVenta;
+    private javax.swing.JComboBox<String> cbClienteVentaMod;
     private javax.swing.JComboBox<String> cbEmpBorrar;
+    private javax.swing.JComboBox<String> cbEmpMod;
+    private javax.swing.JComboBox<String> cbEmpleadoVenta;
+    private javax.swing.JComboBox<String> cbEmpleadoVentaMod;
     private javax.swing.JComboBox<String> cbEstadoCliente;
     private javax.swing.JComboBox<String> cbEstadoClienteMod;
     private javax.swing.JComboBox<String> cbEstadoEmp;
@@ -6371,16 +7993,24 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbEstadoVenta;
     private javax.swing.JComboBox<String> cbEstadoVentaMod;
     private javax.swing.JComboBox<String> cbPedidoBorrar;
+    private javax.swing.JComboBox<String> cbPedidoMod;
     private javax.swing.JComboBox<String> cbProdBorrar;
     private javax.swing.JComboBox<String> cbProdMod;
+    private javax.swing.JComboBox<String> cbProdPedido;
+    private javax.swing.JComboBox<String> cbProdPedidoMod;
     private javax.swing.JComboBox<String> cbProdVenta;
-    private javax.swing.JComboBox<String> cbProdVenta1;
+    private javax.swing.JComboBox<String> cbProdVentaMod;
     private javax.swing.JComboBox<String> cbProvBorrar;
+    private javax.swing.JComboBox<String> cbProvMod;
+    private javax.swing.JComboBox<String> cbProvPedido;
+    private javax.swing.JComboBox<String> cbProvPedidoMod;
     private javax.swing.JComboBox<String> cbProvProd;
     private javax.swing.JComboBox<String> cbProvProdMod;
     private javax.swing.JComboBox<String> cbRolEmp;
     private javax.swing.JComboBox<String> cbRolEmpMod;
     private javax.swing.JComboBox<String> cbVentaBorrar;
+    private javax.swing.JComboBox<String> cbVentaMod;
+    private javax.swing.JLabel fondo;
     private javax.swing.JInternalFrame ifrCliente;
     private javax.swing.JInternalFrame ifrEmp;
     private javax.swing.JInternalFrame ifrPedido;
@@ -6399,6 +8029,9 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel103;
     private javax.swing.JLabel jLabel104;
     private javax.swing.JLabel jLabel105;
+    private javax.swing.JLabel jLabel106;
+    private javax.swing.JLabel jLabel107;
+    private javax.swing.JLabel jLabel108;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -6428,9 +8061,9 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
-    private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel47;
     private javax.swing.JLabel jLabel48;
+    private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel50;
     private javax.swing.JLabel jLabel51;
@@ -6442,12 +8075,13 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel57;
     private javax.swing.JLabel jLabel58;
     private javax.swing.JLabel jLabel59;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel60;
     private javax.swing.JLabel jLabel61;
     private javax.swing.JLabel jLabel62;
     private javax.swing.JLabel jLabel63;
-    private javax.swing.JLabel jLabel64;
     private javax.swing.JLabel jLabel65;
+    private javax.swing.JLabel jLabel66;
     private javax.swing.JLabel jLabel67;
     private javax.swing.JLabel jLabel68;
     private javax.swing.JLabel jLabel69;
@@ -6458,6 +8092,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel73;
     private javax.swing.JLabel jLabel74;
     private javax.swing.JLabel jLabel75;
+    private javax.swing.JLabel jLabel76;
     private javax.swing.JLabel jLabel77;
     private javax.swing.JLabel jLabel78;
     private javax.swing.JLabel jLabel79;
@@ -6543,6 +8178,10 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane5;
     private javax.swing.JTabbedPane jTabbedPaneUsuario;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField10;
+    private javax.swing.JTextField jTextField11;
+    private javax.swing.JTextField jTextField12;
+    private javax.swing.JTextField jTextField13;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
@@ -6571,6 +8210,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JLabel lblImagenProvMod;
     private javax.swing.JLabel lblNombreModProd;
     private javax.swing.JLabel lblPrecioModProd;
+    private javax.swing.JLabel lblPrecioModProd1;
     private javax.swing.JMenu menu;
     private javax.swing.JMenuItem mniCliente;
     private javax.swing.JMenuItem mniEmp;
@@ -6612,6 +8252,8 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JTextField txtCiudadProvMod;
     private javax.swing.JTextField txtClienteBorrar;
     private javax.swing.JTextField txtClienteMod;
+    private javax.swing.JTextField txtClienteVenta;
+    private javax.swing.JTextField txtClienteVentaMod;
     private javax.swing.JTextField txtColoniaProv;
     private javax.swing.JTextField txtColoniaProvMod;
     private javax.swing.JTextField txtCorreoCliente;
@@ -6620,8 +8262,14 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JTextField txtCorreoProvMod;
     private javax.swing.JTextField txtCpProv;
     private javax.swing.JTextField txtCpProvMod;
+    private javax.swing.JTextField txtDescuentoPedido;
+    private javax.swing.JTextField txtDescuentoPedidoMod;
+    private javax.swing.JTextField txtDescuentoVenta;
+    private javax.swing.JTextField txtDescuentoVenta1;
     private javax.swing.JTextField txtEmpBorrar;
     private javax.swing.JTextField txtEmpMod;
+    private javax.swing.JTextField txtEmpleadoVenta;
+    private javax.swing.JTextField txtEmpleadoVentaMod;
     private javax.swing.JTextField txtEmpresaProv;
     private javax.swing.JTextField txtEmpresaProvMod;
     private javax.swing.JTextField txtExistenciaProd;
@@ -6632,20 +8280,6 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JTextField txtFiltroProd;
     private javax.swing.JTextField txtFiltroProv;
     private javax.swing.JTextField txtFiltroVenta;
-    private javax.swing.JTextField txtIdClienteVenta;
-    private javax.swing.JTextField txtIdClienteVentaMod;
-    private javax.swing.JTextField txtIdEmpleadoVenta;
-    private javax.swing.JTextField txtIdEmpleadoVentaMod;
-    private javax.swing.JTextField txtIdPedido;
-    private javax.swing.JTextField txtIdPedidoBorrar;
-    private javax.swing.JTextField txtIdProdPedido;
-    private javax.swing.JTextField txtIdProdPedidoMod;
-    private javax.swing.JTextField txtIdProdVenta;
-    private javax.swing.JTextField txtIdProdVentaMod;
-    private javax.swing.JTextField txtIdProvPedido;
-    private javax.swing.JTextField txtIdProvPedidoMod;
-    private javax.swing.JTextField txtIdVentaBorrar;
-    private javax.swing.JTextField txtIdVentaMod;
     private javax.swing.JTextField txtImpuestoPedido;
     private javax.swing.JTextField txtImpuestoPedidoMod;
     private javax.swing.JTextField txtImpuestoVenta;
@@ -6660,12 +8294,26 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JTextField txtNombreProvMod;
     private javax.swing.JTextField txtNumeroProv;
     private javax.swing.JTextField txtNumeroProvMod;
-    private javax.swing.JTextField txtPrecioProd;
-    private javax.swing.JTextField txtPrecioProdMod;
+    private javax.swing.JTextField txtPedidoBorrar;
+    private javax.swing.JTextField txtPedidoMod;
+    private javax.swing.JTextField txtPrecioCompraProd;
+    private javax.swing.JTextField txtPrecioCompraProdMod;
+    private javax.swing.JTextField txtPrecioPedido;
+    private javax.swing.JTextField txtPrecioPedidoMod;
+    private javax.swing.JTextField txtPrecioVenta;
+    private javax.swing.JTextField txtPrecioVentaMod;
+    private javax.swing.JTextField txtPrecioVentaProd;
+    private javax.swing.JTextField txtPrecioVentaProdMod;
     private javax.swing.JTextField txtProdBorrar;
     private javax.swing.JTextField txtProdMod;
+    private javax.swing.JTextField txtProdPedido;
+    private javax.swing.JTextField txtProdPedidoMod;
+    private javax.swing.JTextField txtProdVenta;
+    private javax.swing.JTextField txtProdVentaMod;
     private javax.swing.JTextField txtProvBorrar;
     private javax.swing.JTextField txtProvMod;
+    private javax.swing.JTextField txtProvPedido;
+    private javax.swing.JTextField txtProvPedidoMod;
     private javax.swing.JTextField txtProvProd;
     private javax.swing.JTextField txtProvProdMod;
     private javax.swing.JTextField txtTelefonoCliente;
@@ -6680,5 +8328,7 @@ public class AdminMDI extends javax.swing.JFrame {
     private javax.swing.JTextField txtTotalVentaMod;
     private javax.swing.JTextField txtUsuarioEmp;
     private javax.swing.JTextField txtUsuarioEmpMod;
+    private javax.swing.JTextField txtVentaBorrar;
+    private javax.swing.JTextField txtVentaMod;
     // End of variables declaration//GEN-END:variables
 }

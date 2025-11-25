@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class DAODetalleVenta {
 
-    public boolean insertar(DetalleVenta dv) {
+    public boolean insertar(DetalleVenta dv) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = " insert into venta (idVenta,idProducto,cantidad,precio,descuento)"
@@ -23,14 +23,13 @@ public class DAODetalleVenta {
             int res = query.executeUpdate();
             return (res > 0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
-    public ArrayList<DetalleVenta> seleccionarTodos() {
+    public ArrayList<DetalleVenta> seleccionarTodos() throws Exception{
         ArrayList<DetalleVenta> registros = new ArrayList<>();
         String sql = "select * from detalleVenta join venta "
                 + "on detalleVenta.idVenta = venta.idVenta "
@@ -52,14 +51,14 @@ public class DAODetalleVenta {
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
         return registros;
     }
 
-    public DetalleVenta seleccionarId(int idVenta) {
+    public ArrayList<DetalleVenta> seleccionarId(int idVenta) throws Exception{
         ArrayList<DetalleVenta> registros = new ArrayList<>();
         String sql = "select * from detalleVenta join venta "
                 + "on detalleVenta.idVenta = venta.idVenta "
@@ -83,10 +82,10 @@ public class DAODetalleVenta {
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return registro;
+        return registros;
     }
 }

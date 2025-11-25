@@ -8,35 +8,35 @@ import java.sql.*;
 public class DAOProducto implements DAO<Producto> {
 
     @Override
-    public boolean insertar(Producto prod) {
+    public boolean insertar(Producto prod) throws Exception {
         Connection con = null;
         PreparedStatement query = null;
-        String sql = " insert into producto (nombre, descripcion, precio, imagen1, imagen2, imagen3, existencia, estado, idProveedor)"
-                + "values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = " insert into producto (nombre, descripcion, precioVenta, precioCompra, imagen1, imagen2, imagen3, existencia, estado, idProveedor)"
+                + "values(?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
         try {
             con = ConectorBaseDeDatos.conectar();
             query = con.prepareStatement(sql);
             query.setString(1, prod.getNombre());
             query.setString(2, prod.getDescripcion());
-            query.setDouble(3, prod.getPrecio());
-            query.setBytes(4, prod.getImagen1());
-            query.setBytes(5, prod.getImagen2());
-            query.setBytes(6, prod.getImagen3());
-            query.setInt(7, prod.getExistencia());
-            query.setString(8, prod.getEstado());
-            query.setInt(9, prod.getIdProveedor());
+            query.setDouble(3, prod.getPrecioVenta());
+            query.setDouble(4, prod.getPrecioCompra());
+            query.setBytes(5, prod.getImagen1());
+            query.setBytes(6, prod.getImagen2());
+            query.setBytes(7, prod.getImagen3());
+            query.setInt(8, prod.getExistencia());
+            query.setString(9, prod.getEstado());
+            query.setInt(10, prod.getIdProveedor());
             int res = query.executeUpdate();
             return (res > 0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
     @Override
-    public ArrayList<Producto> seleccionarTodos() {
+    public ArrayList<Producto> seleccionarTodos() throws Exception {
         ArrayList<Producto> registros = new ArrayList<>();
         String sql = " select * from producto where estado=?";
         Connection con = null;
@@ -50,7 +50,8 @@ public class DAOProducto implements DAO<Producto> {
                 registro.setIdProducto(respuestaSQL.getInt("idProducto"));
                 registro.setNombre(respuestaSQL.getString("nombre"));
                 registro.setDescripcion(respuestaSQL.getString("descripcion"));
-                registro.setPrecio(respuestaSQL.getDouble("precio"));
+                registro.setPrecioVenta(respuestaSQL.getDouble("precioVenta"));
+                registro.setPrecioCompra(respuestaSQL.getDouble("precioCompra"));
                 registro.setImagen1(respuestaSQL.getBytes("imagen1"));
                 registro.setImagen2(respuestaSQL.getBytes("imagen2"));
                 registro.setImagen3(respuestaSQL.getBytes("imagen3"));
@@ -60,7 +61,7 @@ public class DAOProducto implements DAO<Producto> {
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -68,15 +69,15 @@ public class DAOProducto implements DAO<Producto> {
     }
 
     @Override
-    public ArrayList<Producto> seleccionarAlgunos(String nombre) {
+    public ArrayList<Producto> seleccionarAlgunos(String nombre) throws Exception {
         ArrayList<Producto> registros = new ArrayList<>();
-        String sql = " select * from producto where nombre = ? and estado=?";
+        String sql = " select * from producto where nombre like ? and estado=?";
         Connection con = null;
         Producto registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
-            query.setString(1, nombre);
+            query.setString(1, "%" + nombre + "%");
             query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while (respuestaSQL.next()) {
@@ -84,7 +85,8 @@ public class DAOProducto implements DAO<Producto> {
                 registro.setIdProducto(respuestaSQL.getInt("idProducto"));
                 registro.setNombre(respuestaSQL.getString("nombre"));
                 registro.setDescripcion(respuestaSQL.getString("descripcion"));
-                registro.setPrecio(respuestaSQL.getDouble("precio"));
+                registro.setPrecioVenta(respuestaSQL.getDouble("precioVenta"));
+                registro.setPrecioCompra(respuestaSQL.getDouble("precioCompra"));
                 registro.setImagen1(respuestaSQL.getBytes("imagen1"));
                 registro.setImagen2(respuestaSQL.getBytes("imagen2"));
                 registro.setImagen3(respuestaSQL.getBytes("imagen3"));
@@ -94,7 +96,7 @@ public class DAOProducto implements DAO<Producto> {
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -102,7 +104,7 @@ public class DAOProducto implements DAO<Producto> {
     }
 
     @Override
-    public Producto seleccionarId(int idProducto) {
+    public Producto seleccionarId(int idProducto) throws Exception {
         String sql = " select * from producto where idProducto = ? and estado=?";
         Connection con = null;
         Producto registro = null;
@@ -117,7 +119,8 @@ public class DAOProducto implements DAO<Producto> {
                 registro.setIdProducto(respuestaSQL.getInt("idProducto"));
                 registro.setNombre(respuestaSQL.getString("nombre"));
                 registro.setDescripcion(respuestaSQL.getString("descripcion"));
-                registro.setPrecio(respuestaSQL.getDouble("precio"));
+                registro.setPrecioVenta(respuestaSQL.getDouble("precioVenta"));
+                registro.setPrecioCompra(respuestaSQL.getDouble("precioCompra"));
                 registro.setImagen1(respuestaSQL.getBytes("imagen1"));
                 registro.setImagen2(respuestaSQL.getBytes("imagen2"));
                 registro.setImagen3(respuestaSQL.getBytes("imagen3"));
@@ -126,7 +129,7 @@ public class DAOProducto implements DAO<Producto> {
                 registro.setIdProveedor(respuestaSQL.getInt("idProveedor"));
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -134,12 +137,12 @@ public class DAOProducto implements DAO<Producto> {
     }
 
     @Override
-    public boolean actualizar(int idProducto, Producto prod) {
+    public boolean actualizar(int idProducto, Producto prod) throws Exception {
         Connection con = null;
         PreparedStatement query = null;
         String sql = " update producto set "
                 + "nombre=?, descripcion=?, "
-                + "precio=?, imagen1=?, "
+                + "precioVenta=?, precioCompra=?, imagen1=?, "
                 + "imagen2=?, imagen3=?, "
                 + "existencia=?, idProveedor=?"
                 + "where idProducto=? and estado=?";
@@ -148,26 +151,26 @@ public class DAOProducto implements DAO<Producto> {
             query = con.prepareStatement(sql);
             query.setString(1, prod.getNombre());
             query.setString(2, prod.getDescripcion());
-            query.setDouble(3, prod.getPrecio());
-            query.setBytes(4, prod.getImagen1());
-            query.setBytes(5, prod.getImagen2());
-            query.setBytes(6, prod.getImagen3());
-            query.setInt(7, prod.getExistencia());
-            query.setInt(8, prod.getIdProveedor());
-            query.setInt(9, idProducto);
+            query.setDouble(3, prod.getPrecioVenta());
+            query.setDouble(4, prod.getPrecioCompra());
+            query.setBytes(5, prod.getImagen1());
+            query.setBytes(6, prod.getImagen2());
+            query.setBytes(7, prod.getImagen3());
+            query.setInt(8, prod.getExistencia());
+            query.setInt(9, prod.getIdProveedor());
+            query.setInt(10, idProducto);
             query.setString(10, "ACTIVO");
             int res = query.executeUpdate();
             return (res > 0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
     @Override
-    public boolean borrar(int idProducto) {
+    public boolean borrar(int idProducto) throws Exception {
         Connection con = null;
         PreparedStatement query = null;
         String sql = " update producto set "
@@ -180,11 +183,73 @@ public class DAOProducto implements DAO<Producto> {
             int res = query.executeUpdate();
             return (res > 0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
+    public void restarExistencia(int idProducto, int cantidad) throws Exception {
+        Connection con = null;
+        String sql = "update producto set existencia = existencia - ? where idProducto = ?";
+        try {
+            con = ConectorBaseDeDatos.conectar();
+            PreparedStatement query = con.prepareStatement(sql);
+            query.setInt(1, cantidad);
+            query.setInt(2, idProducto);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void sumarExistencia(int idProducto, int cantidad) throws Exception {
+        Connection con = null;
+        String sql = "update producto set existencia = existencia + ? where idProducto = ?";
+        try {
+            con = ConectorBaseDeDatos.conectar();
+            PreparedStatement query = con.prepareStatement(sql);
+            query.setInt(1, cantidad);
+            query.setInt(2, idProducto);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public int obtenerStock(int idProducto) throws Exception {
+        int existencia = 0;
+        Connection con = null;
+        String sql = "select existencia from producto where idProducto = ?";
+        try {
+            con = ConectorBaseDeDatos.conectar();
+            PreparedStatement query = con.prepareStatement(sql);
+            query.setInt(1, idProducto);
+            ResultSet respuestaSQL = query.executeQuery();
+
+            while (respuestaSQL.next()) {
+                existencia = respuestaSQL.getInt("existencia");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+        return existencia;
+    }
+    
+    public double obtenerPrecio(int idProducto) throws Exception {
+        double precio = 0;
+        Connection con = null;
+        String sql = "select precioCompra from producto where idProducto = ?";
+        try {
+            con = ConectorBaseDeDatos.conectar();
+            PreparedStatement query = con.prepareStatement(sql);
+            query.setInt(1, idProducto);
+            ResultSet respuestaSQL = query.executeQuery();
+
+            while (respuestaSQL.next()) {
+                precio = respuestaSQL.getDouble("precioCompra");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+        return precio;
+    }
 }

@@ -13,7 +13,7 @@ import java.sql.*;
  */
 public class DAOAut {
     
-    public boolean aut(String usuario, String contrasena){
+    public boolean aut(String usuario, String contrasena) throws Exception{
         String sql="select usuario,contrasena from empleado where usuario=? and contrasena=?";
         Connection con=null;
         boolean existe = false;
@@ -28,7 +28,7 @@ public class DAOAut {
                 existe = true;
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -36,7 +36,7 @@ public class DAOAut {
     }
     
     //para verificar si el usuario es admin
-    public boolean verificarRol(String usuario){
+    public boolean verificarRol(String usuario) throws Exception{
         String sql="select usuario from empleado where rol=?";
         Connection con=null;
         boolean admin = false;
@@ -51,7 +51,7 @@ public class DAOAut {
                 admin = true;
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }

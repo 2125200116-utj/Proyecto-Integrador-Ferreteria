@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class adminDAODetalleVenta{
     
-    public boolean insertar(DetalleVenta dv) {
+    public boolean insertar(DetalleVenta dv) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = " insert into venta (idVenta,idProducto,cantidad,precio,descuento)"
@@ -24,15 +24,14 @@ public class adminDAODetalleVenta{
             int res = query.executeUpdate();
             return (res > 0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
     
     
-    public ArrayList<DetalleVenta> seleccionarTodos() {
+    public ArrayList<DetalleVenta> seleccionarTodos() throws Exception{
         ArrayList<DetalleVenta> registros = new ArrayList<>();
         String sql = " select * from detalleVenta";
         Connection con = null;
@@ -51,7 +50,7 @@ public class adminDAODetalleVenta{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -59,7 +58,7 @@ public class adminDAODetalleVenta{
     }
     
     
-    public DetalleVenta seleccionarId(int idVenta){
+    public ArrayList<DetalleVenta> seleccionarId(int idVenta) throws Exception{
     ArrayList<DetalleVenta> registros = new ArrayList<>();
         String sql = " select * from detalleVenta where idVenta=?";
         Connection con = null;
@@ -80,14 +79,14 @@ public class adminDAODetalleVenta{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return registro;    
+        return registros;    
     }
     
-    public boolean actualizar(int idVenta, DetalleVenta dv){
+    public boolean actualizar(int idVenta, DetalleVenta dv) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "update detalleVenta set idVenta=?, idProducto=?, "
@@ -104,15 +103,14 @@ public class adminDAODetalleVenta{
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
     
 
-    public boolean borrar(int idDetalleVenta){
+    public boolean borrar(int idDetalleVenta) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "delete from detalleVenta where idVenta=?";
@@ -123,10 +121,9 @@ public class adminDAODetalleVenta{
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 }

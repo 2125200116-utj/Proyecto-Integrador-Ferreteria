@@ -6,7 +6,8 @@ public class Producto {
     private int idProducto;
     private String nombre;
     private String descripcion;
-    private double precio;
+    private double precioVenta;
+    private double precioCompra;
     private byte[] imagen1;
     private byte[] imagen2;
     private byte[] imagen3;
@@ -38,12 +39,20 @@ public class Producto {
         this.descripcion = descripcion;
     }
 
-    public double getPrecio() {
-        return precio;
+    public double getPrecioVenta() {
+        return precioVenta;
     }
 
-    public void setPrecio(double precio) {
-        this.precio = precio;
+    public void setPrecioVenta(double precioVenta) {
+        this.precioVenta = precioVenta;
+    }
+
+    public double getPrecioCompra() {
+        return precioCompra;
+    }
+
+    public void setPrecioCompra(double precioCompra) {
+        this.precioCompra = precioCompra;
     }
 
     public byte[] getImagen1() {
@@ -97,7 +106,7 @@ public class Producto {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + this.idProducto;
+        hash = 53 * hash + this.idProducto;
         return hash;
     }
 
@@ -118,16 +127,9 @@ public class Producto {
 
     @Override
     public String toString() {
-        return "\nProducto{" + "\nidProducto=" + idProducto + ", \nnombre=" + 
-                nombre + ", \ndescripcion=" + descripcion + ", \nprecio=" + precio + 
-                ", \nimagen1=" + imagen1 + ", \nimagen2=" + imagen2 + ", \nimagen3=" + 
-                imagen3 + ", \nexistencia=" + existencia + ", \nestado=" + estado + 
-                ", \nidProveedor=" + idProveedor + "}\n";
-    }
-
-    
-
-    
-    
-    
+        return "\nProducto{" + "\nidProducto=" + idProducto + ", \nnombre=" + nombre + ", \ndescripcion=" + 
+                descripcion + ", \nprecioVenta=" + precioVenta + ", \nprecioCompra=" + precioCompra + ", \nimagen1=" + 
+                imagen1 + ", \nimagen2=" + imagen2 + ", \nimagen3=" + imagen3 + ", \nexistencia=" + existencia + 
+                ", \nestado=" + estado + ", \nidProveedor=" + idProveedor + "}\n";
+    } 
 }

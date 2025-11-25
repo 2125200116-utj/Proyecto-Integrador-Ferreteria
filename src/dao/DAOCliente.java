@@ -8,7 +8,7 @@ import java.sql.*;
 public class DAOCliente implements DAO<Cliente>{
 
     @Override
-    public boolean insertar(Cliente cliente) {
+    public boolean insertar(Cliente cliente) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "insert into cliente (nombre, apellido, telefono, correo, imagen, estado)"
@@ -25,15 +25,14 @@ public class DAOCliente implements DAO<Cliente>{
             int res=query.executeUpdate();
             return(res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
     @Override
-    public ArrayList<Cliente> seleccionarTodos() {
+    public ArrayList<Cliente> seleccionarTodos() throws Exception{
         ArrayList<Cliente> registros=new ArrayList<>();
         String sql = "select * from cliente where estado=?";
         Connection con = null;
@@ -54,7 +53,7 @@ public class DAOCliente implements DAO<Cliente>{
                 registros.add(registro);
             }     
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -62,15 +61,15 @@ public class DAOCliente implements DAO<Cliente>{
     }
 
     @Override
-    public ArrayList<Cliente> seleccionarAlgunos(String nombre) {
+    public ArrayList<Cliente> seleccionarAlgunos(String nombre) throws Exception{
         ArrayList<Cliente> registros=new ArrayList<>();
-        String sql = "select * from cliente where nombre=? and estado=?";
+        String sql = "select * from cliente where nombre like ? and estado=?";
         Connection con = null;
         Cliente registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
-            query.setString(1, nombre);
+            query.setString(1, "%" +nombre+"%");
             query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while(respuestaSQL.next()){
@@ -85,7 +84,7 @@ public class DAOCliente implements DAO<Cliente>{
                 registros.add(registro);
             }     
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -93,7 +92,7 @@ public class DAOCliente implements DAO<Cliente>{
     }
 
     @Override
-    public Cliente seleccionarId(int idCliente) {
+    public Cliente seleccionarId(int idCliente) throws Exception{
         ArrayList<Cliente> registros=new ArrayList<>();
         String sql = "select * from cliente where idCliente=? and estado=?";
         Connection con = null;
@@ -115,7 +114,7 @@ public class DAOCliente implements DAO<Cliente>{
                 registro.setEstado(respuestaSQL.getString("estado"));
             }     
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -123,7 +122,7 @@ public class DAOCliente implements DAO<Cliente>{
     }
 
     @Override
-    public boolean actualizar(int idCliente, Cliente cliente) {
+    public boolean actualizar(int idCliente, Cliente cliente) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "update cliente set nombre=?, apellido=?, telefono=?, "
@@ -141,15 +140,14 @@ public class DAOCliente implements DAO<Cliente>{
             int res=query.executeUpdate();
             return(res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
     @Override
-    public boolean borrar(int idCliente) {
+    public boolean borrar(int idCliente) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "update cliente set estado=? where idCliente=?";
@@ -161,11 +159,10 @@ public class DAOCliente implements DAO<Cliente>{
             int res=query.executeUpdate();
             return(res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
     
 }

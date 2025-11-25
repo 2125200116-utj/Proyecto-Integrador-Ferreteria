@@ -60,7 +60,7 @@ public class adminDAODetallePedido{
     }
     
     
-    public DetallePedido seleccionarId(int idPedido){
+    public ArrayList<DetallePedido> seleccionarId(int idPedido){
     ArrayList<DetallePedido> registros = new ArrayList<>();
         String sql = " select * from detallePedido where idPedido=?";
         Connection con = null;
@@ -85,7 +85,7 @@ public class adminDAODetallePedido{
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return registro;    
+        return registros;    
     }
     
     public boolean actualizar(int idPedido, DetallePedido dp){
@@ -116,7 +116,7 @@ public class adminDAODetallePedido{
     public boolean borrar(int idDetalleVenta){
         Connection con = null;
         PreparedStatement query = null;
-        String sql = "delete from detalleVenta where idVenta=?";
+        String sql = "delete from detallePedido where idPedido=?";
         try {
             con=ConectorBaseDeDatos.conectar();
             query=con.prepareStatement(sql);

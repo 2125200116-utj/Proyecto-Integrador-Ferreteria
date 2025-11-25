@@ -8,7 +8,7 @@ import java.sql.*;
 public class adminDAOEmpleado implements adminDAO<Empleado>{
 
     @Override
-    public boolean insertar(Empleado empleado) {
+    public boolean insertar(Empleado empleado) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "insert into empleado (usuario, contrasena, nombre, apellido, telefono, rol, imagen, estado)"
@@ -27,15 +27,14 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
     @Override
-    public ArrayList<Empleado> seleccionarTodos() {
+    public ArrayList<Empleado> seleccionarTodos() throws Exception{
         ArrayList<Empleado> registros= new ArrayList<>();
         String sql="select * from empleado";
         Connection con=null;
@@ -57,7 +56,7 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -65,15 +64,15 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
     }
 
     @Override
-    public ArrayList<Empleado> seleccionarAlgunos(String nombre) {
+    public ArrayList<Empleado> seleccionarAlgunos(String nombre) throws Exception{
         ArrayList<Empleado> registros= new ArrayList<>();
-        String sql="select * from empleado where nombre=?";
+        String sql="select * from empleado where nombre like ?";
         Connection con=null;
         Empleado registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
-            query.setString(1, nombre);
+            query.setString(1, "%" +nombre+"%");
             ResultSet respuestaSQL = query.executeQuery();
             
             while(respuestaSQL.next()){
@@ -90,7 +89,7 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -98,7 +97,7 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
     }
 
     @Override
-    public Empleado seleccionarId(int idEmpleado) {
+    public Empleado seleccionarId(int idEmpleado) throws Exception{
         ArrayList<Empleado> registros= new ArrayList<>();
         String sql="select * from empleado where idEmpleado=?";
         Connection con=null;
@@ -123,7 +122,7 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -131,7 +130,7 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
     }
 
     @Override
-    public boolean actualizar(int idEmpleado, Empleado usuario) {
+    public boolean actualizar(int idEmpleado, Empleado usuario) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "update empleado set contrasena=?, nombre=?, "
@@ -150,15 +149,14 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
     @Override
-    public boolean borrar(int idEmpleado) {
+    public boolean borrar(int idEmpleado) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "delete from empleado where idEmpleado=?";
@@ -169,14 +167,13 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
     
-    public int seleccionarUltimoId() {
+    public int seleccionarUltimoId() throws Exception{
         int id = 0;
         String sql="select last_insert_id(idEmpleado) as id from empleado";
         Connection con=null;
@@ -190,7 +187,7 @@ public class adminDAOEmpleado implements adminDAO<Empleado>{
                 id = respuestaSQL.getInt("id");
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }

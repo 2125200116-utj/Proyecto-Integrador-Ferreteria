@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class DAODetallePedido {
     
-    public boolean insertar(DetallePedido dp) {
+    public boolean insertar(DetallePedido dp) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = " insert into venta (idPedido,idProducto,cantidad,precio,descuento)"
@@ -26,14 +26,13 @@ public class DAODetallePedido {
             int res = query.executeUpdate();
             return (res > 0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
 
-    public ArrayList<DetallePedido> seleccionarTodos() {
+    public ArrayList<DetallePedido> seleccionarTodos() throws Exception{
         ArrayList<DetallePedido> registros = new ArrayList<>();
         String sql = "select * from detallePedido join pedido "
                 + "on detallePedido.idPedido = pedido.idPedido "
@@ -55,14 +54,14 @@ public class DAODetallePedido {
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
         return registros;
     }
 
-    public DetallePedido seleccionarId(int idPedido) {
+    public ArrayList<DetallePedido> seleccionarId(int idPedido) throws Exception{
         ArrayList<DetallePedido> registros = new ArrayList<>();
         String sql = "select * from detallePedido join pedido "
                 + "on detallePedido.idPedido = pedido.idPedido "
@@ -86,10 +85,10 @@ public class DAODetallePedido {
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return registro;
+        return registros;
     }
 }

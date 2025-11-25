@@ -5,13 +5,13 @@ import dto.Venta;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DAOVenta implements DAO<Venta>{
+public class DAOVenta{
     
-    @Override
-    public boolean insertar(Venta venta) {
+
+    public boolean insertar(Venta venta) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
-        String sql = " insert into venta (idCliente,idEmpleado,fecha,total,impuesto,estado)"
+        String sql = " insert into venta (idCliente,idEmpleado,fecha,total,precio,impuesto,estado)"
                 + "values(?, ?, ?, ?, ?, ?)";
         try {
             con = ConectorBaseDeDatos.conectar();
@@ -20,21 +20,21 @@ public class DAOVenta implements DAO<Venta>{
             query.setInt(2, venta.getIdEmpleado());
             query.setString(3, venta.getFecha());
             query.setDouble(4, venta.getTotal());
+            query.setDouble(4, venta.getPrecio());
             query.setDouble(5, venta.getImpuesto());
             query.setString(6, venta.getEstado());
             int res = query.executeUpdate();
             return (res > 0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
     
     
-    @Override
-    public ArrayList<Venta> seleccionarTodos() {
+
+    public ArrayList<Venta> seleccionarTodos() throws Exception{
         ArrayList<Venta> registros = new ArrayList<>();
         String sql = " select * from venta where estado=?";
         Connection con = null;
@@ -50,12 +50,13 @@ public class DAOVenta implements DAO<Venta>{
                 registro.setIdEmpleado(respuestaSQL.getInt("idEmpleado"));
                 registro.setFecha(respuestaSQL.getString("fecha"));
                 registro.setTotal(respuestaSQL.getDouble("total"));
+                registro.setPrecio(respuestaSQL.getDouble("precio"));
                 registro.setImpuesto(respuestaSQL.getDouble("impuesto"));
                 registro.setEstado(respuestaSQL.getString("estado"));
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -63,16 +64,15 @@ public class DAOVenta implements DAO<Venta>{
     }
     
     
-    @Override
-    public ArrayList<Venta> seleccionarAlgunos(String fecha){
+    public ArrayList<Venta> seleccionarAlgunos(int idCliente) throws Exception{
     ArrayList<Venta> registros = new ArrayList<>();
-        String sql = " select * from venta where fecha=? and estado=?";
+        String sql = "select * from venta where idCliente = ? and estado=?";
         Connection con = null;
         Venta registro = null;
         try {
             con = ConectorBaseDeDatos.conectar();
             PreparedStatement query = con.prepareStatement(sql);
-            query.setString(1, fecha);
+            query.setInt(1, idCliente);
             query.setString(2, "ACTIVO");
             ResultSet respuestaSQL = query.executeQuery();
             while (respuestaSQL.next()) {
@@ -82,12 +82,13 @@ public class DAOVenta implements DAO<Venta>{
                 registro.setIdEmpleado(respuestaSQL.getInt("idEmpleado"));
                 registro.setFecha(respuestaSQL.getString("fecha"));
                 registro.setTotal(respuestaSQL.getDouble("total"));
+                registro.setPrecio(respuestaSQL.getDouble("precio"));
                 registro.setImpuesto(respuestaSQL.getDouble("impuesto"));
                 registro.setEstado(respuestaSQL.getString("estado"));
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -95,8 +96,8 @@ public class DAOVenta implements DAO<Venta>{
     }
     
     
-    @Override
-    public Venta seleccionarId(int idVenta){
+
+    public Venta seleccionarId(int idVenta) throws Exception{
     ArrayList<Venta> registros = new ArrayList<>();
         String sql = " select * from venta where idVenta=? and estado=?";
         Connection con = null;
@@ -114,12 +115,13 @@ public class DAOVenta implements DAO<Venta>{
                 registro.setIdEmpleado(respuestaSQL.getInt("idEmpleado"));
                 registro.setFecha(respuestaSQL.getString("fecha"));
                 registro.setTotal(respuestaSQL.getDouble("total"));
+                registro.setPrecio(respuestaSQL.getDouble("precio"));
                 registro.setImpuesto(respuestaSQL.getDouble("impuesto"));
                 registro.setEstado(respuestaSQL.getString("estado"));
                 registros.add(registro);
             }
         } catch (Exception e) {
-            System.out.println("Error de SQL: " + e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
@@ -127,12 +129,12 @@ public class DAOVenta implements DAO<Venta>{
     }
     
     
-    @Override
-    public boolean actualizar(int idVenta, Venta venta){
+
+    public boolean actualizar(int idVenta, Venta venta) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "update venta set idCliente=?, idEmpleado=?, "
-                + "fecha=?, total=?, impuesto=?, estado=? where idVenta=? and estado=?";
+                + "fecha=?, total=?, impuesto=?, precio=? ,estado=? where idVenta=? and estado=?";
         try {
             con=ConectorBaseDeDatos.conectar();
             query = con.prepareStatement(sql);
@@ -141,22 +143,22 @@ public class DAOVenta implements DAO<Venta>{
             query.setString(3, venta.getFecha());
             query.setDouble(4, venta.getTotal());
             query.setDouble(5, venta.getImpuesto());
-            query.setString(6, venta.getEstado());
-            query.setInt(7, idVenta);
-            query.setString(8, "ACTIVO");
+            query.setDouble(6, venta.getPrecio());
+            query.setString(7, venta.getEstado());
+            query.setInt(8, idVenta);
+            query.setString(9, "ACTIVO");
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
     }
     
     
-    @Override
-    public boolean borrar(int idVenta){
+
+    public boolean borrar(int idVenta) throws Exception{
         Connection con = null;
         PreparedStatement query = null;
         String sql = "update venta set estado=? where idVenta=?";
@@ -168,10 +170,30 @@ public class DAOVenta implements DAO<Venta>{
             int res=query.executeUpdate();
             return (res>0);
         } catch (Exception e) {
-            System.out.println("Error de SQL: "+ e.getMessage());
+            throw e;
         } finally {
             ConectorBaseDeDatos.desconectar(con);
         }
-        return false;
+    }
+    
+    public int seleccionarUltimoId() throws Exception{
+        int id = 0;
+        String sql="select last_insert_id(idVenta) as id from venta";
+        Connection con=null;
+        Venta registro = null;
+        try {
+            con = ConectorBaseDeDatos.conectar();
+            PreparedStatement query = con.prepareStatement(sql);
+            ResultSet respuestaSQL = query.executeQuery();
+            
+            while(respuestaSQL.next()){
+                id = respuestaSQL.getInt("id");
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            ConectorBaseDeDatos.desconectar(con);
+        }
+        return id;
     }
 }

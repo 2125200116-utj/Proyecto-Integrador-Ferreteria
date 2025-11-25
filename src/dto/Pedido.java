@@ -1,13 +1,26 @@
 
 package dto;
 
+import java.util.ArrayList;
+
 public class Pedido {
     private int idPedido;
     private int idProveedor;
     private double impuesto;
+    private double precio;
     private String fecha;
     private double total;
     private String estado;
+
+    private ArrayList<DetallePedido> detallePedido = new ArrayList<>();
+    
+    public ArrayList<DetallePedido> getDetallePedido(){
+        return detallePedido;
+    }
+    
+    public void setDetallePedido(ArrayList<DetallePedido> detallePedido) {
+        this.detallePedido = detallePedido;
+    }
 
     public int getIdPedido() {
         return idPedido;
@@ -31,6 +44,14 @@ public class Pedido {
 
     public void setImpuesto(double impuesto) {
         this.impuesto = impuesto;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
     }
 
     public String getFecha() {
@@ -60,7 +81,7 @@ public class Pedido {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + this.idPedido;
+        hash = 11 * hash + this.idPedido;
         return hash;
     }
 
@@ -81,10 +102,10 @@ public class Pedido {
 
     @Override
     public String toString() {
-        return "\nPedido{" + "\nidPedido=" + idPedido + ", \nidProveedor=" + 
-                idProveedor + ", \nimpuesto=" + impuesto + ", \nfecha=" + fecha + 
-                ", \ntotal=" + total + ", \nestado=" + estado + "\n}";
+        return "\nPedido{" + "\nidPedido=" + idPedido + ", \nidProveedor=" + idProveedor + ",\n impuesto=" + 
+                impuesto + ", \nprecio=" + precio + ", \nfecha=" + fecha + ", \ntotal=" + total + ", \nestado=" + estado + 
+                ", \ndetallePedido=" + detallePedido + "}\n";
     }
-
-        
+    
+    
 }
